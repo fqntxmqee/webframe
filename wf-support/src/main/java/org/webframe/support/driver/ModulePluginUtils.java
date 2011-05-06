@@ -49,12 +49,10 @@ public abstract class ModulePluginUtils {
 		File directory = new File(realConfigDirectory);
 		if (!directory.exists()) {
 			directory.mkdirs();
-		} else if (!directory.isDirectory()) {
+		} else if (directory.isFile()) {
 			throw new ModulePluginConfigException(realConfigDirectory + "不是文件夹路径！");
 		}
-		String configFilePath = realConfigDirectory.endsWith(File.separator) ? realConfigDirectory
-					+ "/"
-					+ CONFIG_FILE_NAME : realConfigDirectory + CONFIG_FILE_NAME;
+		String configFilePath = getConfigFilePath(realConfigDirectory);
 		try {
 			File file = new File(configFilePath);
 			if (file.exists()) {
@@ -98,6 +96,12 @@ public abstract class ModulePluginUtils {
 			e.printStackTrace();
 			throw new ModulePluginConfigException(configFilePath + "模块插件配置信息缓存文件写入信息失败！");
 		}
+	}
+
+	static String getConfigFilePath(String realConfigDirectory) {
+		return realConfigDirectory.endsWith(File.separator)
+					? realConfigDirectory + "/" + CONFIG_FILE_NAME
+					: realConfigDirectory + CONFIG_FILE_NAME;
 	}
 
 	protected static List<ModulePluginDriverInfo> getNeedUpdateDriverInfos() {

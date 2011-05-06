@@ -16,9 +16,13 @@ import org.webframe.support.util.SystemLogUtils;
 public class BaseTests {
 
 	public BaseTests() {
+		this(new String[]{
+			"org.webframe.support.driver.TestModulePluginDriver"});
+	}
+
+	public BaseTests(String[] drivers) {
 		try {
-			new DefaultModulePluginLoader(new String[]{
-				"org.webframe.support.driver.TestModulePluginDriver"}).loadModulePlugin();
+			new DefaultModulePluginLoader(drivers).loadModulePlugin();
 		} catch (DriverNotExistException e) {
 			SystemLogUtils.errorPrintln(e.getMessage());
 		}

@@ -33,7 +33,8 @@ public class JarResourcePatternResolverTest {
 				resource instanceof FileSystemResource);
 			resolver = new JarResourcePatternResolver(Test.class);
 			resource = resolver.getResource("/LICENSE.txt");
-			Assert.assertTrue("modulePlugin.properties文件Resource不为FileSystemResource!", resource instanceof JarResource);
+			Assert.assertTrue("/LICENSE.txt文件应该存在!", resource.exists());
+			Assert.assertTrue("/LICENSE.txt文件Resource应该为JarResource!", resource instanceof JarResource);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
