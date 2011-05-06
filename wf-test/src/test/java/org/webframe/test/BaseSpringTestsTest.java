@@ -8,7 +8,6 @@ package org.webframe.test;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.webframe.support.driver.loader.DefaultModulePluginLoader;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
@@ -18,11 +17,6 @@ public class BaseSpringTestsTest extends BaseSpringTests {
 
 	@Autowired
 	private BaseHttpClientTests	baseHttpClientTests;
-
-	public BaseSpringTestsTest() {
-		super(new DefaultModulePluginLoader(new String[]{
-			"org.webframe.test.TestModulePluginDriver"}));
-	}
 
 	@Test
 	public void testAutuwiredBean() {

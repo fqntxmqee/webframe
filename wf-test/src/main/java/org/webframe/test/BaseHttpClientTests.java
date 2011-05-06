@@ -3,7 +3,6 @@ package org.webframe.test;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.BeforeClass;
 
 /**
  * @author <a href="mailto:guoqing.huang@berheley.com">黄国庆 </a>
@@ -11,9 +10,5 @@ import org.junit.BeforeClass;
  */
 public class BaseHttpClientTests {
 
-	protected static HttpClient	client	= new DefaultHttpClient();
-
-	@BeforeClass
-	public static void setUp() throws Exception {
-	}
+	protected final static HttpClient	client	= new DefaultHttpClient();
 }
