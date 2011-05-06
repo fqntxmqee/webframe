@@ -21,8 +21,4 @@ public class ModulePluginException extends RuntimeException {
 	public ModulePluginException(String msg) {
 		super(msg);
 	}
-
-	public ModulePluginException(String msg, Throwable e) {
-		super(msg, e);
-	}
 }

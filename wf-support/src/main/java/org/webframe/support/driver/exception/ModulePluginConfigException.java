@@ -17,8 +17,4 @@ public class ModulePluginConfigException extends ModulePluginException {
 	public ModulePluginConfigException(String msg) {
 		super(msg);
 	}
-
-	public ModulePluginConfigException(String msg, Throwable e) {
-		super(msg, e);
-	}
 }
