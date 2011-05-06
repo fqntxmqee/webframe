@@ -16,7 +16,7 @@ import org.webframe.support.util.ClassUtils;
 /**
  * jar包中的资源文件加载器
  * 
- * @author <a href="mailto:guoqing.huang@berheley.com">黄国庆 </a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-6 下午04:16:45
  */
 public class JarResourceLoader extends DefaultResourceLoader {

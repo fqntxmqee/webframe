@@ -12,7 +12,7 @@ import org.webframe.support.BaseTests;
 import org.webframe.support.driver.exception.ModulePluginConfigException;
 
 /**
- * @author <a href="mailto:guoqing.huang@berheley.com">黄国庆 </a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-1 下午12:23:56
  */
 public class ModulePluginUtilsTest extends BaseTests {

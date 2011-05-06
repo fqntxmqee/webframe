@@ -23,7 +23,7 @@ import org.webframe.support.driver.resource.jar.JarResourcePatternResolver;
 import org.webframe.support.util.SystemLogUtils;
 
 /**
- * @author <a href="mailto:guoqing.huang@berheley.com">黄国庆 </a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-5 下午04:21:54
  */
 public abstract class ModulePluginUtils {

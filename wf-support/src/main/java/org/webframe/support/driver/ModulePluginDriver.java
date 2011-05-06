@@ -5,7 +5,7 @@ package org.webframe.support.driver;
  * webframe框架模块插件驱动接口，每一个分包(jar)中需要有一个实现该接口的实现类。
  * 需要实现的方法有getEntityLocation()和getViewTempletLocation()； 实现类也可以继承抽象类AbstractModulePluginDriver
  * 
- * @author <a href="mailto:guoqing.huang@berheley.com">黄国庆 </a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-3-18 下午06:47:35
  */
 public interface ModulePluginDriver {

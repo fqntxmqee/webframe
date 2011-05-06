@@ -21,7 +21,7 @@ import sun.security.action.GetPropertyAction;
  * webframe框架模块插件管理器，实现ModulePluginDriver接口类的实现类，
  * 需要在实现类的静态快中注册自己的实例"ModulePluginManager.registerDriver(ModulePluginDriver driver)"
  * 
- * @author <a href="mailto:guoqing.huang@berheley.com">黄国庆 </a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-3-18 下午06:46:28
  */
 public final class ModulePluginManager {

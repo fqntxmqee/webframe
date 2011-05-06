@@ -7,7 +7,7 @@ package org.webframe.support.driver;
  * 那么CoreModulePluginDriver实现AbstractModulePluginDriver抽象类后，就不需要重新任何方法，只需添加静态块
  * 注册该CoreModulePluginDriver实例
  * 
- * @author <a href="mailto:guoqing.huang@berheley.com">黄国庆 </a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-3-19 下午05:59:37
  */
 public abstract class AbstractModulePluginDriver implements ModulePluginDriver {

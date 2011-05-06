@@ -6,7 +6,7 @@ import org.webframe.support.driver.exception.DriverNotExistException;
 /**
  * 抽象模块插件加载器，提供class.forName加载模块插件类
  * 
- * @author <a href="mailto:guoqing.huang@berheley.com">黄国庆 </a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-5 下午02:21:01
  */
 public abstract class AbstractModulePluginLoader implements ModulePluginLoader {
