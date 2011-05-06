@@ -35,8 +35,10 @@ public class JarResourcePatternResolverTest {
 			resource = resolver.getResource("/LICENSE.txt");
 			Assert.assertTrue("/LICENSE.txt文件应该存在!", resource.exists());
 			Assert.assertTrue("/LICENSE.txt文件Resource应该为JarResource!", resource instanceof JarResource);
+			Resource[] resources = resolver.getResources("/org/junit/*.class");
+			Assert.assertEquals("/org/junit/包下，应该只有12个类文件！", 12, resources.length);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Assert.fail(e.getMessage());
 		}
 	}
 }

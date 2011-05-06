@@ -29,6 +29,8 @@ public abstract class AbstractModulePluginLoader implements ModulePluginLoader {
 				Class.forName(driver, true, this.getClass().getClassLoader());
 			} catch (ClassNotFoundException e) {
 				driverNotExists += driver + "|";
+			} catch (DriverNotExistException e) {
+				driverNotExists += "null|";
 			}
 		}
 		if (driverNotExists.length() > 0) {

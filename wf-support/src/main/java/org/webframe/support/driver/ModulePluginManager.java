@@ -34,8 +34,6 @@ public final class ModulePluginManager {
 	/* write copy of the drivers vector */
 	private static Vector<ModulePluginDriverInfo>	readDrivers		= new Vector<ModulePluginDriverInfo>();
 
-	private static native ClassLoader getCallerClassLoader();
-
 	/**
 	 * 注册模块插件驱动
 	 * 
