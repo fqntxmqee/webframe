@@ -17,9 +17,9 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-6 下午09:10:46
  */
-public class DateHelper {
+public class DateUtils {
 
-	private final static Log	log					= LogFactory.getLog(DateHelper.class);
+	private final static Log	log					= LogFactory.getLog(DateUtils.class);
 
 	static final String			defaultDateFormat	= "yyyy-MM-dd HH:mm:ss";
 
@@ -55,6 +55,7 @@ public class DateHelper {
 			Calendar cal = Calendar.getInstance();
 			String str = cal.get(Calendar.YEAR) + "年" + (cal.get(Calendar.MONTH) + 1) + "月" + cal.get(Calendar.DATE) + "日";
 			str = str + getCNWeek((cal.get(Calendar.DAY_OF_WEEK) - 1));
+			return str;
 		} catch (Exception ex) {
 			log.error("得到默认中文日期格式发生异常", ex);
 		}
@@ -97,26 +98,8 @@ public class DateHelper {
 	}
 
 	/**
-	 * 通过一个'yyyy-MM-dd'日期格式字符串得到 日期对象
-	 * 
-	 * @param dateString 'yyyy-MM-dd'
-	 * @return
-	 * @author 黄国庆 2011-5-6 下午09:12:03
-	 */
-	public static Date getDateByString(String dateString) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat(defaultDayFormat);
-		Date d = new Date();
-		try {
-			d = dateFormat.parse(dateString);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return d;
-	}
-
-	/**
 	 * @param date
-	 * @return 返回格式为 'yyyy-MM-dd HH:mm' 的字符串
+	 * @return 返回格式为 'yyyy-MM-dd HH:mm:ss' 的字符串
 	 * @author 黄国庆 2011-5-6 下午09:12:03
 	 */
 	public static String getFormatedDate(Date date) {
@@ -125,14 +108,20 @@ public class DateHelper {
 
 	/**
 	 * @param now Date 日期
-	 * @param format String 日期格式
+	 * @param format String 日期格式，例如：'yyyy-MM-dd HH:mm:ss'，'yyyy-MM-dd
+	 *           HH:mm'，'yyyy-MM-dd'，'yyyy年MM月dd日 HH时mm分ss秒'
 	 * @return String 日期时间字符串
 	 * @author 黄国庆 2011-5-6 下午09:12:03
 	 */
 	public static String getFormatedDate(Date now, String format) {
-		DateFormat df = new SimpleDateFormat(format);
-		String str = (now == null ? null : df.format(now));
-		return str;
+		try {
+			DateFormat df = format == null ? new SimpleDateFormat() : new SimpleDateFormat(format);
+			String str = (now == null ? null : df.format(now));
+			return str;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
@@ -157,9 +146,9 @@ public class DateHelper {
 	}
 
 	/**
-	 * 格式为 yyyy-MM-dd HH:mm
+	 * 格式为 yyyy-MM-dd HH:mm:ss
 	 * 
-	 * @return 'yyyy-MM-dd HH:mm'
+	 * @return 'yyyy-MM-dd HH:mm:ss'
 	 * @author 黄国庆 2011-5-6 下午09:12:03
 	 */
 	public static String getStandTime() {
@@ -167,11 +156,22 @@ public class DateHelper {
 	}
 
 	/**
+	 * 通过一个'yyyy-MM-dd'日期格式字符串得到 日期对象；如果转换失败返回null
+	 * 
+	 * @param date 'yyyy-MM-dd'
+	 * @return null or date
+	 * @author 黄国庆 2011-5-6 下午09:12:03
+	 */
+	public static Date parseStringToDate(String date) {
+		return parseStringToDate(date, defaultDayFormat);
+	}
+
+	/**
 	 * 按照指定日期格式解析字符串
 	 * 
-	 * @param date
-	 * @param format
-	 * @return
+	 * @param date 日期字符串
+	 * @param format 当前日期字符串格式
+	 * @return null or date
 	 * @author 黄国庆 2011-5-6 下午09:12:03
 	 */
 	public static Date parseStringToDate(String date, String format) {
@@ -180,6 +180,7 @@ public class DateHelper {
 		try {
 			nowDate = df.parse(date);
 		} catch (ParseException e) {
+			e.printStackTrace();
 			log.debug("无法解析" + date);
 		}
 		return nowDate;

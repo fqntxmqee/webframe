@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.webframe.core.module.testUser.TTestUser;
-import org.webframe.core.util.DateHelper;
+import org.webframe.core.util.DateUtils;
 import org.webframe.test.BaseSpringTransactionalTests;
 
 /**
@@ -49,7 +49,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		entity.setName(testUserName);
 		entity.setPassword("password");
 		entity.setEnabled(true);
-		entity.setCreateTime(DateHelper.getStandTime());
+		entity.setCreateTime(DateUtils.getStandTime());
 		baseDao.saveOrUpdate(entity);
 		userMap.put(entity.getId(), entity);
 	}
@@ -63,7 +63,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		entity.setName(testUserName);
 		entity.setPassword("password");
 		entity.setEnabled(true);
-		entity.setCreateTime(DateHelper.getStandTime());
+		entity.setCreateTime(DateUtils.getStandTime());
 		baseDao.save(entity);
 		userMap.put(entity.getId(), entity);
 	}
@@ -78,13 +78,13 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		entity.setName(testUserName);
 		entity.setPassword("password");
 		entity.setEnabled(true);
-		entity.setCreateTime(DateHelper.getStandTime());
+		entity.setCreateTime(DateUtils.getStandTime());
 		entityList.add(entity);
 		entity = new TTestUser();
 		entity.setName(testUserName);
 		entity.setPassword("password");
 		entity.setEnabled(true);
-		entity.setCreateTime(DateHelper.getStandTime());
+		entity.setCreateTime(DateUtils.getStandTime());
 		entityList.add(entity);
 		baseDao.saveOrUpdate(entityList);
 		for (TTestUser testUser : entityList) {
@@ -98,7 +98,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 	@Test
 	public void testUpdateObject() {
 		for (TTestUser testUser : userMap.values()) {
-			testUser.setModifyTime(DateHelper.getStandTime());
+			testUser.setModifyTime(DateUtils.getStandTime());
 			baseDao.update(testUser);
 		}
 	}
@@ -108,7 +108,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 	 */
 	@Test
 	public void testUpdateString() {
-		String updateHql = "update TTestUser set modifyTime='" + DateHelper.getStandTime() + "'";
+		String updateHql = "update TTestUser set modifyTime='" + DateUtils.getStandTime() + "'";
 		baseDao.update(updateHql);
 	}
 

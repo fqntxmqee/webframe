@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.webframe.core.exception.entity.EntityException;
 import org.webframe.core.module.testUser.TTestUser;
-import org.webframe.core.util.DateHelper;
+import org.webframe.core.util.DateUtils;
 import org.webframe.test.BaseSpringTests;
 
 /**
@@ -38,7 +38,7 @@ public class BaseEntityServiceTest extends BaseSpringTests {
 		testUser.setName(testUserName);
 		testUser.setPassword("password");
 		testUser.setEnabled(true);
-		testUser.setCreateTime(DateHelper.getStandTime());
+		testUser.setCreateTime(DateUtils.getStandTime());
 		baseEntityService.saveEntity(testUser);
 		userMap.put(testUser.getId(), testUser);
 	}
@@ -54,7 +54,7 @@ public class BaseEntityServiceTest extends BaseSpringTests {
 		testUser.setName(testUserName);
 		testUser.setPassword("password");
 		testUser.setEnabled(true);
-		testUser.setCreateTime(DateHelper.getStandTime());
+		testUser.setCreateTime(DateUtils.getStandTime());
 		baseEntityService.saveOrUpdateEntity(testUser);
 		userMap.put(testUser.getId(), testUser);
 	}
@@ -67,7 +67,7 @@ public class BaseEntityServiceTest extends BaseSpringTests {
 	@Test
 	public void testUpdateEntity() {
 		for (TTestUser testUser : userMap.values()) {
-			testUser.setModifyTime(DateHelper.getStandTime());
+			testUser.setModifyTime(DateUtils.getStandTime());
 			baseEntityService.updateEntity(testUser);
 		}
 	}

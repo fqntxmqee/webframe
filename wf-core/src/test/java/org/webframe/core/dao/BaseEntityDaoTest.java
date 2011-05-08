@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.webframe.core.exception.entity.EntityException;
 import org.webframe.core.module.testUser.TTestUser;
-import org.webframe.core.util.DateHelper;
+import org.webframe.core.util.DateUtils;
 import org.webframe.test.BaseSpringTests;
 
 /**
@@ -38,7 +38,7 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 		entity.setName(testUserName);
 		entity.setPassword("password");
 		entity.setEnabled(true);
-		entity.setCreateTime(DateHelper.getStandTime());
+		entity.setCreateTime(DateUtils.getStandTime());
 		baseEntityDao.saveEntity(entity);
 		userMap.put(entity.getId(), entity);
 	}
@@ -69,7 +69,7 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 		entity.setName(testUserName);
 		entity.setPassword("password");
 		entity.setEnabled(true);
-		entity.setCreateTime(DateHelper.getStandTime());
+		entity.setCreateTime(DateUtils.getStandTime());
 		baseEntityDao.saveOrUpdateEntity(entity);
 		userMap.put(entity.getId(), entity);
 	}
@@ -81,7 +81,7 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	@Test
 	public void testUpdateEntity() {
 		for (TTestUser testUser : userMap.values()) {
-			testUser.setModifyTime(DateHelper.getStandTime());
+			testUser.setModifyTime(DateUtils.getStandTime());
 			baseEntityDao.updateEntity(testUser);
 		}
 	}

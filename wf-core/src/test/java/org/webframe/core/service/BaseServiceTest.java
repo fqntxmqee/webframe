@@ -14,7 +14,7 @@ import org.webframe.core.exception.ServiceException;
 import org.webframe.core.exception.entity.EntityNotExistException;
 import org.webframe.core.exception.entity.EntityNullException;
 import org.webframe.core.module.testUser.TTestUser;
-import org.webframe.core.util.DateHelper;
+import org.webframe.core.util.DateUtils;
 import org.webframe.test.BaseSpringTests;
 
 /**
@@ -46,7 +46,7 @@ public class BaseServiceTest extends BaseSpringTests {
 		testUser.setName(testUserName);
 		testUser.setPassword("password");
 		testUser.setEnabled(true);
-		testUser.setCreateTime(DateHelper.getStandTime());
+		testUser.setCreateTime(DateUtils.getStandTime());
 		baseService.save(testUser);
 		userMap.put(testUser.getId(), testUser);
 	}
@@ -68,7 +68,7 @@ public class BaseServiceTest extends BaseSpringTests {
 		testUser.setName(testUserName);
 		testUser.setPassword("password");
 		testUser.setEnabled(true);
-		testUser.setCreateTime(DateHelper.getStandTime());
+		testUser.setCreateTime(DateUtils.getStandTime());
 		baseService.saveOrUpdate(testUser);
 		userMap.put(testUser.getId(), testUser);
 	}
@@ -85,7 +85,7 @@ public class BaseServiceTest extends BaseSpringTests {
 			assertTrue("业务对象为null，没有抛出EntityNullException异常！", e instanceof EntityNullException);
 		}
 		for (TTestUser testUser : userMap.values()) {
-			testUser.setModifyTime(DateHelper.getStandTime());
+			testUser.setModifyTime(DateUtils.getStandTime());
 			baseService.update(testUser);
 		}
 	}

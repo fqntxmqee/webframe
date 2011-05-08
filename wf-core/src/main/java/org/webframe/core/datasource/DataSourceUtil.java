@@ -48,16 +48,16 @@ public abstract class DataSourceUtil {
 			log.info("Execute DB DataSource with sql:");
 			while (tokenizer.hasMoreTokens()) {
 				String tokenSql = tokenizer.nextToken();
-				if ("".equals(tokenSql.trim())) {
-					continue;
-				}
 				log.info(tokenSql);
+				if ("".equals(tokenSql.trim())) continue;
+				Statement stat = null;
 				try {
-					Statement stat = conn.createStatement();
+					stat = conn.createStatement();
 					stat.execute(tokenSql);
-					stat.close();
 				} catch (SQLException e) {
 					throw new SQLException("execute sql error:" + e + " error sql:\n" + tokenSql + " cause:" + e);
+				} finally {
+					if (stat != null) stat.close();
 				}
 			}
 		} finally {

@@ -22,7 +22,7 @@ import org.hsqldb.lib.StringUtil;
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-6 下午09:35:46
  */
-public abstract class ReflectionUtils {
+public abstract class ReflectionUtils extends org.springframework.util.ReflectionUtils {
 
 	private final static Log	log	= LogFactory.getLog(ReflectionUtils.class);
 
@@ -97,6 +97,7 @@ public abstract class ReflectionUtils {
 				field.setAccessible(true);
 				return field;
 			} catch (NoSuchFieldException e) {// NOSONAR
+				e.printStackTrace();
 				// Field不在当前类定义,继续向上转型
 			}
 		}
@@ -130,6 +131,7 @@ public abstract class ReflectionUtils {
 				method.setAccessible(true);
 				return method;
 			} catch (NoSuchMethodException e) {// NOSONAR
+				e.printStackTrace();
 				// Method不在当前类定义,继续向上转型
 			}
 		}

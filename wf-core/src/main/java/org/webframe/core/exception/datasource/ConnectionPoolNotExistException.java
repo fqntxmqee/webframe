@@ -8,7 +8,7 @@ package org.webframe.core.exception.datasource;
  * @version $Id: ConnectionPoolNotExistException.java,v 1.1.2.1 2010/04/22 09:12:35 huangguoqing Exp
  *          $ Create: 2010-4-20 上午10:07:22
  */
-public class ConnectionPoolNotExistException extends Exception {
+public class ConnectionPoolNotExistException extends DataSourceException {
 
 	/**
 	 * 
