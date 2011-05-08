@@ -30,6 +30,8 @@ public abstract class ModulePluginUtils {
 
 	public static final String									DELIMITERS					= ",; \t\n";
 
+	protected static final String								PREFIX_CLASSPATH			= "classpath*:";
+
 	private static final String								CONFIG_FILE_NAME			= ".#modulePluginConfig";
 
 	private static Map<String, ModulePluginDriverInfo>	cacheDriverInfoMap		= new HashMap<String, ModulePluginDriverInfo>();
@@ -163,6 +165,7 @@ public abstract class ModulePluginUtils {
 				jarResourcePatternResolver = new JarResourcePatternResolver(driverInfo.jarResourceLoader);
 			} else {
 				jarResourcePatternResolver = new JarResourcePatternResolver(new DefaultResourceLoader());
+				pattern = PREFIX_CLASSPATH + pattern;
 			}
 			try {
 				return jarResourcePatternResolver.getResources(pattern);

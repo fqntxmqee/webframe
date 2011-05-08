@@ -31,11 +31,6 @@ public class JarResourcePatternResolver extends PathMatchingResourcePatternResol
 		if (getResourceLoader() instanceof JarResourceLoader) {
 			return findPathMatchingJarResources(locationPattern);
 		} else {
-			String rootDirPath = determineRootDir(locationPattern);
-			Resource[] rootDirResources = super.getResources(rootDirPath);
-			for (Resource rootDirResource : rootDirResources) {
-				rootDirResource = resolveRootDirResource(rootDirResource);
-			}
 			return super.getResources(locationPattern);
 		}
 	}
