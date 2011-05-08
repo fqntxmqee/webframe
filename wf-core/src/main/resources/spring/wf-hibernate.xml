@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- Hibernate SessionFactory -->
+	<bean id="sessionFactory" class="org.webframe.core.hibernate.WFSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="lobHandlers">
+			<map>
+				<!-- 提供大字段数据JDBC操作支持 非oracle数据库-->
+				<entry key="default">
+					<bean class="org.springframework.jdbc.support.lob.DefaultLobHandler" lazy-init="true"/>
+				</entry>
+				<!-- LobHandler for Oracle JDBC drivers -->
+				<entry key="oracle">
+					<bean class="org.springframework.jdbc.support.lob.OracleLobHandler" lazy-init="true">
+						<!-- NativeJdbcExtractor for the C3P0 connection pool above -->
+						<property name="nativeJdbcExtractor">
+							<bean class="org.springframework.jdbc.support.nativejdbc.C3P0NativeJdbcExtractor" lazy-init="true"/>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+		
+		<!-- 设置持久化的Class -->
+		<property name="annotatedClasses">
+			<list>
+			</list>
+		</property>
+		
+		<property name="packagesToScan">
+			<list>
+			</list>
+		</property>
+		
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.use_sql_comments">${hibernate.use_sql_comments}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+				<prop key="hibernate.jdbc.use_scrollable_resultset">${hibernate.jdbc.use_scrollable_resultset}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
+				<!--<prop key="hibernate.cache.configurationResourceName">ehcache.xml</prop>-->
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.search.default.indexBase">${hibernate.search.indexBase}</prop>
+				<prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
+</beans>

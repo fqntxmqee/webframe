@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+	<!-- ========================= GENERAL DEFINITIONS ========================= -->
+
+	<!-- Configurer that replaces ${...} placeholders with values from a properties file -->
+	<!-- (in this case, JDBC-related settings for the dataSource definition below) 
+	<context:property-placeholder location="classpath:cms.properties"/>
+	-->
+	<bean class="org.webframe.core.util.PropertyConfigurerUtils">
+		<property name="order" value="999" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="location" value="classpath:webframe.properties"/>
+	</bean>
+	
+	<bean id="dataSource" class="org.webframe.core.datasource.WFDataSource"  destroy-method="close">
+		<!-- 数据库类型 -->
+		<constructor-arg index="0" value="${connection.databasetype}"/>
+		<!-- 连接池类型 -->
+		<constructor-arg index="1" value="${connection.pooltype}"/>
+	</bean>
+
+	<!-- DriverManagerDataSource is a local DataSource that works in any environment.
+		<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.url}" p:username="${jdbc.username}"
+		p:password="${jdbc.password}" />
+	-->
+
+	<!-- JNDI DataSource for JEE environments -->
+	<!--
+		<jee:jndi-lookup id="dataSource" jndi-name="${jdbc.jndi}" />
+	-->
+</beans>

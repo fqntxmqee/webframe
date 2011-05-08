@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd ">
+
+	<!-- 事务处理 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+		p:sessionFactory-ref="sessionFactory" />
+
+	<!--
+		the transactional advice (what 'happens'; see the <aop:advisor/> bean
+		below)
+		事物传播属性propagation：
+		- REQUIRED			Spring的默认的事务传播行为。必须在事务内执行，如果当前存在事务就加入当前事务，
+							如果 当前没有事务，就创建一个新的事务
+		- SUPPORTS			支持当前的事务，如果当前没有事务，可以以非事务方式执行
+		- MANDATORY			必须在当前事务内执行，如果当前没有事务，就直接抛出异常
+		- REQUIRES_NEW 	总是新建一个事务，如果当前存在事务，就把当前事务挂起，直到新事务执行完毕
+		- NOT_SUPPORTED	不能在事务环境下执行，如果当前存在事务，就把当前事务挂起
+		- NEVER				不能在事务环境下执行，如果当前存在事务，就直接抛出异常
+		- NESTED				必须在事务内执行，如果当前存在事务，则在嵌套事务内执行；如果当前没有事务，则执行与
+							PROPAGATION_REQUIRED类似的操作，就是创建一个新的事务
+	-->
+	<tx:advice id="defaultTxAdvice" transaction-manager="transactionManager">
+		<!-- the transactional semantics... -->
+		<tx:attributes>
+			<!--
+				methods starting with 'save', 'update' or 'remove' use the default
+				transaction settings
+				rollback-for和no-rollback-for对RuntimeException异常的子类无效，默认
+				RuntimeException异常的子类都会回滚
+			-->
+			<tx:method name="save*" isolation="DEFAULT" propagation="REQUIRED"/>
+			<tx:method name="create*" isolation="DEFAULT" propagation="REQUIRED"/>
+			<tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED"/>
+			<tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED"/>
+			<tx:method name="add*" isolation="DEFAULT" propagation="REQUIRED"/>
+			<!-- other methods are set to read only -->
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!--
+		ensure that the above transactional advice runs for any execution of
+		an operation defined by the FooService interface
+	-->
+	<aop:config proxy-target-class="true">
+		<aop:advisor advice-ref="defaultTxAdvice" pointcut="execution(* org.webframe.core.service..*Service.*(..))" />
+	</aop:config>
+</beans>
