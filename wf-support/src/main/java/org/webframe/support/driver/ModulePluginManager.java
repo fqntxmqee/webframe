@@ -24,6 +24,7 @@ import sun.security.action.GetPropertyAction;
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-3-18 下午06:46:28
  */
+@SuppressWarnings("unchecked")
 public final class ModulePluginManager {
 
 	private static boolean									initialized		= false;
@@ -40,7 +41,6 @@ public final class ModulePluginManager {
 	 * @param driver 模块插件驱动实现类
 	 * @author 黄国庆 2011-4-2 上午11:21:38
 	 */
-	@SuppressWarnings("unchecked")
 	public static synchronized void registerDriver(ModulePluginDriver driver) {
 		if (!initialized) {
 			initialize();
@@ -90,7 +90,6 @@ public final class ModulePluginManager {
 		SystemLogUtils.println("ModulePluginManager initialized");
 	}
 
-	@SuppressWarnings("unchecked")
 	private static ModulePluginDriverInfo initDriverInfo(ModulePluginDriver driver) {
 		ModulePluginDriverInfo mpdi = new ModulePluginDriverInfo();
 		mpdi.driver = driver;
@@ -156,14 +155,11 @@ public final class ModulePluginManager {
 	}
 }
 
+@SuppressWarnings("unchecked")
 class DriverService implements PrivilegedAction<ModulePluginDriver> {
 
 	Iterator<ModulePluginDriver>	ps	= null;
 
-	public DriverService() {
-	}
-
-	@SuppressWarnings("unchecked")
 	public ModulePluginDriver run() {
 		ps = Service.providers(ModulePluginDriver.class);
 		try {
@@ -171,6 +167,7 @@ class DriverService implements PrivilegedAction<ModulePluginDriver> {
 				ps.next();
 			}
 		} catch (Throwable t) {
+			t.printStackTrace();
 		}
 		return null;
 	}
