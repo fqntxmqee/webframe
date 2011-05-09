@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+	<bean id="abstractHibernate30Adapter" abstract="true" class="net.mlw.vlh.adapter.hibernate3.HibernateAdapter">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="defaultSortColumn" value="id"/>
+		<property name="defaultSortDirection" value="${vlh.defaultSortDirection}"/>
+		<property name="defaultNumberPerPage" value="${vlh.defaultNumberPerPage}"/>
+		<property name="defaultFocusPropertyObjectAlias" value="${vlh.defaultFocusPropertyObjectAlias}"/>
+		<property name="maxRowsForFocus" value="${vlh.maxRowsForFocus}"/>
+		<property name="removeEmptyStrings" value="${vlh.removeEmptyStrings}"/>
+	</bean>
+	
+	<bean class="com.berheley.wf.extend.valuelist.ValueListAdapterManager">
+		<property name="order" value="0"/>
+		<property name="appended">
+			<map>
+				<!--
+				<entry key="menuListHqlAdapter">
+					<bean parent="abstractHibernate30Adapter">
+						<property name="defaultSortColumn" value="createTime"/>
+						<property name="hql">
+							<value>
+								FROM TMenu
+								WHERE 1=1
+								 /~sortColumn: ORDER BY [sortColumn] [sortDirection] ~/ 
+							</value>
+						</property>
+					</bean>
+				</entry>
+				-->
+			</map>
+		</property>
+	</bean>
+</beans>

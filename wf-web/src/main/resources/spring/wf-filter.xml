@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="webframeFilterContext" class="com.berheley.wf.web.filter.WebFrameFilterContext"/>
+
+	<bean class="com.berheley.wf.web.filter.WebFrameFilterManager">
+		<property name="order" value="1"/>
+		<!-- beforeSecurity -->
+		<property name="propertyName" value="beforeSecurity"/>
+		<property name="appended">
+			<list>
+				<!-- 自定义javax.servlet.Filter
+				<bean class="com.berheley.wf.web.filter.BeforeSecurityFilter"/>
+				 -->
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="com.berheley.wf.web.filter.WebFrameFilterManager">
+		<property name="order" value="1"/>
+		<!-- afterSecurity -->
+		<property name="propertyName" value="afterSecurity"/>
+		<property name="appended">
+			<list>
+				<!-- 自定义javax.servlet.Filter
+				<bean class="com.berheley.wf.web.filter.AfterSecurityFilter"/>
+				 -->
+			</list>
+		</property>
+	</bean>
+</beans>
