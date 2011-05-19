@@ -2,8 +2,8 @@
 package org.webframe.support.driver;
 
 /**
- * 提供模块插件实现类的默认位置配置标准，例如：模块插件实现类com.berheley.wf.core.CoreModulePluginDriver，
- * 我们的Test模块的包路径为com.berheley.wf.core.test，该包中直接包括model Bean和freemarker模板，
+ * 提供模块插件实现类的默认位置配置标准，例如：模块插件实现类org.webframe.core.CoreModulePluginDriver，
+ * 我们的Test模块的包路径为org.webframe.test，该包中直接包括model Bean和freemarker模板，
  * 那么CoreModulePluginDriver实现AbstractModulePluginDriver抽象类后，就不需要重新任何方法，只需添加静态块
  * 注册该CoreModulePluginDriver实例
  * 

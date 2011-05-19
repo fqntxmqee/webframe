@@ -15,8 +15,7 @@ public abstract class AbstractModulePluginLoader implements ModulePluginLoader {
 	 * 通过给定的模块插件驱动类全路径数组，加载模块插件驱动
 	 * 
 	 * @param drivers 模块插件驱动类全路径数组，例如： <pre> String[] drivers = {
-	 *           "com.berheley.wf.base.BaseModulePluginDriver",
-	 *           "com.berheley.wf.module.CommonModulePluginDriver"}; </pre>
+	 *           "org.webframe.core.CoreModulePluginDriver"}; </pre>
 	 * @exception DriverNotExistException
 	 * @author 黄国庆 2011-4-5 下午02:24:34
 	 */
