@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author <a href="mailto:guoqing.huang@berheley.com">huangguoqing</a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">huangguoqing</a>
  * @version $Id: BeanPropertyMapAppender.java,v 1.1.2.1 2010/04/23 07:57:54 huangguoqing Exp $
  *          Create: 2010-4-23 下午03:56:02
  */

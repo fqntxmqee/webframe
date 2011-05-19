@@ -25,7 +25,7 @@ import org.webframe.support.util.SystemLogUtils;
 /**
  * 初始化模块插件包中的web资源，如果模块插件包中的资源是最新的，则不需要更新
  * 
- * @author <a href="mailto:guoqing.huang@berheley.com">黄国庆 </a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-6 上午09:49:03
  */
 public class WebSourcesUtils extends ModulePluginUtils {

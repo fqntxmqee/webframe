@@ -8,7 +8,7 @@ import org.springframework.context.support.GenericApplicationContext;
 /**
  * 提供根据spring注入bean的name，获取该bean对象
  * 
- * @author <a href="mailto:guoqing.huang@berheley.com">黄国庆</a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆</a>
  * @version $Id: ServiceHelper.java,v 1.1.2.1.8.2 2010/08/06 08:46:31 huangguoqing Exp $ Create:
  *          2008-10-17 下午05:30:24
  */

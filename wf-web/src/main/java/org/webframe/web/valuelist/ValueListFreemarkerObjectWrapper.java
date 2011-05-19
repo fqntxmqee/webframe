@@ -9,7 +9,7 @@ import freemarker.template.TemplateModelException;
 /**
  * 用于freemarker模板解析时的对象包装类
  * 
- * @author <a href="mailto:guoqing.huang@berheley.com">huangguoqing</a>
+ * @author <a href="mailto:guoqing.huang@foxmail.com">huangguoqing</a>
  * @version $Id: codetemplates.xml,v 1.3 2009/05/05 02:30:07 huangguoqing Exp $ Create: 2011-1-19
  *          下午03:57:08
  */
