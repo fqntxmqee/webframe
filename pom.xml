@@ -30,6 +30,28 @@
 	
 	<dependencyManagement>
 		<dependencies>
+			<!-- 子模块 -->
+			<dependency>
+				<groupId>org.webframe</groupId>
+				<artifactId>wf-support</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.webframe</groupId>
+				<artifactId>wf-test</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.webframe</groupId>
+				<artifactId>wf-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.webframe</groupId>
+				<artifactId>wf-web</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		
 			<dependency>
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
@@ -43,6 +65,16 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>

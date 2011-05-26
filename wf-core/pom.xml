@@ -26,12 +26,10 @@
 		<dependency>
 			<groupId>org.webframe</groupId>
 			<artifactId>wf-support</artifactId>
-			<version>${parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webframe</groupId>
 			<artifactId>wf-test</artifactId>
-			<version>${parent.version}</version>
 			<scope>test</scope>
 		</dependency>
 	

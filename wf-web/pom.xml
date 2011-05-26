@@ -17,7 +17,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
-		<spring.version>3.0.5.RELEASE</spring.version>
 		<tomcat.version>6.0.16</tomcat.version>
 	</properties>
 	
@@ -26,12 +25,10 @@
 		<dependency>
 			<groupId>org.webframe</groupId>
 			<artifactId>wf-core</artifactId>
-			<version>${parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webframe</groupId>
 			<artifactId>wf-test</artifactId>
-			<version>${parent.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- spring begin -->
@@ -42,7 +39,10 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 		<!-- spring end -->
 
@@ -128,6 +128,8 @@
 			<version>${tomcat.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
+
 	</dependencies>
 	
 	<build>
