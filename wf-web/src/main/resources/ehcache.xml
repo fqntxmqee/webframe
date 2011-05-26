@@ -39,21 +39,4 @@
 			memoryStoreEvictionPolicy="LRU"
 			/>
 
-	<cache name="cacheSecurity"
-			 maxElementsInMemory="1"
-			 eternal="false"
-			 overflowToDisk="true"
-			 timeToIdleSeconds="300"
-			 timeToLiveSeconds="600"
-			 memoryStoreEvictionPolicy="FIFO"
-			/>
-	<cache name="webresdbCache"
-			 maxElementsInMemory="3000"
-			 eternal="false"
-			 overflowToDisk="true"
-			 timeToIdleSeconds="120"
-			 timeToLiveSeconds="120"
-			 memoryStoreEvictionPolicy="FIFO"
-			/>
-
 </ehcache>

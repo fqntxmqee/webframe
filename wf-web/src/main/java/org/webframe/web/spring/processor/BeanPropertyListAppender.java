@@ -8,14 +8,11 @@ import java.util.List;
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-21 下午02:14:17
  */
+@SuppressWarnings("unchecked")
 public class BeanPropertyListAppender extends AbstractBeanPropertyProcessor {
 
 	private List<Object>	appended;
 
-	/* (non-Javadoc)
-	 * @see com.berheley.wf.extend.spring.AbstractBeanPropertyProcessor#getProcessedPropertyValue(java.lang.Object)
-	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Object getProcessedPropertyValue(Object originalValue) {
 		List<Object> newValue;

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
  * 类功能描述：
  * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">huangguoqing</a>
- * @version $Id: BerheleyListableBeanFactory.java,v 1.1.2.1 2010/04/22 07:46:09 huangguoqing Exp $
+ * @version $Id: WFListableBeanFactory.java,v 1.1.2.1 2010/04/22 07:46:09 huangguoqing Exp $
  *          Create: 2010-4-22 下午01:19:43
  */
 public class WFListableBeanFactory extends DefaultListableBeanFactory {

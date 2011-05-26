@@ -6,10 +6,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValue;
 
 /**
- * 类功能描述：
  * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">huangguoqing</a>
- * @version $Id: BerheleyBeanWrapper.java,v 1.1.2.2 2010/05/25 01:36:56 huangguoqing Exp $ Create:
+ * @version $Id: WFBeanWrapper.java,v 1.1.2.2 2010/05/25 01:36:56 huangguoqing Exp $ Create:
  *          2010-4-22 下午01:22:39
  */
 public class WFBeanWrapper extends BeanWrapperImpl {
