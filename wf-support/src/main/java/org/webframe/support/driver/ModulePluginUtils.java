@@ -30,7 +30,7 @@ public abstract class ModulePluginUtils {
 
 	public static final String									DELIMITERS					= ",; \t\n";
 
-	protected static final String								PREFIX_CLASSPATH			= "classpath*:";
+	protected static final String								PREFIX_CLASSPATH			= "classpath:";
 
 	private static final String								CONFIG_FILE_NAME			= ".#modulePluginConfig";
 
@@ -167,11 +167,7 @@ public abstract class ModulePluginUtils {
 				jarResourcePatternResolver = new JarResourcePatternResolver(new DefaultResourceLoader());
 				pattern = PREFIX_CLASSPATH + pattern;
 			}
-			try {
-				return jarResourcePatternResolver.getResources(pattern);
-			} finally {
-				jarResourcePatternResolver.close();
-			}
+			return jarResourcePatternResolver.getResources(pattern);
 		} catch (IOException e) {
 			return null;
 		}

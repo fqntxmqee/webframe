@@ -101,7 +101,6 @@ public final class ModulePluginManager {
 				JarFile jarFile = mpdi.jarResourceLoader.getJarURLConnection().getJarFile();
 				mpdi.lastModifyTime = mpdi.jarResourceLoader.getJarURLConnection().getLastModified();
 				String name = jarFile.getName();
-				jarFile.close();
 				mpdi.jarName = name.substring(name.lastIndexOf(File.separator) + 1);
 				mpdi.inJar = true;
 			} catch (Exception e) {

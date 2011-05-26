@@ -50,10 +50,4 @@ public class JarResourcePatternResolver extends PathMatchingResourcePatternResol
 		}
 		return result.toArray(new Resource[result.size()]);
 	}
-
-	public void close() throws IOException {
-		if (getResourceLoader() instanceof JarResourceLoader) {
-			((JarResourceLoader) getResourceLoader()).close();
-		}
-	}
 }
