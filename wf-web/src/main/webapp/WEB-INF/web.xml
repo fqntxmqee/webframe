@@ -68,47 +68,4 @@
 	</filter-mapping>
 	<!-- ************************************   过滤器 映射 end   ************************************ -->
 	
-	<welcome-file-list>
-		<welcome-file>/index.jsp</welcome-file>
-	</welcome-file-list>
-	<error-page>
-		<error-code>403</error-code>
-		<location>/jsp/errorPage/403.jsp</location>
-	</error-page>
-	<error-page>
-		<error-code>404</error-code>
-		<location>/jsp/errorPage/404.jsp</location>
-	</error-page>
-	<error-page>
-		<error-code>500</error-code>
-		<location>/jsp/errorPage/500.jsp</location>
-	</error-page>
-
-
-	<jsp-config>
-		<taglib>
-			<taglib-uri>c.tld</taglib-uri>
-			<taglib-location>/WEB-INF/tld/c.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>fn.tld</taglib-uri>
-			<taglib-location>/WEB-INF/tld/fn.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>fmt.tld</taglib-uri>
-			<taglib-location>/WEB-INF/tld/fmt.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>valuelist.tld</taglib-uri>
-			<taglib-location>/WEB-INF/tld/valuelist.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>spring.tld</taglib-uri>
-			<taglib-location>/WEB-INF/tld/spring.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>spring-form.tld</taglib-uri>
-			<taglib-location>/WEB-INF/tld/spring-form.tld</taglib-location>
-		</taglib>
-	</jsp-config>
 </web-app>
