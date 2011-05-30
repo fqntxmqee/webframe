@@ -9,10 +9,10 @@ import org.webframe.web.spring.processor.BeanPropertyListAppender;
  */
 public class WFFilterManager extends BeanPropertyListAppender {
 
-	private static final String	webframeFilterContextBeanName	= "webframeFilterContext";
+	public static final String	BEAN_NAME_WF_FILTER_CONTEXT	= "wfFilterContext";
 
 	@Override
 	public String getBeanName() {
-		return super.getBeanName() == null ? webframeFilterContextBeanName : super.getBeanName();
+		return super.getBeanName() == null ? BEAN_NAME_WF_FILTER_CONTEXT : super.getBeanName();
 	}
 }

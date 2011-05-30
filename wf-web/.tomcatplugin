@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tomcatProjectProperties>
+    <rootDir>/src/main/webapp</rootDir>
+    <exportSource>false</exportSource>
+    <reloadable>false</reloadable>
+    <redirectLogger>false</redirectLogger>
+    <updateXml>true</updateXml>
+    <warLocation></warLocation>
+    <extraInfo></extraInfo>
+    <webPath></webPath>
+    <webClassPathEntries>
+        <webClassPathEntry>/wf-web/target/classes</webClassPathEntry>
+        <webClassPathEntry>/wf-web/target/test-classes</webClassPathEntry>
+        <webClassPathEntry>org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER</webClassPathEntry>
+    </webClassPathEntries>
+</tomcatProjectProperties>

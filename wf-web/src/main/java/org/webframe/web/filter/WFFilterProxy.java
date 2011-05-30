@@ -20,13 +20,11 @@ import org.springframework.web.filter.DelegatingFilterProxy;
  */
 public class WFFilterProxy extends DelegatingFilterProxy {
 
-	private static final String	BEAN_NAME_WEBFRAME_FILTER_CONTEXT		= "webframeFilterContext";
-
 	private static final String	BEAN_NAME_SPRING_SECURITY_FILTER_CHAIN	= "springSecurityFilterChain";
 
 	private final Object				delegateMonitor								= new Object();
 
-	WFFilterContext					webframeFilterContext;
+	WFFilterContext					wfFilterContext;
 
 	boolean								hasSecurity										= true;
 
@@ -37,20 +35,20 @@ public class WFFilterProxy extends DelegatingFilterProxy {
 			setTargetBeanName(BEAN_NAME_SPRING_SECURITY_FILTER_CHAIN);
 		}
 		synchronized (this.delegateMonitor) {
-			initWebFrameFilterContext();
+			initWFFilterContext();
 		}
 		try {
 			super.initFilterBean();
 		} catch (BeansException e) {
 			hasSecurity = false;
-			logger.error(getTargetBeanName() + "没有注入，系统没有Security！");
+			logger.warn(getTargetBeanName() + "没有注入，系统没有Security！");
 		}
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
 				throws ServletException, IOException {
-		List<Filter> filters = webframeFilterContext.getBeforeSecurity();
+		List<Filter> filters = wfFilterContext.getBeforeSecurity();
 		new WFFilterChain(filterChain, filters).doFilter(request, response, this);
 	}
 
@@ -61,18 +59,18 @@ public class WFFilterProxy extends DelegatingFilterProxy {
 
 	public FilterChain afterSecurityFilterChain(ServletRequest request, ServletResponse response, FilterChain filterChain)
 				throws ServletException, IOException {
-		List<Filter> filters = webframeFilterContext.getAfterSecurity();
+		List<Filter> filters = wfFilterContext.getAfterSecurity();
 		return new WFFilterChain(filterChain, filters);
 	}
 
-	protected void initWebFrameFilterContext() {
+	protected void initWFFilterContext() {
 		WebApplicationContext wac = findWebApplicationContext();
-		webframeFilterContext = wac.getBean(BEAN_NAME_WEBFRAME_FILTER_CONTEXT, WFFilterContext.class);
+		wfFilterContext = wac.getBean(WFFilterManager.BEAN_NAME_WF_FILTER_CONTEXT, WFFilterContext.class);
 	}
 
 	@Override
 	public void destroy() {
-		webframeFilterContext.destroy();
+		wfFilterContext.destroy();
 		super.destroy();
 	}
 }
