@@ -19,6 +19,7 @@
 				<!-- 参数编码Filter -->
 				<bean class="org.springframework.web.filter.CharacterEncodingFilter">
 					<property name="encoding" value="UTF-8"/>
+					
 					<!-- 是否设置response 编码，默认为false -->
 					<property name="forceEncoding" value="true"/>
 				</bean>
