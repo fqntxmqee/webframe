@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts-config PUBLIC
+		"-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+		"http://struts.apache.org/dtds/struts-config_1_2.dtd">
+		
+<!-- 
+	struts-config 多配置文件公共配置文件，包括global-exceptions、global-forwards、
+	controller、message-resources、plug-in等配置。
+-->
+
+<struts-config>
+
+	<form-beans>
+		<form-bean name="baseForm" type="org.webframe.struts.web.BaseForm"/>
+	</form-beans>
+	
+	<!-- ================================= Global Exception Definitions -->
+	<global-exceptions>
+
+	</global-exceptions>
+
+	<!-- =================================== Global Forward Definitions -->
+	<global-forwards>
+		<forward name="global_msg" path="/global_message.jsp"></forward>
+	</global-forwards>
+
+	<!-- 进度条的监听设置
+	<controller>
+		<set-property property="processorClass" value="org.springframework.web.struts.DelegatingRequestProcessor"/>
+  		<set-property property="multipartClass" value="org.apache.struts.upload.MultipartRequestHandler"/>
+      <set-property property="maxFileSize" value="1G" />
+      <set-property property="memFileSize" value="256K" />
+	</controller>
+	-->
+	<!-- ================================ Message Resources Definitions -->
+
+	<message-resources parameter="i18n.messages"/>
+
+	<!-- =================================================== Validator plugin 
+	<plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+		<set-property property="pathnames"
+			value="/WEB-INF/struts/validator-rules.xml,
+				   /WEB-INF/struts/validation.xml " />
+	</plug-in>-->
+</struts-config>
