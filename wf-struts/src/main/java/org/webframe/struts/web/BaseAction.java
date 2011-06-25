@@ -12,12 +12,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
 import org.apache.struts.actions.DispatchAction;
 import org.springframework.web.util.WebUtils;
 import org.webframe.core.exception.ServiceException;
@@ -41,63 +38,6 @@ public class BaseAction extends DispatchAction {
 
 	protected final static String	FORWARD_FAIL		= "fail";
 
-	// 消息参数
-	protected ActionMessages		errors;
-
-	protected ActionMessages		messages;
-
-	protected void addErrors(String key) {
-		this.addErrors(key, null, null);
-	}
-
-	/**
-	 * @param key Message key for this error message
-	 * @param value First replacement value
-	 */
-	protected void addErrors(String key, String value) {
-		this.addErrors(key, value, null);
-	}
-
-	/**
-	 * @param key Message key for this error message
-	 * @param value First replacement value
-	 * @param property Property name (or ActionMessages.GLOBAL_MESSAGE)
-	 */
-	protected void addErrors(String key, String value, String property) {
-		errors = (errors == null) ? new ActionMessages() : errors;
-		if (property == null) {
-			errors.add(value, (value == null) ? new ActionMessage(key) : new ActionMessage(key, value));
-		} else {
-			errors.add(property, (value == null) ? new ActionMessage(key) : new ActionMessage(key, value));
-		}
-	}
-
-	protected void addMessages(String key) {
-		this.addMessages(key, null, null);
-	}
-
-	/**
-	 * @param key Message key for this message
-	 * @param value First replacement value
-	 */
-	protected void addMessages(String key, String value) {
-		this.addMessages(key, value, null);
-	}
-
-	/**
-	 * @param key Message key for this message
-	 * @param value First replacement value
-	 * @param property Property name (or ActionMessages.GLOBAL_MESSAGE)
-	 */
-	protected void addMessages(String key, String value, String property) {
-		messages = (messages == null) ? new ActionMessages() : messages;
-		if (property == null) {
-			messages.add(value, (value == null) ? new ActionMessage(key) : new ActionMessage(key, value));
-		} else {
-			messages.add(property, (value == null) ? new ActionMessage(key) : new ActionMessage(key, value));
-		}
-	}
-
 	@Override
 	protected String getParameter(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 				throws Exception {
@@ -116,77 +56,53 @@ public class BaseAction extends DispatchAction {
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest req, HttpServletResponse res)
 				throws UnsupportedEncodingException {
-		// 将参数初始化
-		errors = new ActionMessages();
-		messages = new ActionMessages();
-		ActionForward actionForward = new ActionForward();
+		ActionForward actionForward;
 		HttpSession session = req.getSession();
 		try {
 			// 执行实际的Action
 			actionForward = super.execute(mapping, form, req, res);
 			// 显示请求的相关信息，便于开发和测试
 			showRequestInfo(mapping, req, actionForward);
+			// 保存令牌，防止重复提交
+			saveToken(req);
 			if (actionForward == null) {
 				// ajax申请返回
-				if (req.getAttribute(FORWARD_AJAX) != null && req.getAttribute(FORWARD_AJAX).toString().equals("true")) {
+				if (req.getAttribute(FORWARD_AJAX) != null) {
 					return null;
 				}
 				// 如果返回的actionForward对象为空，表示是重复提交
 				actionForward = (ActionForward) session.getAttribute("forward");
-				errors = (ActionMessages) session.getAttribute("errors");
-				messages = (ActionMessages) session.getAttribute("messages");
-			} else {
-				// add by wangnan 解决forward转发请求时的消息问题
-				if (actionForward.getPath().indexOf(".bc?" + ACTION_PARAMETER + "=") != -1) {
-					req.setAttribute("ACTION_FORWARD_DO", "Y");
-				} else {
-					if ("Y".equals(req.getAttribute("ACTION_FORWARD_DO"))) {
-						errors = (ActionMessages) req.getAttribute(Globals.ERROR_KEY);
-						messages = (ActionMessages) req.getAttribute(Globals.MESSAGE_KEY);
-					}
-				}
-				saveToken(req);
 			}
 		} catch (ServiceException e) {
 			// 需要抛出给用户的异常
 			actionForward = mapping.findForward(FORWARD_FAIL);
-			// ValidateUtil.checkBusinessException(errors, e.getKeyValue(), e.getErrorCode());
-			if (actionForward.getPath().indexOf(".wf?" + ACTION_PARAMETER + "=") != -1) {
-				req.setAttribute("ACTION_FORWARD_DO", "Y");
-			}
 		} catch (NoSuchMethodException e) {
 			// Action中没有相应的方法
 			actionForward = (ActionForward) session.getAttribute("forward");
-			errors = (ActionMessages) session.getAttribute("errors");
-			messages = (ActionMessages) session.getAttribute("messages");
 		} catch (Exception e) {
 			// 不需要显示原因的异常
 			actionForward = mapping.findForward(FORWARD_FAIL);
-			// ValidateUtil.checkSysException(errors);
 			log.error(e);
 			e.printStackTrace();
 		}
 		// 保存状态，如果重复提交则给出这些信息
 		session.setAttribute("forward", actionForward);
-		session.setAttribute("messages", messages);
-		session.setAttribute("errors", errors);
-		// 返回
-		saveErrors(req, errors);
-		saveMessages(req, messages);
 		return actionForward;
 	}
 
 	/**
-	 * @function:显示请求的相关信息
+	 * 显示请求的相关信息
+	 * 
 	 * @param mapping
 	 * @param req
 	 * @param actionForward
-	 * @author: zhaoxiaoqiang 2010-4-23 上午11:00:29
+	 * @throws Exception
 	 */
-	private void showRequestInfo(ActionMapping mapping, HttpServletRequest req, ActionForward actionForward) {
+	private void showRequestInfo(ActionMapping mapping, HttpServletRequest req, ActionForward actionForward)
+				throws Exception {
 		if (log.isInfoEnabled()) {
 			String uri = req.getRequestURI();
-			String method = req.getParameter("method");
+			String method = req.getParameter(getParameter(mapping, null, req, null));
 			String path = "ajax请求！";
 			if (null != actionForward && null != actionForward.getPath()) {
 				path = actionForward.getPath();
@@ -220,12 +136,12 @@ public class BaseAction extends DispatchAction {
 	}
 
 	/**
+	 * ajax返回json数据
+	 * 
 	 * @param request
 	 * @param response
 	 * @param resStr 例如: "{message:\"消息内容！\", state:\"error\"}"
 	 * @throws IOException
-	 * @function: ajax返回json数据
-	 * @author: 黄国庆 2008-7-16 上午11:10:26
 	 */
 	protected ActionForward ajaxReturnJSON(HttpServletRequest request, HttpServletResponse response, String resStr)
 				throws IOException {
@@ -233,40 +149,26 @@ public class BaseAction extends DispatchAction {
 	}
 
 	/**
+	 * ajax返回xml数据
+	 * 
 	 * @param request
 	 * @param response
 	 * @param resStr
 	 * @throws IOException
-	 * @function: ajax返回xml数据
-	 * @author: 黄国庆 2008-7-16 上午11:10:26
 	 */
 	protected ActionForward ajaxReturnXML(HttpServletRequest request, HttpServletResponse response, String resStr)
 				throws IOException {
 		return this.ajaxReturn(request, response, resStr, true);
 	}
 
-	@Override
-	protected void saveErrors(HttpServletRequest request, ActionMessages errors) {
-		if (errors != null && !errors.isEmpty()) {
-			super.saveErrors(request, errors);
-		}
-	}
-
-	@Override
-	protected void saveMessages(HttpServletRequest request, ActionMessages messages) {
-		if (messages != null && !messages.isEmpty()) {
-			super.saveMessages(request, messages);
-		}
-	}
-
 	/**
+	 * ajax返回xml数据
+	 * 
 	 * @param request
 	 * @param response
 	 * @param resStr
 	 * @param isXml ajax返回类型, true表示xml
 	 * @throws IOException
-	 * @function: ajax返回xml数据
-	 * @author: 黄国庆 2008-7-16 上午11:10:26
 	 */
 	private ActionForward ajaxReturn(HttpServletRequest request, HttpServletResponse response, String resStr, boolean isXml)
 				throws IOException {
