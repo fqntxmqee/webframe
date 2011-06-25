@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import net.mlw.vlh.ValueListAdapter;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.webframe.core.model.BaseEntity;
@@ -14,6 +12,7 @@ import org.webframe.core.model.form.ViewElement;
 import org.webframe.core.model.form.ViewElement.QueryConditionType;
 import org.webframe.core.util.BeanUtils;
 import org.webframe.core.util.DataSourceUtils;
+import org.webframe.web.page.ValueListAdapter;
 import org.webframe.web.spring.ServiceHelper;
 
 /**

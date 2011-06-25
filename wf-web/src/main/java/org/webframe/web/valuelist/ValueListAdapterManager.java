@@ -3,7 +3,7 @@ package org.webframe.web.valuelist;
 
 import java.util.Map;
 
-import net.mlw.vlh.ValueListAdapter;
+import org.webframe.web.page.ValueListAdapter;
 
 import org.webframe.web.spring.processor.BeanPropertyMapAppender;
 

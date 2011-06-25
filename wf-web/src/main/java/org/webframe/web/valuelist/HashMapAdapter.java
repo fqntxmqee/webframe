@@ -11,14 +11,13 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import net.mlw.vlh.ValueList;
-import net.mlw.vlh.ValueListInfo;
-import net.mlw.vlh.adapter.jdbc.AbstractDynaJdbcAdapter;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.webframe.core.datasource.DataBaseType;
 import org.webframe.core.datasource.WFDataSource;
+import org.webframe.web.page.ValueList;
+import org.webframe.web.page.ValueListInfo;
+import org.webframe.web.page.adapter.jdbc.AbstractDynaJdbcAdapter;
 
 /**
  * 使用HashMap保存ResultSet中的每一行记录，其中key是该列的列名，value是值。<br/> <b>需要JDBC驱动实现支持ResultSetMetaData。</b><br/>
@@ -43,13 +42,13 @@ public class HashMapAdapter extends AbstractDynaJdbcAdapter {
 	}
 
 	/**
-	 * @see net.mlw.vlh.adapter.jdbc.AbstractJdbcAdapter#processResultSet(java.lang.String,
-	 *      java.sql.ResultSet, int, net.mlw.vlh.ValueListInfo)
+	 * @see org.webframe.web.page.adapter.jdbc.AbstractJdbcAdapter#processResultSet(java.lang.String,
+	 *      java.sql.ResultSet, int, org.webframe.web.page.ValueListInfo)
 	 */
 	@Override
-	public List<Map<String, ?>> processResultSet(String name, ResultSet result, int numberPerPage, ValueListInfo info)
+	public List<Object> processResultSet(String name, ResultSet result, int numberPerPage, ValueListInfo info)
 				throws SQLException {
-		List<Map<String, ?>> ret = new ArrayList<Map<String, ?>>(numberPerPage);
+		List<Object> ret = new ArrayList<Object>(numberPerPage);
 		ResultSetMetaData meta = result.getMetaData(); // 获取结果集meta
 		Map<String, Object> m;
 		int columnCount = meta.getColumnCount();

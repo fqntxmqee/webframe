@@ -12,10 +12,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.mlw.vlh.ValueList;
-import net.mlw.vlh.ValueListInfo;
-import net.mlw.vlh.web.ValueListRequestUtil;
-import net.mlw.vlh.web.mvc.ValueListHandlerHelper;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 
@@ -28,6 +24,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.webframe.core.model.BaseEntity;
 import org.webframe.core.util.BeanUtils;
 import org.webframe.core.util.PropertyConfigurerUtils;
+import org.webframe.web.page.ValueList;
+import org.webframe.web.page.ValueListInfo;
+import org.webframe.web.page.web.ValueListRequestUtil;
+import org.webframe.web.page.web.mvc.ValueListHandlerHelper;
 import org.webframe.web.spring.WFClassPathXmlApplicationContext;
 import org.webframe.web.valuelist.ValueListAdapterUtil;
 

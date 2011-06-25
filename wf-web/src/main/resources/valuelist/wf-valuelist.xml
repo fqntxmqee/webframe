@@ -11,12 +11,12 @@
 		<property name="location" value="classpath:valuelist.properties"/>
 	</bean>
 		
-	<bean id="csvDisplayProvider" class="net.mlw.vlh.web.tag.support.CsvDisplayProvider"/>
-	<bean id="excelDisplayProvider" class="net.mlw.vlh.web.tag.support.ExcelDisplayProvider"/>
+	<bean id="csvDisplayProvider" class="org.webframe.web.page.web.tag.support.CsvDisplayProvider"/>
+	<bean id="excelDisplayProvider" class="org.webframe.web.page.web.tag.support.ExcelDisplayProvider"/>
 
-	<bean id="microsoftLook" class="net.mlw.vlh.web.ValueListConfigBean">
+	<bean id="microsoftLook" class="org.webframe.web.page.web.ValueListConfigBean">
 		<property name="displayHelper">
-			<bean class="net.mlw.vlh.web.util.ImagesHomeDisplayHelper"/>
+			<bean class="org.webframe.web.page.web.util.ImagesHomeDisplayHelper"/>
 		</property>
 		<property name="messageSource">
 			<bean class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -25,7 +25,7 @@
 		</property>
 
 		<property name="linkEncoder">
-			<bean class="net.mlw.vlh.web.tag.support.DefaultLinkEncoder">
+			<bean class="org.webframe.web.page.web.tag.support.DefaultLinkEncoder">
 				<property name="encoding" value="${vlh.config.encoding}"/>
 			</bean>
 		</property>
@@ -35,7 +35,7 @@
 		<property name="displayProviders">
 			<map>
 				<entry key="html">
-					<bean class="net.mlw.vlh.web.tag.support.HtmlDisplayProvider">
+					<bean class="org.webframe.web.page.web.tag.support.HtmlDisplayProvider">
 						<property name="imageHome" value="${vlh.config.imageHome}"/>
 						<property name="usePadding" value="false"/>
 						<property name="useNoWrap" value="false"/>
@@ -48,9 +48,9 @@
 		</property>
 	</bean>
 
-	<bean id="valueListHandler" class="net.mlw.vlh.DefaultValueListHandlerImpl"/>
+	<bean id="valueListHandler" class="org.webframe.web.page.DefaultValueListHandlerImpl"/>
 
-	<bean id="valueListHelper" class="net.mlw.vlh.web.mvc.ValueListHandlerHelper">
+	<bean id="valueListHelper" class="org.webframe.web.page.web.mvc.ValueListHandlerHelper">
 		<property name="valueListHandler" ref="valueListHandler"/>
 	</bean>
 </beans>

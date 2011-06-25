@@ -1,7 +1,7 @@
 
 package org.webframe.web.valuelist;
 
-import net.mlw.vlh.ValueList;
+import org.webframe.web.page.ValueList;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
