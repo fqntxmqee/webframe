@@ -10,23 +10,12 @@
 	<artifactId>wf-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>wf-parent</name>
-	<description>Java Web Frame: wf-web</description>
+	<description>Java Web Frame: wf-parent</description>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<spring.version>3.0.5.RELEASE</spring.version>
-
-		<plugin.resources.version>2.4.2</plugin.resources.version>
-		<plugin.compiler.version>2.3.2</plugin.compiler.version>
-		<plugin.jar.version>2.3.1</plugin.jar.version>
-		<plugin.javadoc.version>2.7</plugin.javadoc.version>
-		<plugin.source.version>2.1.2</plugin.source.version>
-		<plugin.findbugs.version>2.0.1</plugin.findbugs.version>
-		<plugin.pmd.version>2.5</plugin.pmd.version>
-		<plugin.checkstyle.version>2.3</plugin.checkstyle.version>
-		<plugin.surefire.version>2.7.2</plugin.surefire.version>
-		<plugin.cobertura.version>2.4</plugin.cobertura.version>
 	</properties>
 	
 	<dependencyManagement>
@@ -60,6 +49,11 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>wf-struts</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>wf-web-springmvc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- 子模块 -->
