@@ -58,6 +58,28 @@
 		<filter-name>wfFilterChain</filter-name>
 		<filter-class>org.webframe.web.filter.WFFilterProxy</filter-class>
 	</filter>
+	
+	<filter>
+		<filter-name>RestUrlRewriteFilter</filter-name>
+		<filter-class>org.webframe.web.springmvc.filter.RestUrlRewriteFilter</filter-class>
+		<init-param>
+			<param-name>prefix</param-name>
+			<param-value>/static</param-value>
+		</init-param>
+		<init-param>
+			<param-name>excludeExtentions</param-name>
+			<param-value>jsp,jspx,ftl,json,xml</param-value>
+		</init-param>		
+	</filter>
+	
+	<!--
+		浏览器不支持put,delete等method,由该filter将/blog?_method=delete转换为标准的http
+		delete方法
+	-->
+	<filter>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
 	<!-- ************************************     过滤器 end     ************************************ -->
 	
 	
@@ -66,6 +88,65 @@
 		<filter-name>wfFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<servlet-name>SpringMVC</servlet-name>
+	</filter-mapping>
 	<!-- ************************************   过滤器 映射 end   ************************************ -->
+	
+	
+	<!-- ************************************   Servlet begin    ************************************ -->
+	<servlet>
+		<servlet-name>SpringMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextAttribute</param-name>
+			<param-value>org.springframework.web.context.WebApplicationContext.ROOT</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<!-- ************************************    Servlet end      ************************************ -->
+	
+	
+	<!-- ************************************  Servlet 映射begin  ************************************ -->
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/static/*</url-pattern>
+	</servlet-mapping>
 
+	<!-- 覆盖default servlet的/, SpringMVC servlet将处理原来处理静态资源的映射 -->   
+	<servlet-mapping>   
+	    <servlet-name>SpringMVC</servlet-name>   
+	    <url-pattern>/</url-pattern>   
+	</servlet-mapping>
+	<!-- ************************************   Servlet 映射end   ************************************ -->
+	
+	
+	<jsp-config>
+		<taglib>
+			<taglib-uri>c.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>fn.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tld/fn.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>fmt.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tld/fmt.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>valuelist.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tld/valuelist.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>spring.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tld/spring.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>spring-form.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tld/spring-form.tld</taglib-location>
+		</taglib>
+	</jsp-config>
 </web-app>
