@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd 
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean class="org.webframe.core.util.PropertyConfigurerUtils">
+		<property name="order" value="1" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="location" value="classpath:jta.properties"/>
+	</bean>
+	
+	<!-- 配置BaseDao, BaseService begin-->
+	<context:component-scan base-package="org.webframe.core.jta.dao"/>
+	<context:component-scan base-package="org.webframe.core.jta.service"/>
+	<!-- 配置BaseDao, BaseService end-->
+
+	<bean id="jtaDataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
+		<property name="uniqueResourceName" value="${jta.uniqueResourceName}"/>
+		<property name="xaDataSourceClassName" value="${jta.xaDataSourceClassName}"/>
+		<property name="xaProperties">
+			<props>
+				<prop key="user">${jta.user}</prop>
+				<prop key="password">${jta.password}</prop>
+				<prop key="URL">${jta.URL}</prop>
+			</props>
+		</property>
+		<property name="minPoolSize" value="${jta.minPoolSize}"/>
+		<property name="maxPoolSize" value="${jta.maxPoolSize}"/>
+		<property name="borrowConnectionTimeout" value="${jta.borrowConnectionTimeout}"/>
+		<property name="reapTimeout" value="${jta.reapTimeout}"/>
+		<property name="maxIdleTime" value="${jta.maxIdleTime}"/>
+		<property name="maintenanceInterval" value="${jta.maintenanceInterval}"/>
+	</bean>
+
+	<!-- Construct Atomikos UserTransactionManager, needed to configure Spring -->
+	<bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
+		init-method="init" destroy-method="close">
+		<!-- when close is called, should we force transactions to terminate or not? -->
+		<property name="forceShutdown" value="true"/>
+	</bean>
+
+	<!-- Also use Atomikos UserTransactionImp, needed to configure Spring -->
+	<bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+		<property name="transactionTimeout" value="300"/>
+	</bean>
+
+	<!-- Configure the Spring framework to use JTA transactions from Atomikos -->
+	<bean id="jtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+		<property name="transactionManager" ref="atomikosTransactionManager"/>
+		<property name="userTransaction" ref="atomikosUserTransaction"/>
+	</bean>
+
+	<!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below) -->
+	<tx:advice id="jtaTxAdvice" transaction-manager="jtaTransactionManager">
+		<!-- the transactional semantics... -->
+		<tx:attributes>
+			<!-- methods starting with 'save', 'update' or 'remove' use the default transaction settings -->
+			<tx:method name="jta*" rollback-for="org.webframe.core.jta.exception.JtaServiceException" />
+			<!-- other methods are set to read only -->
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- ensure that the above transactional advice runs for any execution of 
+		an operation defined by the FooService interface -->
+	<aop:config proxy-target-class="true">
+		<aop:advisor advice-ref="jtaTxAdvice" pointcut="execution(* org.webframe.core.jta.service..*Service.*(..))" />
+	</aop:config>
+</beans>
