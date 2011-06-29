@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.webframe.core.exception.ServiceException;
 import org.webframe.core.model.BaseEntity;
 import org.webframe.web.exception.WebFrameException;
 
@@ -61,11 +62,12 @@ public abstract class BaseRestController<T extends BaseEntity, PK extends Serial
 	 * @return
 	 * @throws WebFrameException
 	 * @author: 黄国庆 2011-1-22 上午11:58:48
+	 * @throws ServiceException
 	 */
 	@RequestMapping(method = {
 		RequestMethod.DELETE})
 	public abstract ModelAndView batchDelete(@RequestParam("ids") PK[] ids, HttpServletRequest request, HttpServletResponse response)
-				throws WebFrameException;
+				throws WebFrameException, ServiceException;
 
 	/**
 	 * 业务模块执行保存方法，访问连接为模块名称； HTTP方法一定为POST； 例如：/moduleName
@@ -75,12 +77,12 @@ public abstract class BaseRestController<T extends BaseEntity, PK extends Serial
 	 * @param model 业务模块
 	 * @return
 	 * @throws WebFrameException
-	 * @author: 黄国庆 2011-1-22 上午11:48:07
+	 * @throws ServiceException
 	 */
 	@RequestMapping(method = {
 		RequestMethod.POST})
 	public abstract ModelAndView create(HttpServletRequest request, HttpServletResponse response, T model)
-				throws WebFrameException;
+				throws WebFrameException, ServiceException;
 
 	/**
 	 * 业务模块执行删除方法，访问连接为模块名称加上主键id； HTTP方法一定为DELETE； 例如：/moduleName/ID值
@@ -90,13 +92,13 @@ public abstract class BaseRestController<T extends BaseEntity, PK extends Serial
 	 * @param response
 	 * @return
 	 * @throws WebFrameException
-	 * @author: 黄国庆 2011-1-22 上午11:54:35
+	 * @throws ServiceException
 	 */
 	@RequestMapping(value = {
 		"/{id}"}, method = {
 		RequestMethod.DELETE})
 	public abstract ModelAndView delete(@PathVariable PK id, HttpServletRequest request, HttpServletResponse response)
-				throws WebFrameException;
+				throws WebFrameException, ServiceException;
 
 	/**
 	 * 业务模块修改页面跳转方法，访问连接为模块名称加上主键id加上/edit； 默认HTTP方法为GET或POST； 例如：/moduleName/ID值/edit
@@ -106,12 +108,12 @@ public abstract class BaseRestController<T extends BaseEntity, PK extends Serial
 	 * @param response
 	 * @return
 	 * @throws WebFrameException
-	 * @author: 黄国庆 2011-1-22 上午11:47:07
+	 * @throws ServiceException
 	 */
 	@RequestMapping({
 		"/{id}/edit"})
 	public abstract ModelAndView edit(@PathVariable PK id, HttpServletRequest request, HttpServletResponse response)
-				throws WebFrameException;
+				throws WebFrameException, ServiceException;
 
 	/**
 	 * 根据规则的跳转类型，值为字符串，获取该模块相关操作方法的跳转链接
@@ -178,12 +180,12 @@ public abstract class BaseRestController<T extends BaseEntity, PK extends Serial
 	 * @param response
 	 * @return
 	 * @throws WebFrameException
-	 * @author: 黄国庆 2011-1-22 上午11:45:49
+	 * @throws ServiceException
 	 */
 	@RequestMapping({
 		"/{id}"})
 	public abstract ModelAndView show(@PathVariable PK id, HttpServletRequest request, HttpServletResponse response)
-				throws WebFrameException;
+				throws WebFrameException, ServiceException;
 
 	/**
 	 * 业务模块执行更新方法，访问连接为模块名称加上主键id； HTTP方法一定为PUT； 例如：/moduleName/ID值
@@ -193,11 +195,11 @@ public abstract class BaseRestController<T extends BaseEntity, PK extends Serial
 	 * @param response
 	 * @return
 	 * @throws WebFrameException
-	 * @author: 黄国庆 2011-1-22 上午11:53:10
+	 * @throws ServiceException
 	 */
 	@RequestMapping(value = {
 		"/{id}"}, method = {
 		RequestMethod.PUT})
 	public abstract ModelAndView update(@PathVariable PK id, HttpServletRequest request, HttpServletResponse response)
-				throws WebFrameException;
+				throws WebFrameException, ServiceException;
 }

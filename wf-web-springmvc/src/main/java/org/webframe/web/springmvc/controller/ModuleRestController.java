@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.webframe.core.exception.ServiceException;
 import org.webframe.core.model.BaseEntity;
 import org.webframe.core.model.action.ModuleActionType;
 import org.webframe.core.service.IBaseEntityService;
@@ -57,7 +58,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 
 	@Override
 	public ModelAndView batchDelete(@RequestParam("ids") String[] ids, HttpServletRequest request, HttpServletResponse response)
-				throws WebFrameException {
+				throws WebFrameException, ServiceException {
 		if (!defaultActions.contains(ModuleActionType.删除)) {
 			throwModuleFunctionExcludeException(ModuleActionType.删除);
 		}
@@ -72,7 +73,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 
 	@Override
 	public ModelAndView create(HttpServletRequest request, HttpServletResponse response, BaseEntity model)
-				throws WebFrameException {
+				throws WebFrameException, ServiceException {
 		if (!defaultActions.contains(ModuleActionType.新增)) {
 			throwModuleFunctionExcludeException(ModuleActionType.新增);
 		}
@@ -82,7 +83,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 
 	@Override
 	public ModelAndView delete(@PathVariable String id, HttpServletRequest request, HttpServletResponse response)
-				throws WebFrameException {
+				throws WebFrameException, ServiceException {
 		if (!defaultActions.contains(ModuleActionType.删除)) {
 			throwModuleFunctionExcludeException(ModuleActionType.删除);
 		}
@@ -93,7 +94,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 
 	@Override
 	public ModelAndView edit(@PathVariable String id, HttpServletRequest request, HttpServletResponse response)
-				throws WebFrameException {
+				throws WebFrameException, ServiceException {
 		if (!defaultActions.contains(ModuleActionType.修改)) {
 			throwModuleFunctionExcludeException(ModuleActionType.修改);
 		}
@@ -199,7 +200,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 
 	@Override
 	public ModelAndView show(@PathVariable String id, HttpServletRequest request, HttpServletResponse response)
-				throws WebFrameException {
+				throws WebFrameException, ServiceException {
 		if (!defaultActions.contains(ModuleActionType.查看)) {
 			throwModuleFunctionExcludeException(ModuleActionType.查看);
 		}
@@ -210,7 +211,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 
 	@Override
 	public ModelAndView update(@PathVariable String id, HttpServletRequest request, HttpServletResponse response)
-				throws WebFrameException {
+				throws WebFrameException, ServiceException {
 		if (!defaultActions.contains(ModuleActionType.修改)) {
 			throwModuleFunctionExcludeException(ModuleActionType.修改);
 		}
