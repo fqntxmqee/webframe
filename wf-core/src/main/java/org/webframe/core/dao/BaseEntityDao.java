@@ -30,12 +30,12 @@ public class BaseEntityDao<T extends BaseEntity> extends BaseDao implements IBas
 	}
 
 	@Override
-	public T findEntity(final Serializable id) {
+	public T findEntity(final Serializable id) throws EntityException {
 		return findEntity(getEntityClass(), id);
 	}
 
 	@Override
-	public T findEntity(Class<T> entityClass, final Serializable id) {
+	public T findEntity(Class<T> entityClass, final Serializable id) throws EntityException {
 		throwEntityException(entityClass);
 		return (T) super.get(entityClass, id);
 	}
@@ -66,42 +66,42 @@ public class BaseEntityDao<T extends BaseEntity> extends BaseDao implements IBas
 	}
 
 	@Override
-	public void deleteEntity(Serializable id) {
+	public void deleteEntity(Serializable id) throws EntityException {
 		delete(findEntity(id));
 	}
 
 	@Override
-	public List<T> findAll() {
+	public List<T> findAll() throws EntityException {
 		throwEntityException(getEntityClass());
 		return (List<T>) super.loadAll(getEntityClass());
 	}
 
 	@Override
-	public List<T> findByProperty(String propertyName, Object value) {
+	public List<T> findByProperty(String propertyName, Object value) throws EntityException {
 		return findByProperty(getEntityClass(), propertyName, value);
 	}
 
 	@Override
-	public List<T> findByProperty(Class<T> entityClass, String propertyName, Object value) {
+	public List<T> findByProperty(Class<T> entityClass, String propertyName, Object value) throws EntityException {
 		throwEntityException(entityClass);
 		String queryString = "from " + entityClass.getName() + " as model where model." + propertyName + "=?";
 		return super.getHibernateTemplate().find(queryString, value);
 	}
 
 	@Override
-	public T findByUniqueProperty(String propertyName, Object value) {
+	public T findByUniqueProperty(String propertyName, Object value) throws EntityException {
 		return findByUniqueProperty(getEntityClass(), propertyName, value);
 	}
 
 	@Override
-	public T findByUniqueProperty(Class<T> entityClass, String propertyName, Object value) {
+	public T findByUniqueProperty(Class<T> entityClass, String propertyName, Object value) throws EntityException {
 		List<T> list = findByProperty(entityClass, propertyName, value);
 		if (list == null || list.isEmpty()) return null;
 		if (list.size() == 1) return list.get(0);
 		throw new NonUniqueObjectException(propertyName, entityClass.getName());
 	}
 
-	private void throwEntityException(Class<T> entityClass) {
+	private void throwEntityException(Class<T> entityClass) throws EntityException {
 		if (Object.class.getName().equals(entityClass.getName())
 					|| BaseEntity.class.getName().equals(entityClass.getName())) {
 			throw new EntityException("默认BaseEntityDao实例，不支持所有依赖entityClass的方法操作！");

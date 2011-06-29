@@ -32,19 +32,19 @@ public class BaseService implements IBaseService {
 	}
 
 	@Override
-	public void save(BaseEntity obj) {
+	public void save(BaseEntity obj) throws ServiceException {
 		entityNullValidate(obj);
 		getBaseDao().save(obj);
 	}
 
 	@Override
-	public void delete(BaseEntity obj) {
+	public void delete(BaseEntity obj) throws ServiceException {
 		entityNullValidate(obj);
 		getBaseDao().delete(obj);
 	}
 
 	@Override
-	public void delete(Class<?> clazz, Serializable id) {
+	public void delete(Class<?> clazz, Serializable id) throws ServiceException {
 		if (id == null) throw new ServiceException("待删除的业务对象主键ID不能为null！");
 		Object obj = get(clazz, id);
 		if (obj == null) throw new EntityNotExistException("指定业务对象("
@@ -56,13 +56,13 @@ public class BaseService implements IBaseService {
 	}
 
 	@Override
-	public void saveOrUpdate(BaseEntity obj) {
+	public void saveOrUpdate(BaseEntity obj) throws ServiceException {
 		entityNullValidate(obj);
 		getBaseDao().saveOrUpdate(obj);
 	}
 
 	@Override
-	public void update(BaseEntity obj) {
+	public void update(BaseEntity obj) throws ServiceException {
 		entityNullValidate(obj);
 		getBaseDao().update(obj);
 	}
@@ -82,7 +82,7 @@ public class BaseService implements IBaseService {
 	 * @param obj entity
 	 * @author 黄国庆 2011-3-23 下午08:32:06
 	 */
-	protected void entityNullValidate(BaseEntity obj) {
+	protected void entityNullValidate(BaseEntity obj) throws EntityNullException {
 		if (obj == null) throw new EntityNullException();
 	}
 }

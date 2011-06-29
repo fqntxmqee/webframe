@@ -6,7 +6,7 @@ package org.webframe.core.exception;
  * @version $Id: codetemplates.xml,v 1.3 2009/05/05 02:30:07 huangguoqing Exp $ Create: 2010-12-25
  *          下午05:56:04
  */
-public class ServiceException extends RuntimeException {
+public class ServiceException extends Exception {
 
 	/**
 	 * 

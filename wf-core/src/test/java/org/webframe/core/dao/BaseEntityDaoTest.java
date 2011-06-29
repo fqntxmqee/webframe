@@ -118,17 +118,24 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	 */
 	@Test
 	public void testFindByPropertyClassOfTStringObject() {
-		List<TTestUser> entityList = baseEntityDao.findByProperty(TTestUser.class, "name", testUserName);
-		assertEquals("findByProperty方法加载对象记录不全！", entityList.size(), userMap.size());
+		List<TTestUser> entityList;
+		try {
+			entityList = baseEntityDao.findByProperty(TTestUser.class, "name", testUserName);
+			assertEquals("findByProperty方法加载对象记录不全！", entityList.size(), userMap.size());
+		} catch (EntityException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Test method for
 	 * {@link org.webframe.core.dao.BaseEntityDao#findByUniqueProperty(java.lang.Class, java.lang.String, java.lang.Object)}
 	 * .
+	 * 
+	 * @throws EntityException
 	 */
 	@Test
-	public void testFindByUniquePropertyClassOfTStringObject() {
+	public void testFindByUniquePropertyClassOfTStringObject() throws EntityException {
 		for (String userId : userMap.keySet()) {
 			TTestUser entity = baseEntityDao.findByUniqueProperty(TTestUser.class, "id", userId);
 			assertNotNull("findByUniqueProperty方法加载对象，未找到指定主键的对象错误！", entity);

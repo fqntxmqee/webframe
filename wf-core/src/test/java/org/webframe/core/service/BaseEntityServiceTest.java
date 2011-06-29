@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.webframe.core.exception.ServiceException;
 import org.webframe.core.exception.entity.EntityException;
 import org.webframe.core.module.testUser.TTestUser;
 import org.webframe.core.util.DateUtils;
@@ -31,9 +32,11 @@ public class BaseEntityServiceTest extends BaseSpringTests {
 	 * Test method for
 	 * {@link org.webframe.core.service.BaseEntityService#saveEntity(org.webframe.core.model.BaseEntity)}
 	 * .
+	 * 
+	 * @throws ServiceException
 	 */
 	@Test
-	public void testSaveEntity() {
+	public void testSaveEntity() throws ServiceException {
 		TTestUser testUser = new TTestUser();
 		testUser.setName(testUserName);
 		testUser.setPassword("password");
@@ -47,9 +50,11 @@ public class BaseEntityServiceTest extends BaseSpringTests {
 	 * Test method for
 	 * {@link org.webframe.core.service.BaseEntityService#saveOrUpdateEntity(org.webframe.core.model.BaseEntity)}
 	 * .
+	 * 
+	 * @throws ServiceException
 	 */
 	@Test
-	public void testSaveOrUpdateEntity() {
+	public void testSaveOrUpdateEntity() throws ServiceException {
 		TTestUser testUser = new TTestUser();
 		testUser.setName(testUserName);
 		testUser.setPassword("password");
@@ -63,9 +68,11 @@ public class BaseEntityServiceTest extends BaseSpringTests {
 	 * Test method for
 	 * {@link org.webframe.core.service.BaseEntityService#updateEntity(org.webframe.core.model.BaseEntity)}
 	 * .
+	 * 
+	 * @throws ServiceException
 	 */
 	@Test
-	public void testUpdateEntity() {
+	public void testUpdateEntity() throws ServiceException {
 		for (TTestUser testUser : userMap.values()) {
 			testUser.setModifyTime(DateUtils.getStandTime());
 			baseEntityService.updateEntity(testUser);
@@ -76,9 +83,11 @@ public class BaseEntityServiceTest extends BaseSpringTests {
 	 * Test method for
 	 * {@link org.webframe.core.service.BaseEntityService#findEntity(java.lang.Class, java.io.Serializable)}
 	 * .
+	 * 
+	 * @throws EntityException
 	 */
 	@Test
-	public void testFindEntityClassOfTSerializable() {
+	public void testFindEntityClassOfTSerializable() throws EntityException {
 		for (String userId : userMap.keySet()) {
 			TTestUser testUser = (TTestUser) baseEntityService.findEntity(TTestUser.class, userId);
 			assertNotNull("findEntity方法加载对象，如果指定主键的id不存在，返回null！", testUser);
@@ -93,22 +102,19 @@ public class BaseEntityServiceTest extends BaseSpringTests {
 	 */
 	@Test
 	public void testFindEntitySerializable() {
-		try {
-			// baseEntityService.findEntity("1");
-			// TODO 虽然捕获了异常，但事务也回滚了
-		} catch (EntityException e) {
-			logger.info(e.getMessage());
-			throw e;
-		}
+		// baseEntityService.findEntity("1");
+		// TODO 虽然捕获了异常，但事务也回滚了
 	}
 
 	/**
 	 * Test method for
 	 * {@link org.webframe.core.service.BaseEntityService#deleteEntity(org.webframe.core.model.BaseEntity)}
 	 * .
+	 * 
+	 * @throws ServiceException
 	 */
 	@Test
-	public void testDeleteEntity() {
+	public void testDeleteEntity() throws ServiceException {
 		String userId = null;
 		for (TTestUser testUser : userMap.values()) {
 			userId = testUser.getId();

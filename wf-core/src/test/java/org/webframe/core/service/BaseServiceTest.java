@@ -3,7 +3,6 @@ package org.webframe.core.service;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,8 +10,6 @@ import java.util.Map;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.webframe.core.exception.ServiceException;
-import org.webframe.core.exception.entity.EntityNotExistException;
-import org.webframe.core.exception.entity.EntityNullException;
 import org.webframe.core.module.testUser.TTestUser;
 import org.webframe.core.util.DateUtils;
 import org.webframe.test.BaseSpringTests;
@@ -33,15 +30,12 @@ public class BaseServiceTest extends BaseSpringTests {
 	/**
 	 * Test method for
 	 * {@link org.webframe.core.service.BaseService#save(org.webframe.core.model.BaseEntity)} .
+	 * 
+	 * @throws ServiceException
 	 */
 	@Test
-	public void testSave() {
+	public void testSave() throws ServiceException {
 		TTestUser testUser = null;
-		try {
-			// baseService.save(testUser);
-		} catch (ServiceException e) {
-			assertTrue("业务对象为null，没有抛出EntityNullException异常！", e instanceof EntityNullException);
-		}
 		testUser = new TTestUser();
 		testUser.setName(testUserName);
 		testUser.setPassword("password");
@@ -55,15 +49,12 @@ public class BaseServiceTest extends BaseSpringTests {
 	 * Test method for
 	 * {@link org.webframe.core.service.BaseService#saveOrUpdate(org.webframe.core.model.BaseEntity)}
 	 * .
+	 * 
+	 * @throws ServiceException
 	 */
 	@Test
-	public void testSaveOrUpdate() {
+	public void testSaveOrUpdate() throws ServiceException {
 		TTestUser testUser = null;
-		try {
-			// baseService.saveOrUpdate(testUser);
-		} catch (ServiceException e) {
-			assertTrue("业务对象为null，没有抛出EntityNullException异常！", e instanceof EntityNullException);
-		}
 		testUser = new TTestUser();
 		testUser.setName(testUserName);
 		testUser.setPassword("password");
@@ -76,14 +67,11 @@ public class BaseServiceTest extends BaseSpringTests {
 	/**
 	 * Test method for
 	 * {@link org.webframe.core.service.BaseService#update(org.webframe.core.model.BaseEntity)} .
+	 * 
+	 * @throws ServiceException
 	 */
 	@Test
-	public void testUpdate() {
-		try {
-			// baseService.saveOrUpdate(null);
-		} catch (ServiceException e) {
-			assertTrue("业务对象为null，没有抛出EntityNullException异常！", e instanceof EntityNullException);
-		}
+	public void testUpdate() throws ServiceException {
 		for (TTestUser testUser : userMap.values()) {
 			testUser.setModifyTime(DateUtils.getStandTime());
 			baseService.update(testUser);
@@ -121,9 +109,11 @@ public class BaseServiceTest extends BaseSpringTests {
 	/**
 	 * Test method for
 	 * {@link org.webframe.core.service.BaseService#delete(org.webframe.core.model.BaseEntity)} .
+	 * 
+	 * @throws ServiceException
 	 */
 	@Test
-	public void testDelete() {
+	public void testDelete() throws ServiceException {
 		String userId = null;
 		for (TTestUser testUser : userMap.values()) {
 			userId = testUser.getId();
@@ -137,15 +127,12 @@ public class BaseServiceTest extends BaseSpringTests {
 	/**
 	 * Test method for
 	 * {@link org.webframe.core.service.BaseService#delete(java.lang.Class, java.io.Serializable)} .
+	 * 
+	 * @throws ServiceException
 	 */
 	@Test
-	public void testDeleteClass() {
+	public void testDeleteClass() throws ServiceException {
 		String userId = null;
-		try {
-			// baseService.delete(TTestUser.class, "1");
-		} catch (ServiceException e) {
-			assertTrue("业务对象ID为1的对象不存在，没有抛出EntityNotExistException异常！", e instanceof EntityNotExistException);
-		}
 		for (TTestUser testUser : userMap.values()) {
 			userId = testUser.getId();
 			baseService.delete(TTestUser.class, userId);

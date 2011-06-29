@@ -4,6 +4,7 @@ package org.webframe.core.dao;
 import java.io.Serializable;
 import java.util.List;
 
+import org.webframe.core.exception.entity.EntityException;
 import org.webframe.core.model.BaseEntity;
 
 /**
@@ -52,8 +53,9 @@ public interface IBaseEntityDao<T extends BaseEntity> extends IBaseDao {
 	 * 
 	 * @param id 主键id
 	 * @author 黄国庆 2011-3-25 上午09:53:02
+	 * @throws EntityException
 	 */
-	void deleteEntity(Serializable id);
+	void deleteEntity(Serializable id) throws EntityException;
 
 	/**
 	 * 根据指定主键id，查询实体对象
@@ -61,8 +63,9 @@ public interface IBaseEntityDao<T extends BaseEntity> extends IBaseDao {
 	 * @param id 主键id
 	 * @return Null or Entity
 	 * @author 黄国庆 2011-3-25 上午09:53:49
+	 * @throws EntityException
 	 */
-	T findEntity(Serializable id);
+	T findEntity(Serializable id) throws EntityException;
 
 	/**
 	 * 根据指定主键id，查询实体对象
@@ -71,8 +74,9 @@ public interface IBaseEntityDao<T extends BaseEntity> extends IBaseDao {
 	 * @param id 主键id
 	 * @return Null or Entity
 	 * @author 黄国庆 2011-3-25 上午10:58:32
+	 * @throws EntityException
 	 */
-	T findEntity(Class<T> entityClass, final Serializable id);
+	T findEntity(Class<T> entityClass, final Serializable id) throws EntityException;
 
 	/**
 	 * 模糊查询指定条件对象集合 <br> 用法：可以实例化一个空的T对象，需要查询某个字段，就set该字段的条件然后调用本方法<br>
@@ -88,8 +92,9 @@ public interface IBaseEntityDao<T extends BaseEntity> extends IBaseDao {
 	 * 
 	 * @return 不为null的list集合
 	 * @author 黄国庆 2011-3-25 上午09:54:41
+	 * @throws EntityException
 	 */
-	List<T> findAll();
+	List<T> findAll() throws EntityException;
 
 	/**
 	 * 查找指定实体属性的实体集合
@@ -99,8 +104,9 @@ public interface IBaseEntityDao<T extends BaseEntity> extends IBaseDao {
 	 * @param value 条件
 	 * @return 实体集合
 	 * @author 黄国庆 2011-3-25 上午09:54:41
+	 * @throws EntityException
 	 */
-	List<T> findByProperty(Class<T> entityClass, String propertyName, Object value);
+	List<T> findByProperty(Class<T> entityClass, String propertyName, Object value) throws EntityException;
 
 	/**
 	 * 查找指定实体属性的实体集合
@@ -109,8 +115,9 @@ public interface IBaseEntityDao<T extends BaseEntity> extends IBaseDao {
 	 * @param value 条件
 	 * @return 实体集合
 	 * @author 黄国庆 2011-3-25 上午09:56:03
+	 * @throws EntityException
 	 */
-	List<T> findByProperty(String propertyName, Object value);
+	List<T> findByProperty(String propertyName, Object value) throws EntityException;
 
 	/**
 	 * 可以根据唯一属性进行查询，如果指定属性值的数据库记录不止一条， 则抛出NonUniqueObjectException异常，如果指定属性值的数据库记录不存在，
@@ -121,8 +128,9 @@ public interface IBaseEntityDao<T extends BaseEntity> extends IBaseDao {
 	 * @param value 条件
 	 * @return 唯一实体对象 or Null
 	 * @author 黄国庆 2011-3-25 上午09:56:33
+	 * @throws EntityException
 	 */
-	T findByUniqueProperty(Class<T> entityClass, String propertyName, Object value);
+	T findByUniqueProperty(Class<T> entityClass, String propertyName, Object value) throws EntityException;
 
 	/**
 	 * 可以根据唯一属性进行查询，如果指定属性值的数据库记录不止一条， 则抛出NonUniqueObjectException异常，如果指定属性值的数据库记录不存在，
@@ -132,6 +140,7 @@ public interface IBaseEntityDao<T extends BaseEntity> extends IBaseDao {
 	 * @param value 条件
 	 * @return 唯一实体对象 or Null
 	 * @author 黄国庆 2011-3-25 上午09:56:36
+	 * @throws EntityException
 	 */
-	T findByUniqueProperty(String propertyName, Object value);
+	T findByUniqueProperty(String propertyName, Object value) throws EntityException;
 }

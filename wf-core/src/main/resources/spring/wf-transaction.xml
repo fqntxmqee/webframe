@@ -37,11 +37,11 @@
 				rollback-for和no-rollback-for对RuntimeException异常的子类无效，默认
 				RuntimeException异常的子类都会回滚
 			-->
-			<tx:method name="save*" isolation="DEFAULT" propagation="REQUIRED"/>
-			<tx:method name="create*" isolation="DEFAULT" propagation="REQUIRED"/>
-			<tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED"/>
-			<tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED"/>
-			<tx:method name="add*" isolation="DEFAULT" propagation="REQUIRED"/>
+			<tx:method name="save*" isolation="DEFAULT" propagation="REQUIRED" rollback-for="org.webframe.core.exception.ServiceException"/>
+			<tx:method name="create*" isolation="DEFAULT" propagation="REQUIRED" rollback-for="org.webframe.core.exception.ServiceException"/>
+			<tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED" rollback-for="org.webframe.core.exception.ServiceException"/>
+			<tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED" rollback-for="org.webframe.core.exception.ServiceException"/>
+			<tx:method name="add*" isolation="DEFAULT" propagation="REQUIRED" rollback-for="org.webframe.core.exception.ServiceException"/>
 			<!-- other methods are set to read only -->
 			<tx:method name="*" read-only="true" />
 		</tx:attributes>

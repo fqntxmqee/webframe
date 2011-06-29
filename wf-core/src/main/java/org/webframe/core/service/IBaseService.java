@@ -3,6 +3,7 @@ package org.webframe.core.service;
 
 import java.io.Serializable;
 
+import org.webframe.core.exception.ServiceException;
 import org.webframe.core.model.BaseEntity;
 
 /**
@@ -18,32 +19,36 @@ public interface IBaseService {
 	 * 
 	 * @param entity 业务对象
 	 * @author 黄国庆 2011-3-23 下午08:42:35
+	 * @throws ServiceException
 	 */
-	void save(BaseEntity entity);
+	void save(BaseEntity entity) throws ServiceException;
 
 	/**
 	 * 更新业务对象，如果entity为null，抛出EntityNullException； 捕获所有异常，抛出业务异常ServiceException
 	 * 
 	 * @param entity 业务对象
 	 * @author 黄国庆 2011-3-23 下午08:43:01
+	 * @throws ServiceException
 	 */
-	void update(BaseEntity entity);
+	void update(BaseEntity entity) throws ServiceException;
 
 	/**
 	 * 保存或修改业务对象，如果entity为null，抛出EntityNullException； 捕获所有异常，抛出业务异常ServiceException
 	 * 
 	 * @param entity 业务对象
 	 * @author 黄国庆 2011-3-23 下午08:43:05
+	 * @throws ServiceException
 	 */
-	void saveOrUpdate(BaseEntity entity);
+	void saveOrUpdate(BaseEntity entity) throws ServiceException;
 
 	/**
 	 * 删除业务对象，如果entity为null，抛出EntityNullException； 捕获所有异常，抛出业务异常ServiceException
 	 * 
 	 * @param entity 持久化业务对象
 	 * @author 黄国庆 2011-3-23 下午08:43:12
+	 * @throws ServiceException
 	 */
-	void delete(BaseEntity entity);
+	void delete(BaseEntity entity) throws ServiceException;
 
 	/**
 	 * 根据指定业务对象class类型，主键id删除对象，该方法先通过get(Class<?> clazz, Serializable id)
@@ -52,8 +57,9 @@ public interface IBaseService {
 	 * @param clazz 业务对象class
 	 * @param id 主键id
 	 * @author 黄国庆 2011-3-24 上午10:50:43
+	 * @throws ServiceException
 	 */
-	void delete(Class<?> clazz, Serializable id);
+	void delete(Class<?> clazz, Serializable id) throws ServiceException;
 
 	/**
 	 * 对象加载 默认延迟加载，找不到对象返回null

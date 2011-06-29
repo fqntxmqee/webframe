@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webframe.core.dao.IBaseDao;
 import org.webframe.core.dao.IBaseEntityDao;
+import org.webframe.core.exception.ServiceException;
+import org.webframe.core.exception.entity.EntityException;
 import org.webframe.core.exception.entity.EntityExistException;
 import org.webframe.core.exception.entity.EntityNullException;
 import org.webframe.core.model.BaseEntity;
@@ -45,32 +47,32 @@ public class BaseEntityService<T extends BaseEntity> extends BaseService impleme
 	}
 
 	@Override
-	public void saveEntity(T entity) {
+	public void saveEntity(T entity) throws ServiceException {
 		super.save(entity);
 	}
 
 	@Override
-	public void saveOrUpdateEntity(T entity) {
+	public void saveOrUpdateEntity(T entity) throws ServiceException {
 		super.saveOrUpdate(entity);
 	}
 
 	@Override
-	public void updateEntity(T entity) {
+	public void updateEntity(T entity) throws ServiceException {
 		super.update(entity);
 	}
 
 	@Override
-	public void deleteEntity(T entity) {
+	public void deleteEntity(T entity) throws ServiceException {
 		super.delete(entity);
 	}
 
 	@Override
-	public T findEntity(Class<T> entityClass, Serializable id) {
+	public T findEntity(Class<T> entityClass, Serializable id) throws EntityException {
 		return getBaseEntityDao().findEntity(entityClass, id);
 	}
 
 	@Override
-	public T findEntity(Serializable id) {
+	public T findEntity(Serializable id) throws EntityException {
 		return findEntity(getEntityClass(), id);
 	}
 
@@ -79,8 +81,9 @@ public class BaseEntityService<T extends BaseEntity> extends BaseService impleme
 	 * 
 	 * @param entity
 	 * @author: 黄国庆 2010-12-27 下午02:59:09
+	 * @throws EntityNullException
 	 */
-	protected void entityNullValidate(BaseEntity entity) {
+	protected void entityNullValidate(BaseEntity entity) throws EntityNullException {
 		if (entity == null) throw new EntityNullException(getEntityClass());
 	}
 
@@ -89,8 +92,9 @@ public class BaseEntityService<T extends BaseEntity> extends BaseService impleme
 	 * 
 	 * @param msg 不能为null，以键值组成，格式例如：[username: sysadmin]
 	 * @author: 黄国庆 2010-12-29 下午03:25:35
+	 * @throws EntityExistException
 	 */
-	protected void throwEntityNotExistException(String msg) {
+	protected void throwEntityNotExistException(String msg) throws EntityExistException {
 		throw new EntityExistException("(" + getEntityClass().getName() + ") " + msg + "实体不存在！");
 	}
 
@@ -99,8 +103,9 @@ public class BaseEntityService<T extends BaseEntity> extends BaseService impleme
 	 * 
 	 * @param msg 不能为null，以键值组成，格式例如：[id: sysadmin]
 	 * @author: 黄国庆 2010-12-29 下午03:25:35
+	 * @throws EntityExistException
 	 */
-	protected void throwEntityExistException(String msg) {
+	protected void throwEntityExistException(String msg) throws EntityExistException {
 		throw new EntityExistException("(" + getEntityClass().getName() + ") " + msg + "实体已存在！");
 	}
 }
