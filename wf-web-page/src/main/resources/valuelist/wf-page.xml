@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+	<bean class="org.webframe.core.util.PropertyConfigurerUtils">
+		<property name="order" value="1" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="location" value="classpath:valuelist.properties"/>
+	</bean>
+		
+	<bean id="csvDisplayProvider" class="org.webframe.web.page.web.tag.support.CsvDisplayProvider"/>
+	<bean id="excelDisplayProvider" class="org.webframe.web.page.web.tag.support.ExcelDisplayProvider"/>
+
+	<bean id="microsoftLook" class="org.webframe.web.page.web.ValueListConfigBean">
+		<property name="displayHelper">
+			<bean class="org.webframe.web.page.web.util.ImagesHomeDisplayHelper"/>
+		</property>
+		<property name="messageSource">
+			<bean class="org.springframework.context.support.ResourceBundleMessageSource">
+				<property name="basename" value="${vlh.config.basename}"/>
+			</bean>
+		</property>
+
+		<property name="linkEncoder">
+			<bean class="org.webframe.web.page.web.tag.support.DefaultLinkEncoder">
+				<property name="encoding" value="${vlh.config.encoding}"/>
+			</bean>
+		</property>
+
+		<property name="stylePrefix" value="microsoftLook"/>
+
+		<property name="displayProviders">
+			<map>
+				<entry key="html">
+					<bean class="org.webframe.web.page.web.tag.support.HtmlDisplayProvider">
+						<property name="imageHome" value="${vlh.config.imageHome}"/>
+						<property name="usePadding" value="false"/>
+						<property name="useNoWrap" value="false"/>
+						<property name="preAppendContextPath" value="true"/>
+					</bean>
+				</entry>
+				<entry key="csv" value-ref="csvDisplayProvider"/>
+				<entry key="excel" value-ref="excelDisplayProvider"/>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="valueListHandler" class="org.webframe.web.page.DefaultValueListHandlerImpl"/>
+
+	<bean id="valueListHelper" class="org.webframe.web.page.web.mvc.ValueListHandlerHelper">
+		<property name="valueListHandler" ref="valueListHandler"/>
+	</bean>
+</beans>
