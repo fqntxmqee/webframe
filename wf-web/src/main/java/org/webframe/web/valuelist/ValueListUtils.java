@@ -3,7 +3,7 @@
  * Created on 2011-5-9-下午09:22:09
  */
 
-package org.webframe.web.util;
+package org.webframe.web.valuelist;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,7 +29,8 @@ import org.webframe.web.page.ValueListInfo;
 import org.webframe.web.page.web.ValueListRequestUtil;
 import org.webframe.web.page.web.mvc.ValueListHandlerHelper;
 import org.webframe.web.spring.WFClassPathXmlApplicationContext;
-import org.webframe.web.valuelist.ValueListAdapterUtil;
+import org.webframe.web.util.PatternUtil;
+import org.webframe.web.util.WebFrameUtils;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>

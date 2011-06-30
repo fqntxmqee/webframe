@@ -13,6 +13,7 @@ import org.webframe.core.model.form.ViewElement.QueryConditionType;
 import org.webframe.core.util.BeanUtils;
 import org.webframe.core.util.DataSourceUtils;
 import org.webframe.web.page.ValueListAdapter;
+import org.webframe.web.page.adapter.ValueListAdapterManager;
 import org.webframe.web.spring.ServiceHelper;
 
 /**
@@ -40,7 +41,13 @@ public abstract class ValueListAdapterUtil {
 
 	private static void addValueListAdapter(String adapterName, ValueListAdapter valueListAdapter) {
 		if (adapterCache != null) {
-			adapterCache.put(adapterName, valueListAdapter);
+			if (!hasAdapter(adapterName)) {
+				adapterCache.put(adapterName, valueListAdapter);
+			} else {
+				throw new IllegalArgumentException("Spring 已注入(" + adapterName + ") Adapter!");
+			}
+		} else {
+			adapterCache = ValueListAdapterManager.getAllAdapters();
 		}
 	}
 

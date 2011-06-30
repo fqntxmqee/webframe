@@ -18,7 +18,7 @@ public class WebModulePluginDriver extends AbstractModulePluginDriver {
 
 	@Override
 	public String getSpringContextLocation() {
-		return "/spring,/valuelist";
+		return "/spring";
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 
-package org.webframe.web.spring.processor;
+package org.webframe.core.spring.processor;
 
 import java.util.LinkedList;
 import java.util.List;

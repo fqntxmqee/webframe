@@ -1,7 +1,7 @@
 
 package org.webframe.web.filter;
 
-import org.webframe.web.spring.processor.BeanPropertyListAppender;
+import org.webframe.core.spring.processor.BeanPropertyListAppender;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>

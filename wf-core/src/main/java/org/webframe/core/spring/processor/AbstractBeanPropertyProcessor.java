@@ -1,5 +1,5 @@
 
-package org.webframe.web.spring.processor;
+package org.webframe.core.spring.processor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
