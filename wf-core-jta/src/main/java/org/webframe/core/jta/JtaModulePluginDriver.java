@@ -30,9 +30,4 @@ public class JtaModulePluginDriver extends AbstractModulePluginDriver {
 	public String getSpringContextLocation() {
 		return "/spring";
 	}
-
-	@Override
-	public String getEntityLocation() {
-		return "test";
-	}
 }

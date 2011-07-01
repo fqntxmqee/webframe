@@ -25,4 +25,9 @@ public class SpringMVCModulePluginDriver extends AbstractModulePluginDriver {
 	public String getModuleName() {
 		return "SpringMVCModule";
 	}
+
+	@Override
+	public String getSpringContextLocation() {
+		return "/spring";
+	}
 }
