@@ -63,9 +63,12 @@ public class WFFilterProxy extends DelegatingFilterProxy {
 		return new WFFilterChain(filterChain, filters);
 	}
 
-	protected void initWFFilterContext() {
+	protected void initWFFilterContext() throws ServletException {
 		WebApplicationContext wac = findWebApplicationContext();
 		wfFilterContext = wac.getBean(WFFilterManager.BEAN_NAME_WF_FILTER_CONTEXT, WFFilterContext.class);
+		for (Filter filter : wfFilterContext.getAllFilters()) {
+			filter.init(getFilterConfig());
+		}
 	}
 
 	@Override
