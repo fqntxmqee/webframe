@@ -27,6 +27,11 @@ public class FrontModulePluginDriver extends AbstractModulePluginDriver {
 	}
 
 	@Override
+	public String getWebSourcesLocation() {
+		return "/jsp";
+	}
+
+	@Override
 	public String getSpringContextLocation() {
 		return "/spring";
 	}

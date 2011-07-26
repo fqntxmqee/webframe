@@ -10,14 +10,13 @@ import java.util.Properties;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.util.ResourceUtils;
+import org.webframe.support.driver.resource.jar.JarResourceLoader;
 
 import com.opensymphony.module.sitemesh.Config;
 import com.opensymphony.module.sitemesh.Decorator;
 import com.opensymphony.module.sitemesh.DecoratorMapper;
 import com.opensymphony.module.sitemesh.Page;
 import com.opensymphony.module.sitemesh.mapper.AbstractDecoratorMapper;
-import com.opensymphony.module.sitemesh.mapper.ConfigLoader;
 
 /**
  * 更改ConfigLoader构造函数实例化ConfigLoader
@@ -33,12 +32,8 @@ public class WFConfigDecoratorMapper extends AbstractDecoratorMapper {
 	public void init(Config config, Properties properties, DecoratorMapper parent) throws InstantiationException {
 		super.init(config, properties, parent);
 		try {
-			String fileName = properties.getProperty("config", "/WEB-INF/decorators.xml");
-			if (fileName.startsWith(WFSitemeshFactory.WEB_INF)) {
-				configLoader = new ConfigLoader(fileName, config);
-			} else {
-				configLoader = new ConfigLoader(ResourceUtils.getFile(fileName));
-			}
+			String fileName = properties.getProperty("config", "classpath:decorators.xml");
+			configLoader = new ConfigLoader(new JarResourceLoader(getClass()).getResource(fileName));
 		} catch (Exception e) {
 			throw new InstantiationException(e.toString());
 		}

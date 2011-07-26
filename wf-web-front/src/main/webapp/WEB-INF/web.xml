@@ -68,4 +68,25 @@
 	</filter-mapping>
 	<!-- ************************************   过滤器 映射 end   ************************************ -->
 
+
+	<!-- ************************************   Servlet begin    ************************************ -->
+	<servlet>
+		<servlet-name>SpringMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextAttribute</param-name>
+			<param-value>org.springframework.web.context.WebApplicationContext.ROOT</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<!-- ************************************    Servlet end      ************************************ -->
+	
+	
+	<!-- ************************************  Servlet 映射begin  ************************************ -->
+	<!-- 覆盖default servlet的/, SpringMVC servlet将处理原来处理静态资源的映射 -->   
+	<servlet-mapping>   
+	    <servlet-name>SpringMVC</servlet-name>   
+	    <url-pattern>/</url-pattern>   
+	</servlet-mapping>
+	<!-- ************************************   Servlet 映射end   ************************************ -->
 </web-app>

@@ -5,9 +5,6 @@
 
 package org.webframe.web.front.sitemesh;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -23,11 +20,13 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.webframe.support.driver.resource.jar.JarResourceLoader;
 import org.xml.sax.SAXException;
 
 import com.opensymphony.module.sitemesh.Config;
@@ -47,7 +46,7 @@ public class WFSitemeshFactory extends BaseFactory {
 
 	String					configFileName	= WEB_INF + "/sitemesh.xml";
 
-	File						configFile;
+	Resource					configFile;
 
 	long						configLastModified;
 
@@ -55,14 +54,14 @@ public class WFSitemeshFactory extends BaseFactory {
 
 	String					excludesFileName;
 
-	File						excludesFile;
+	Resource					excludesFile;
 
 	protected WFSitemeshFactory(Config config) {
 		super(config);
 		try {
-			configFile = ResourceUtils.getFile("classpath:sitemesh.xml");
-		} catch (FileNotFoundException e) {
-			log.error(e.getMessage(), e);
+			configFile = new JarResourceLoader(getClass()).getResource("classpath:sitemesh.xml");
+		} catch (IOException e) {
+			log.error(e);
 		}
 		loadConfig();
 	}
@@ -143,8 +142,8 @@ public class WFSitemeshFactory extends BaseFactory {
 		InputStream is = null;
 		if (configFile == null) {
 			is = config.getServletContext().getResourceAsStream(configFileName);
-		} else if (configFile.exists() && configFile.canRead()) {
-			is = new FileInputStream(configFile);
+		} else if (configFile.exists()) {
+			is = configFile.getInputStream();
 		}
 		if (is == null) { // load the default sitemesh configuration
 			is = getClass().getClassLoader().getResourceAsStream(
@@ -178,8 +177,8 @@ public class WFSitemeshFactory extends BaseFactory {
 			} else {
 				is = ResourceUtils.getURL(excludesFileName).openStream();
 			}
-		} else if (excludesFile.exists() && excludesFile.canRead()) {
-			is = new FileInputStream(excludesFile);
+		} else if (excludesFile.exists()) {
+			is = excludesFile.getInputStream();
 		}
 		if (is == null) {
 			throw new IllegalStateException("Cannot load excludes configuration file from jar");
@@ -266,7 +265,11 @@ public class WFSitemeshFactory extends BaseFactory {
 
 	/** Check if configuration file has been modified, and if so reload it. */
 	private void refresh() {
-		if (configFile != null && configLastModified != configFile.lastModified()) loadConfig();
+		try {
+			if (configFile != null && configLastModified != configFile.lastModified()) loadConfig();
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
 	}
 
 	/**
