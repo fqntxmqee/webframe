@@ -18,6 +18,7 @@ import org.springframework.core.io.Resource;
 import org.webframe.support.driver.ModulePluginDriver;
 import org.webframe.support.driver.ModulePluginDriverInfo;
 import org.webframe.support.driver.ModulePluginUtils;
+import org.webframe.support.driver.resource.jar.JarResource;
 import org.webframe.support.util.ClassUtils;
 import org.webframe.support.util.StringUtils;
 import org.webframe.support.util.SystemLogUtils;
@@ -48,14 +49,21 @@ public class WebSourcesUtils extends ModulePluginUtils {
 			if (resources == null || defaultWebRealPath == null) continue;
 			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "Web资源初始化！");
 			for (Resource resource : resources) {
-				if (resource instanceof ClassPathResource || resource instanceof FileSystemResource) {
+				if (resource instanceof JarResource
+							|| resource instanceof ClassPathResource
+							|| resource instanceof FileSystemResource) {
 					String path;
-					if (resource instanceof ClassPathResource) {
+					if (resource instanceof JarResource) {
+						JarResource jr = (JarResource) resource;
+						String[] arr = jr.getFilename().split("!");
+						if (arr.length != 2) continue;
+						path = arr[1];
+					} else if (resource instanceof ClassPathResource) {
 						ClassPathResource cpr = (ClassPathResource) resource;
 						path = cpr.getPath();
 					} else {
-						FileSystemResource cpr = (FileSystemResource) resource;
-						path = cpr.getPath();
+						FileSystemResource fsr = (FileSystemResource) resource;
+						path = fsr.getPath();
 						int index = path.lastIndexOf("classes");
 						if (index <= 0) continue;
 						path = path.substring(index + 7);
