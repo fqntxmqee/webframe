@@ -1,7 +1,6 @@
 
 package org.webframe.support.driver;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
@@ -46,8 +45,6 @@ public class ModulePluginUtilsTest extends BaseTests {
 		String realPath = getClass().getResource("/").getPath();
 		ModulePluginUtils.cacheModulePluginConfig(realPath);
 		ModulePluginUtils.cacheModulePluginConfig(realPath);
-		String filePath = ModulePluginUtils.getConfigFilePath(realPath);
-		new File(filePath).deleteOnExit();
 	}
 
 	/**

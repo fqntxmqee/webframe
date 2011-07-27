@@ -54,9 +54,8 @@ public abstract class ModulePluginUtils {
 		} else if (directory.isFile()) {
 			throw new ModulePluginConfigException(realConfigDirectory + "不是文件夹路径！");
 		}
-		String configFilePath = getConfigFilePath(realConfigDirectory);
 		try {
-			File file = new File(configFilePath);
+			File file = new File(realConfigDirectory, CONFIG_FILE_NAME);
 			if (file.exists()) {
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
 				Object obj = ois.readObject();
@@ -96,14 +95,8 @@ public abstract class ModulePluginUtils {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ModulePluginConfigException(configFilePath + "模块插件配置信息缓存文件写入信息失败！");
+			throw new ModulePluginConfigException(realConfigDirectory + "模块插件配置信息缓存文件写入信息失败！");
 		}
-	}
-
-	static String getConfigFilePath(String realConfigDirectory) {
-		return realConfigDirectory.endsWith(File.separator)
-					? realConfigDirectory + "/" + CONFIG_FILE_NAME
-					: realConfigDirectory + CONFIG_FILE_NAME;
 	}
 
 	protected static List<ModulePluginDriverInfo> getNeedUpdateDriverInfos() {
