@@ -16,7 +16,7 @@ public class TestUserModulePluginDriver extends AbstractModulePluginDriver {
 
 	@Override
 	public String getEntityLocation() {
-		return "testUser";
+		return "/org/webframe/core/module";
 	}
 
 	@Override

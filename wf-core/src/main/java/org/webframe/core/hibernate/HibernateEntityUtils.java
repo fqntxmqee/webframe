@@ -12,7 +12,9 @@ import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 
+import org.hibernate.MappingException;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 import org.springframework.core.io.ClassRelativeResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -38,6 +40,8 @@ public class HibernateEntityUtils extends ModulePluginUtils {
 
 	protected static final String	RESOURCE_PATTERN_ENTITY		= "/**/*.class";
 
+	protected static final String	RESOURCE_PATTERN_HBM			= "/**/*.hbm.xml";
+
 	private static TypeFilter[]	defaultEntityTypeFilters	= new TypeFilter[]{
 				new AnnotationTypeFilter(Entity.class, false), new AnnotationTypeFilter(Embeddable.class, false),
 				new AnnotationTypeFilter(MappedSuperclass.class, false),
@@ -56,7 +60,7 @@ public class HibernateEntityUtils extends ModulePluginUtils {
 		while (dirverInfos.hasMoreElements()) {
 			ModulePluginDriverInfo driverInfo = dirverInfos.nextElement();
 			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载Entity！");
-			Resource[] resources = HibernateEntityUtils.getEntityResources(driverInfo);
+			Resource[] resources = HibernateEntityUtils.getEntityResources(driverInfo, RESOURCE_PATTERN_ENTITY);
 			if (resources == null) continue;
 			try {
 				ClassRelativeResourceLoader classRelativeResourceLoader = new ClassRelativeResourceLoader(driverInfo.getClass());
@@ -81,19 +85,42 @@ public class HibernateEntityUtils extends ModulePluginUtils {
 		SystemLogUtils.rootPrintln("Annotation 加载Entity结束！");
 	}
 
+	static void addJarHbm(Configuration config) {
+		Enumeration<ModulePluginDriverInfo> dirverInfos = getDriverInfos();
+		SystemLogUtils.rootPrintln("加载Hibernate hbm开始！");
+		while (dirverInfos.hasMoreElements()) {
+			ModulePluginDriverInfo driverInfo = dirverInfos.nextElement();
+			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载hbm！");
+			Resource[] resources = HibernateEntityUtils.getEntityResources(driverInfo, RESOURCE_PATTERN_HBM);
+			if (resources == null) continue;
+			try {
+				for (Resource resource : resources) {
+					config.addInputStream(resource.getInputStream());
+					SystemLogUtils.thirdPrintln("Entity：" + resource.getFilename());
+				}
+			} catch (MappingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		SystemLogUtils.rootPrintln("加载Hibernate hbm结束！");
+	}
+
 	/**
 	 * 获取可能是Entity的class文件资源
 	 * 
 	 * @param driver 模块插件驱动
+	 * @param resourceType 匹配文件类型
 	 * @return 可能为null
 	 * @author 黄国庆 2011-4-5 下午04:33:40
 	 */
-	public static Resource[] getEntityResources(ModulePluginDriverInfo driverInfo) {
+	public static Resource[] getEntityResources(ModulePluginDriverInfo driverInfo, String resourceType) {
 		ModulePluginDriver driver = driverInfo.getDriver();
 		Class<? extends ModulePluginDriver> loaderClass = driver.getClass();
 		String entityLocation = resolvePath(loaderClass, driver.getEntityLocation());
 		if (entityLocation == null) return null;
-		String pattern = ClassUtils.convertClassNameToResourcePath(entityLocation) + RESOURCE_PATTERN_ENTITY;
+		String pattern = ClassUtils.convertClassNameToResourcePath(entityLocation) + resourceType;
 		return getResources(driverInfo, pattern);
 	}
 

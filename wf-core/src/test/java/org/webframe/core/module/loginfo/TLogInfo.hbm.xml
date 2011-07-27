@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2008-3-12 16:51:51 by Hibernate Tools 3.2.0.b9 -->
+<hibernate-mapping package="org.webframe.core.module.loginfo">
+    <class name="TLogInfo" table="T_LOG_INFO" >
+        <id name="id" type="string">
+            <column name="ID_" length="32" />
+            <generator class="uuid" />
+        </id>
+        <property name="userid" type="string">
+            <column name="USERID_"  />
+        </property>
+        <property name="username" type="string">
+            <column name="USERNAME_" />
+        </property>
+        <property name="departname" type="string">
+            <column name="DEPARTNAME_" />
+        </property>
+        <property name="logintime" type="string">
+            <column name="LOGINTIME_"  />
+        </property>
+        <property name="loginip" type="string">
+            <column name="LOGINIP_"  />
+        </property>
+    </class>
+</hibernate-mapping>

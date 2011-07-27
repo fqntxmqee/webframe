@@ -69,6 +69,8 @@ public class WFSessionFactoryBean extends AnnotationSessionFactoryBean {
 	@Override
 	protected void postProcessMappings(Configuration config) throws HibernateException {
 		super.postProcessMappings(config);
+		// 加载jar包中的hbm配置文件
+		HibernateEntityUtils.addJarHbm(config);
 		// 加载模块中的注解Entity
 		HibernateEntityUtils.addAnnotatedClass((AnnotationConfiguration) config, entityTypeFilters);
 	}
