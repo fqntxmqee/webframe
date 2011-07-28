@@ -13,6 +13,7 @@ import javax.servlet.ServletResponse;
 import org.springframework.beans.BeansException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
+import org.springframework.web.filter.GenericFilterBean;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
@@ -67,6 +68,7 @@ public class WFFilterProxy extends DelegatingFilterProxy {
 		WebApplicationContext wac = findWebApplicationContext();
 		wfFilterContext = wac.getBean(WFFilterManager.BEAN_NAME_WF_FILTER_CONTEXT, WFFilterContext.class);
 		for (Filter filter : wfFilterContext.getAllFilters()) {
+			if (filter instanceof GenericFilterBean) continue;
 			filter.init(getFilterConfig());
 		}
 	}
