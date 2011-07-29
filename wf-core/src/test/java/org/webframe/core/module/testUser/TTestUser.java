@@ -1,6 +1,7 @@
 
 package org.webframe.core.module.testUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,6 +33,21 @@ public class TTestUser extends BaseTreeEntity {
 	private String					password;
 
 	private String					likes;
+
+	TTestUser						testUser				= null;
+
+	List<String>					list					= new ArrayList<String>();
+
+	public void addList(String name) {
+		list.add(name);
+	}
+
+	public TTestUser() {
+	}
+
+	public TTestUser(TTestUser testUser) {
+		this.testUser = testUser;
+	}
 
 	@Override
 	@Column(name = "NAME_", nullable = false)

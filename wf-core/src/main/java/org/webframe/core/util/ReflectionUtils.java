@@ -58,31 +58,43 @@ public abstract class ReflectionUtils extends org.springframework.util.Reflectio
 	 * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
 	 */
 	public static Object getFieldValue(final Object obj, final String fieldName) {
-		Field field = getAccessibleField(obj, fieldName);
-		if (field == null) {
-			throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
+		if (obj == null || StringUtil.isEmpty(fieldName)) return null;
+		int index = fieldName.indexOf(".");
+		if (index < 0) {
+			Field field = getAccessibleField(obj, fieldName);
+			if (field == null) {
+				throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
+			}
+			Object result = null;
+			try {
+				result = field.get(obj);
+			} catch (IllegalAccessException e) {
+				log.error("不可能抛出的异常{}", e);
+			}
+			return result;
+		} else {
+			return getFieldValue(getFieldValue(obj, fieldName.substring(0, index)), fieldName.substring(index + 1));
 		}
-		Object result = null;
-		try {
-			result = field.get(obj);
-		} catch (IllegalAccessException e) {
-			log.error("不可能抛出的异常{}", e);
-		}
-		return result;
 	}
 
 	/**
 	 * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
 	 */
 	public static void setFieldValue(final Object obj, final String fieldName, final Object value) {
-		Field field = getAccessibleField(obj, fieldName);
-		if (field == null) {
-			throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
-		}
-		try {
-			field.set(obj, value);
-		} catch (IllegalAccessException e) {
-			log.error("不可能抛出的异常:{}", e);
+		if (obj == null) throw new IllegalArgumentException("[" + obj + "]");
+		int index = fieldName.indexOf(".");
+		if (index < 0) {
+			Field field = getAccessibleField(obj, fieldName);
+			if (field == null) {
+				throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
+			}
+			try {
+				field.set(obj, value);
+			} catch (IllegalAccessException e) {
+				log.error("不可能抛出的异常:{}", e);
+			}
+		} else {
+			setFieldValue(getFieldValue(obj, fieldName.substring(0, index)), fieldName.substring(index + 1), value);
 		}
 	}
 
@@ -91,17 +103,12 @@ public abstract class ReflectionUtils extends org.springframework.util.Reflectio
 	 */
 	public static Field getAccessibleField(final Object obj, final String fieldName) {
 		if (obj == null || StringUtil.isEmpty(fieldName)) return null;
-		for (Class<?> superClass = obj.getClass(); superClass != Object.class; superClass = superClass.getSuperclass()) {
-			try {
-				Field field = superClass.getDeclaredField(fieldName);
-				field.setAccessible(true);
-				return field;
-			} catch (NoSuchFieldException e) {// NOSONAR
-				e.printStackTrace();
-				// Field不在当前类定义,继续向上转型
-			}
+		int index = fieldName.indexOf(".");
+		if (index < 0) {
+			return getAccessibleField0(obj, fieldName);
+		} else {
+			return getAccessibleField(getFieldValue(obj, fieldName.substring(0, index)), fieldName.substring(index + 1));
 		}
-		return null;
 	}
 
 	/**
@@ -131,7 +138,7 @@ public abstract class ReflectionUtils extends org.springframework.util.Reflectio
 				method.setAccessible(true);
 				return method;
 			} catch (NoSuchMethodException e) {// NOSONAR
-				e.printStackTrace();
+				log.warn(e.toString() + "[" + superClass + "]");
 				// Method不在当前类定义,继续向上转型
 			}
 		}
@@ -220,5 +227,19 @@ public abstract class ReflectionUtils extends org.springframework.util.Reflectio
 			return (RuntimeException) e;
 		}
 		return new RuntimeException("Unexpected Checked Exception.", e);
+	}
+
+	private static Field getAccessibleField0(final Object obj, final String fieldName) {
+		for (Class<?> superClass = obj.getClass(); superClass != Object.class; superClass = superClass.getSuperclass()) {
+			try {
+				Field field = superClass.getDeclaredField(fieldName);
+				field.setAccessible(true);
+				return field;
+			} catch (NoSuchFieldException e) {// NOSONAR
+				log.warn(e.toString() + "[" + superClass + "]");
+				// Field不在当前类定义,继续向上转型
+			}
+		}
+		return null;
 	}
 }
