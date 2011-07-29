@@ -66,6 +66,10 @@ public class Configuration {
 		this.adapters = adapters;
 	}
 
+	public Map<String, ValueListAdapter> getAdapters() {
+		return this.adapters;
+	}
+
 	/**
 	 * Gets the default adapter to pass back if none are found.
 	 * 
