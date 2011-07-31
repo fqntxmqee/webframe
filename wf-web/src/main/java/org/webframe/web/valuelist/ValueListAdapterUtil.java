@@ -53,7 +53,7 @@ public abstract class ValueListAdapterUtil {
 
 	public static boolean hasAdapter(String adapterName) {
 		if (adapterCache == null) {
-			return false;
+			adapterCache = ValueListAdapterManager.getAllAdapters();
 		}
 		return adapterCache.containsKey(adapterName);
 	}

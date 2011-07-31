@@ -75,7 +75,7 @@ public class ValueListUtils {
 	 * @param entityClass 业务模块模型对象类型
 	 * @author: 黄国庆 2011-1-22 下午12:10:10
 	 */
-	protected static void getDefaultListHqlAdapter(Class<? extends BaseEntity> entityClass) {
+	public static void getDefaultListHqlAdapter(Class<? extends BaseEntity> entityClass) {
 		/**
 		 * 如果valuelist Adapter容器中没有该模型对象的Adapter，则生成该模型对象的Adapter， 并保存到valuelist Adapter容器中
 		 */
@@ -89,7 +89,7 @@ public class ValueListUtils {
 	 * 
 	 * @param list valuelist实例
 	 */
-	protected static StringBuilder valueListToJson(ValueList list) {
+	public static StringBuilder valueListToJson(ValueList list) {
 		StringBuilder sb = new StringBuilder("[");
 		List<?> list_ = list.getList();
 		if (list_ != null && list_.size() > 0) {
@@ -116,7 +116,7 @@ public class ValueListUtils {
 	 * @param request
 	 * @author: 黄国庆 2011-1-22 下午12:09:59
 	 */
-	protected static void setValueListToRequest(Class<? extends BaseEntity> entityClass, Map<String, Object> queries, HttpServletRequest request) {
+	public static void setValueListToRequest(Class<? extends BaseEntity> entityClass, Map<String, Object> queries, HttpServletRequest request) {
 		getDefaultListHqlAdapter(entityClass);
 		setValueListToRequest(ValueListAdapterUtil.generateHqlAdapterName(entityClass), queries, "listTable", request,
 			null);
@@ -130,7 +130,7 @@ public class ValueListUtils {
 	 * @param request
 	 * @author: 黄国庆 2011-1-22 下午12:09:59
 	 */
-	protected static void setValueListToRequest(Class<? extends BaseEntity> entityClass, HttpServletRequest request) {
+	public static void setValueListToRequest(Class<? extends BaseEntity> entityClass, HttpServletRequest request) {
 		getDefaultListHqlAdapter(entityClass);
 		Map<String, Object> queries = getQueryMap(request, entityClass);
 		setValueListToRequest(ValueListAdapterUtil.generateHqlAdapterName(entityClass), queries, "listTable", request,
@@ -149,7 +149,7 @@ public class ValueListUtils {
 	 * @param valueListName 如果没有指定该名称，默认使用key：DEFAULT_VALUELIST_REQUEST_LIST_NAME
 	 * @author: 黄国庆 2011-1-22 下午12:17:12
 	 */
-	protected static void setValueListToRequest(String adapter, Map<String, Object> queries, String tableId, HttpServletRequest request, String valueListName) {
+	public static void setValueListToRequest(String adapter, Map<String, Object> queries, String tableId, HttpServletRequest request, String valueListName) {
 		Map<String, Object> queryMap = getValueListQureyMap(queries, tableId, request);
 		disposeValueListDebugParam(queries, request);
 		ValueListInfo info = getValueListInfo(queryMap);
@@ -168,7 +168,7 @@ public class ValueListUtils {
 	 * @param valueListName 放在request域中的变量名称，如果没有指定该名称，默认使用key：DEFAULT_VALUELIST_REQUEST_LIST_NAME
 	 * @author 黄国庆 2011-4-25 下午08:28:39
 	 */
-	protected static void setValueListToRequest(String adapter, String tableId, HttpServletRequest request, String valueListName) {
+	public static void setValueListToRequest(String adapter, String tableId, HttpServletRequest request, String valueListName) {
 		setValueListToRequest(adapter, getQueryMap(request), tableId, request, valueListName);
 	}
 
@@ -181,7 +181,7 @@ public class ValueListUtils {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午08:38:10
 	 */
-	protected static ValueList getValueList(String adapter, HttpServletRequest request) {
+	public static ValueList getValueList(String adapter, HttpServletRequest request) {
 		Map<String, Object> queryMap = getQueryMap(request);
 		disposeValueListDebugParam(queryMap, request);
 		ValueListInfo info = getValueListInfo(queryMap);
@@ -215,7 +215,7 @@ public class ValueListUtils {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午04:29:27
 	 */
-	protected static ValueList getValueList(String adapter, Map<String, Object> queries) {
+	public static ValueList getValueList(String adapter, Map<String, Object> queries) {
 		return getValueList(adapter, getValueListInfo(queries));
 	}
 
@@ -227,7 +227,7 @@ public class ValueListUtils {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午08:10:17
 	 */
-	protected static ValueList getValueList(String adapter, ValueListInfo info) {
+	public static ValueList getValueList(String adapter, ValueListInfo info) {
 		if (info.getFilters().containsKey(PARAM_DEBUG)) {
 			reloadValueListSpringContext();
 		}
@@ -241,7 +241,7 @@ public class ValueListUtils {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午08:10:59
 	 */
-	protected static ValueListInfo getValueListInfo(Map<String, Object> queries) {
+	public static ValueListInfo getValueListInfo(Map<String, Object> queries) {
 		return new ValueListInfo(queries);
 	}
 
@@ -250,7 +250,7 @@ public class ValueListUtils {
 	 * 
 	 * @author 黄国庆 2011-5-1 下午09:20:25
 	 */
-	protected static void reloadValueListSpringContext() {
+	public static void reloadValueListSpringContext() {
 		if (PropertyConfigurerUtils.getBoolean("vlh.debug")) {
 			log.info("重新加载资源目录valuelist配置文件!");
 			try {
@@ -274,7 +274,7 @@ public class ValueListUtils {
 	 * @return
 	 * @author: 黄国庆 2011-1-22 下午12:06:38
 	 */
-	protected static Map<String, Object> getQueryMap(HttpServletRequest request, Class<? extends BaseEntity> clazz) {
+	public static Map<String, Object> getQueryMap(HttpServletRequest request, Class<? extends BaseEntity> clazz) {
 		Map<String, String[]> mapParam = request.getParameterMap();
 		Map<String, Object> attrMap = new HashMap<String, Object>();
 		for (Map.Entry<String, String[]> entry : mapParam.entrySet()) {
@@ -318,11 +318,11 @@ public class ValueListUtils {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午08:19:10
 	 */
-	protected static Map<String, Object> getQueryMap(HttpServletRequest request) {
+	public static Map<String, Object> getQueryMap(HttpServletRequest request) {
 		return getQueryMap(request, null);
 	}
 
-	protected static ValueListHandlerHelper getValueListHelper() {
+	public static ValueListHandlerHelper getValueListHelper() {
 		if (valueListHelper == null) {
 			valueListHelper = (ValueListHandlerHelper) WebFrameUtils.getBean(BEAN_NAME_VALUELIST_HELPER);
 		}
