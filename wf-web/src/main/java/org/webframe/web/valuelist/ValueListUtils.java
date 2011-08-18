@@ -89,7 +89,7 @@ public class ValueListUtils {
 	 * 
 	 * @param list valuelist实例
 	 */
-	public static StringBuilder valueListToJson(ValueList list) {
+	public static StringBuilder valueListToJson(ValueList<?> list) {
 		StringBuilder sb = new StringBuilder("[");
 		List<?> list_ = list.getList();
 		if (list_ != null && list_.size() > 0) {
@@ -153,7 +153,7 @@ public class ValueListUtils {
 		Map<String, Object> queryMap = getValueListQureyMap(queries, tableId, request);
 		disposeValueListDebugParam(queries, request);
 		ValueListInfo info = getValueListInfo(queryMap);
-		ValueList valueList = getValueList(adapter, info);
+		ValueList<?> valueList = getValueList(adapter, info);
 		if (valueListName == null) valueListName = DEFAULT_VALUELIST_REQUEST_LIST_NAME;
 		getValueListHelper().backupAndSet(request, valueList, valueListName, tableId);
 	}
@@ -181,7 +181,7 @@ public class ValueListUtils {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午08:38:10
 	 */
-	public static ValueList getValueList(String adapter, HttpServletRequest request) {
+	public static <X> ValueList<X> getValueList(String adapter, HttpServletRequest request) {
 		Map<String, Object> queryMap = getQueryMap(request);
 		disposeValueListDebugParam(queryMap, request);
 		ValueListInfo info = getValueListInfo(queryMap);
@@ -215,7 +215,7 @@ public class ValueListUtils {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午04:29:27
 	 */
-	public static ValueList getValueList(String adapter, Map<String, Object> queries) {
+	public static <X> ValueList<X> getValueList(String adapter, Map<String, Object> queries) {
 		return getValueList(adapter, getValueListInfo(queries));
 	}
 
@@ -227,7 +227,7 @@ public class ValueListUtils {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午08:10:17
 	 */
-	public static ValueList getValueList(String adapter, ValueListInfo info) {
+	public static <X> ValueList<X> getValueList(String adapter, ValueListInfo info) {
 		if (info.getFilters().containsKey(PARAM_DEBUG)) {
 			reloadValueListSpringContext();
 		}
