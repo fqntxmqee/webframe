@@ -20,6 +20,7 @@ import org.hibernate.engine.FilterDefinition;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.stat.Statistics;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.webframe.core.datasource.DataBaseType;
 import org.webframe.core.datasource.WFDataSource;
 
@@ -36,15 +37,15 @@ public class WFSessionFactoryWrapper implements SessionFactory {
 	/**
 	 * 
 	 */
-	private static final long				serialVersionUID				= 1324814669169343743L;
+	private static final long		serialVersionUID		= 1324814669169343743L;
 
-	private static final Log				log								= LogFactory.getLog(WFSessionFactoryWrapper.class);
+	private static final Log		log						= LogFactory.getLog(WFSessionFactoryWrapper.class);
 
-	private SessionFactory					sessionFactory					= null;
+	private SessionFactory			sessionFactory			= null;
 
 	private WFSessionFactoryBean	wFSessionFactoryBean	= null;
 
-	private DataBaseType						databaseType					= DataBaseType.未知数据库;
+	private DataBaseType				databaseType			= DataBaseType.未知数据库;
 
 	protected WFSessionFactoryWrapper(SessionFactory sessionFactory, WFSessionFactoryBean wFSessionFactoryBean) {
 		this.sessionFactory = sessionFactory;
@@ -155,7 +156,7 @@ public class WFSessionFactoryWrapper implements SessionFactory {
 
 	@Override
 	public Session getCurrentSession() throws HibernateException {
-		return this.sessionFactory.getCurrentSession();
+		return (Session) SessionFactoryUtils.getSession(this, true);
 	}
 
 	@Override
