@@ -18,6 +18,7 @@
  * > http://www.gnu.org/copyleft/lesser.html                                  
  * > http://www.opensource.org/licenses/lgpl-license.php
  */
+
 package org.webframe.web.page.adapter;
 
 import org.webframe.web.page.DefaultListBackedValueList;
@@ -25,73 +26,70 @@ import org.webframe.web.page.ValueList;
 import org.webframe.web.page.ValueListAdapter;
 import org.webframe.web.page.ValueListInfo;
 
-/** This decorator is a lazy way to implement caching.  This is ideal for 
- *  select boxes and the like.  
- * 
- *  <p>
- *    Note that to make this thread safe sorting and paging must
- *    be defined in the parent ValueListAdapter
- *  </p>
+/**
+ * This decorator is a lazy way to implement caching. This is ideal for select boxes and the like.
+ * <p> Note that to make this thread safe sorting and paging must be defined in the parent
+ * ValueListAdapter </p>
  * 
  * @author mwilson
  */
-public class ValueListAdapterCacheDecorator implements ValueListAdapter
-{
+public class ValueListAdapterCacheDecorator implements ValueListAdapter {
+
 	/** The duration in milliseconds to allow cached data to stick around. **/
-	private long cacheTimeout = Long.MAX_VALUE;
+	private long					cacheTimeout		= Long.MAX_VALUE;
+
 	/** The time in milliseconds the cache was created. **/
-	private long cacheCreateTime = -1;
+	private long					cacheCreateTime	= -1;
+
 	/** The time in milliseconds the cache should be refreshed. **/
-    private long nextRefresh = System.currentTimeMillis();
-    /** The source for the data. **/
-	private ValueListAdapter decoratedValueListAdapter;
+	private long					nextRefresh			= System.currentTimeMillis();
+
+	/** The source for the data. **/
+	private ValueListAdapter	decoratedValueListAdapter;
+
 	/** The cached valuelist. **/
-	private ValueList valueList;
+	private ValueList<?>			valueList;
 
 	/**
 	 * @see org.webframe.web.page.ValueListAdapter#getAdapterType()
 	 */
-	public int getAdapterType()
-	{
+	public int getAdapterType() {
 		return decoratedValueListAdapter.getAdapterType();
 	}
 
 	/**
-	 * @see org.webframe.web.page.ValueListAdapter#getValueList(java.lang.String, org.webframe.web.page.ValueListInfo)
+	 * @see org.webframe.web.page.ValueListAdapter#getValueList(java.lang.String,
+	 *      org.webframe.web.page.ValueListInfo)
 	 */
-	public ValueList getValueList(String name, ValueListInfo info)
-	{
-		//Check to see if we ever invalidate the cache.
-		if (valueList == null || cacheTimeout != Long.MAX_VALUE)
-		{
-			if (nextRefresh < System.currentTimeMillis())
-			{
+	@SuppressWarnings({
+				"rawtypes", "unchecked"})
+	public <X> ValueList<X> getValueList(String name, ValueListInfo info) {
+		// Check to see if we ever invalidate the cache.
+		if (valueList == null || cacheTimeout != Long.MAX_VALUE) {
+			if (nextRefresh < System.currentTimeMillis()) {
 				cacheCreateTime = System.currentTimeMillis();
 				nextRefresh = cacheCreateTime + cacheTimeout;
 				valueList = decoratedValueListAdapter.getValueList(name, info);
 			}
 		}
-
 		return new DefaultListBackedValueList(valueList.getList(), valueList.getValueListInfo());
 	}
 
-	/** Sets the duration in milliseconds to allow 
-	 *  cached data to stick around.
+	/**
+	 * Sets the duration in milliseconds to allow cached data to stick around.
 	 * 
 	 * @param cachTimeout Duration in milliseconds.
 	 */
-	public void setCacheTimeout(long cacheTimeout)
-	{
+	public void setCacheTimeout(long cacheTimeout) {
 		this.cacheTimeout = cacheTimeout;
 	}
 
-	/** The underling ValueListAdapter that retrieves the ValueList
-	 *  to be cached.
+	/**
+	 * The underling ValueListAdapter that retrieves the ValueList to be cached.
 	 * 
 	 * @param decoratedValueListAdapter The parent ValueListAdapter.
 	 */
-	public void setParent(ValueListAdapter decoratedValueListAdapter)
-	{
+	public void setParent(ValueListAdapter decoratedValueListAdapter) {
 		this.decoratedValueListAdapter = decoratedValueListAdapter;
 	}
 }

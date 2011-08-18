@@ -61,7 +61,7 @@ public class ValueListSpaceTag extends BodyTagSupport implements ParamAddable {
 
 	protected ValueListConfigBean	config;
 
-	protected ValueList				valueList			= null;
+	protected ValueList<?>			valueList			= null;
 
 	protected TableInfo				tableInfo			= new TableInfo(TableInfo.DEFAULT_ID);
 
@@ -91,7 +91,8 @@ public class ValueListSpaceTag extends BodyTagSupport implements ParamAddable {
 	/**
 	 * @see javax.servlet.jsp.tagext.Tag#doStartTag()
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({
+				"unchecked", "rawtypes"})
 	public int doStartTag() throws JspException {
 		parentRootTag = (ValueListSpaceTag) findAncestorWithClass(this, ValueListSpaceTag.class);
 		Object bean;
@@ -104,9 +105,9 @@ public class ValueListSpaceTag extends BodyTagSupport implements ParamAddable {
 		}
 		if (bean != null) {
 			if (bean instanceof ValueList) {
-				setValueList((ValueList) bean);
+				setValueList((ValueList<?>) bean);
 			} else if (bean instanceof List) {
-				setValueList(new DefaultListBackedValueList((List<Object>) bean));
+				setValueList(new DefaultListBackedValueList((List<?>) bean));
 				if (LOGGER.isDebugEnabled()) {
 					LOGGER.debug("List '" + valueListName + "' was wrapped with DefaultListBackedValueList.");
 				}
@@ -226,7 +227,7 @@ public class ValueListSpaceTag extends BodyTagSupport implements ParamAddable {
 	 * 
 	 * @return Returns the valueList. NEVER RETURN NULL
 	 */
-	public ValueList getValueList() {
+	public ValueList<?> getValueList() {
 		if (valueList == null) {
 			if (!wasRetrieved) {
 				LOGGER.error("Please set any valueList before use! \n A) Check if you have the tag <vlh:retrieve .../>  before using data, if you are not using Controller! The most safe place is to put it after the root tag."
@@ -247,7 +248,7 @@ public class ValueListSpaceTag extends BodyTagSupport implements ParamAddable {
 	/**
 	 * @param valueList The valueList to set.
 	 */
-	public void setValueList(ValueList valueList) {
+	public void setValueList(ValueList<?> valueList) {
 		this.valueList = valueList;
 		wasRetrieved = true;
 	}

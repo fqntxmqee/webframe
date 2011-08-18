@@ -23,6 +23,7 @@ package org.webframe.web.page;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
@@ -119,7 +120,9 @@ public class DefaultValueListHandlerImpl implements ValueListHandler {
 	/**
 	 * @see com.mlw.vlh.ValueListHander.getValueList(ValueListInfo info, String name)
 	 */
-	public ValueList getValueList(String name, ValueListInfo info) {
+	@SuppressWarnings({
+				"rawtypes", "unchecked"})
+	public <X> ValueList<X> getValueList(String name, ValueListInfo info) {
 		if (info == null) {
 			info = new ValueListInfo();
 			if (LOGGER.isDebugEnabled()) {
@@ -128,7 +131,7 @@ public class DefaultValueListHandlerImpl implements ValueListHandler {
 		}
 		info.getFilters().put(ValueListInfo.VALUE_LIST_NAME, name);
 		ValueListAdapter adapter = getAdapter(name);
-		ValueList valueList = adapter.getValueList(name, info);
+		ValueList<X> valueList = adapter.getValueList(name, info);
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("The ValueList was loaded from the adapter '" + name + "'.");
 		}
@@ -161,7 +164,8 @@ public class DefaultValueListHandlerImpl implements ValueListHandler {
 						start = ((totalNumberOfEntries - 1) / pagingNumberPer) * pagingNumberPer;
 					}
 					int end = Math.min(start + pagingNumberPer, valueList.getList().size());
-					valueList = new DefaultListBackedValueList(valueList.getList().subList(start, end), valueList.getValueListInfo());
+					List<X> list = valueList.getList().subList(start, end);
+					valueList = new DefaultListBackedValueList(list, valueList.getValueListInfo());
 					LOGGER.debug("The ValueList was paged by post process.");
 				}
 			}

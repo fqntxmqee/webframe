@@ -33,24 +33,24 @@ import java.util.NoSuchElementException;
  * @author Matthew L. Wilson, Andrej Zachar
  * @version $Revision: 1.10 $ $Date: 2005/08/19 15:46:25 $
  */
-public class DefaultListBackedValueList implements ValueList {
+public class DefaultListBackedValueList<T> implements ValueList<T> {
 
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= -3545563119807364586L;
 
-	private List<Object>			list					= null;
+	private List<T>				list					= null;
 
 	private ValueListInfo		info					= null;
 
-	private Iterator<Object>	iter					= null;
+	private Iterator<T>			iter					= null;
 
 	/**
 	 * Creates a new instance of DefaultValueList
 	 */
 	public DefaultListBackedValueList() {
-		this(new ArrayList<Object>(), new ValueListInfo());
+		this(new ArrayList<T>(), new ValueListInfo());
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class DefaultListBackedValueList implements ValueList {
 	 * 
 	 * @param list The List to be sorted.
 	 */
-	public DefaultListBackedValueList(List<Object> list) {
+	public DefaultListBackedValueList(List<T> list) {
 		this.list = list;
 		this.info = new ValueListInfo();
 		if (list != null) {
@@ -72,7 +72,7 @@ public class DefaultListBackedValueList implements ValueList {
 	 * @param list The List to be sorted.
 	 * @param info The sorting/paging/filtering info.
 	 */
-	public DefaultListBackedValueList(List<Object> list, ValueListInfo info) {
+	public DefaultListBackedValueList(List<T> list, ValueListInfo info) {
 		this.list = list;
 		this.info = info;
 	}
@@ -80,7 +80,7 @@ public class DefaultListBackedValueList implements ValueList {
 	/**
 	 * @see com.mlw.vlh.ValueList.getList()
 	 */
-	public List<Object> getList() {
+	public List<T> getList() {
 		return list;
 	}
 
@@ -104,7 +104,7 @@ public class DefaultListBackedValueList implements ValueList {
 	/**
 	 * @see java.util.Iterator#next()
 	 */
-	public Object next() throws NoSuchElementException {
+	public T next() throws NoSuchElementException {
 		if (iter == null) {
 			if (list != null) {
 				this.iter = list.iterator();

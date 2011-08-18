@@ -124,7 +124,7 @@ public class DefaultPagingTag extends ConfigurableTag {
 		return rootTag.getConfig();
 	}
 
-	protected ValueList getValueList() {
+	protected ValueList<?> getValueList() {
 		return rootTag.getValueList();
 	}
 

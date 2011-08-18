@@ -64,12 +64,12 @@ public class ResultSetIterator implements DynaBean, Iterator<DynaBean> {
 	 * @param name Name of the property whose value is to be retrieved
 	 * @exception IllegalArgumentException if there is no property of the specified name
 	 */
-	public DynaBean get(String name) {
+	public Object get(String name) {
 		if (dynaClass.getDynaProperty(name) == null) {
 			throw new IllegalArgumentException(name);
 		}
 		try {
-			return (DynaBean) (dynaClass.getResultSet().getObject(name));
+			return (dynaClass.getResultSet().getObject(name));
 		} catch (SQLException e) {
 			return null;
 		}

@@ -33,14 +33,14 @@ import java.util.NoSuchElementException;
  * @author Matthew L. Wilson
  * @version $Revision: 1.2 $ $Date: 2004/06/25 16:42:41 $
  */
-public interface ValueList extends Serializable, Iterator<Object> {
+public interface ValueList<T> extends Serializable, Iterator<T> {
 
 	/**
 	 * Returns the embeded <code>List</code>
 	 * 
 	 * @return The embeded <code>List</code>
 	 */
-	List<Object> getList();
+	List<T> getList();
 
 	/**
 	 * Returns the embeded <code>ValueListInfo</code>
@@ -62,5 +62,5 @@ public interface ValueList extends Serializable, Iterator<Object> {
 	 * @throws NoSuchElementException If element does not exist.
 	 * @return The next Object in the Iterator.
 	 */
-	Object next() throws NoSuchElementException;
+	T next() throws NoSuchElementException;
 }

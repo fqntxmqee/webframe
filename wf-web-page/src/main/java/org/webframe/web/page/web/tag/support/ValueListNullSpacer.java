@@ -14,7 +14,7 @@ import org.webframe.web.page.DefaultListBackedValueList;
  * @author Andrej Zachar
  * @version $Revision: 1.2 $ $Date: 2005/08/19 16:06:30 $
  */
-final public class ValueListNullSpacer extends DefaultListBackedValueList {
+final public class ValueListNullSpacer extends DefaultListBackedValueList<Spacer> {
 
 	/**
 	 * 

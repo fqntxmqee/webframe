@@ -46,9 +46,9 @@ public class HashMapAdapter extends AbstractDynaJdbcAdapter {
 	 *      java.sql.ResultSet, int, org.webframe.web.page.ValueListInfo)
 	 */
 	@Override
-	public List<Object> processResultSet(String name, ResultSet result, int numberPerPage, ValueListInfo info)
+	public List<Map<String, Object>> processResultSet(String name, ResultSet result, int numberPerPage, ValueListInfo info)
 				throws SQLException {
-		List<Object> ret = new ArrayList<Object>(numberPerPage);
+		List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>(numberPerPage);
 		ResultSetMetaData meta = result.getMetaData(); // 获取结果集meta
 		Map<String, Object> m;
 		int columnCount = meta.getColumnCount();
@@ -56,10 +56,7 @@ public class HashMapAdapter extends AbstractDynaJdbcAdapter {
 			m = new HashMap<String, Object>(columnCount);
 			for (int j = 1; j <= columnCount; j++) {
 				// key为列名，value为实际数据
-				// 注：oracle中meta.getColumnName和meta.getColumnLabel取到的都是列的别名，且默认为大写
-				// 而mysql中meta.getColumnLabel取到的是列的别名，大小写是根据sql中的写法来确定
-				// 所以为了两种数据库的兼容，这里手动转化为大写
-				m.put(meta.getColumnLabel(j).toUpperCase(), result.getObject(j));
+				m.put(meta.getColumnLabel(j), result.getObject(j));
 			}
 			ret.add(m);
 		}
@@ -69,7 +66,7 @@ public class HashMapAdapter extends AbstractDynaJdbcAdapter {
 	/**
 	 * 根据数据库类型，选择不同的sql语句
 	 */
-	public ValueList getValueList(String name, ValueListInfo info) {
+	public <X> ValueList<X> getValueList(String name, ValueListInfo info) {
 		if (sqlMap != null && sqlMap.size() > 0) {
 			DataSource dataSource = getDataSource();
 			if (dataSource != null && dataSource instanceof WFDataSource) {

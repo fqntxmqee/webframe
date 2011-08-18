@@ -63,7 +63,7 @@ public class DefaultSelectTag extends BodyTagSupport {
 	 */
 	public int doEndTag() throws JspException {
 		ValueListSpaceTag rootTag = (ValueListSpaceTag) JspUtils.getParent(this, ValueListSpaceTag.class);
-		ValueList valueList = rootTag.getValueList();
+		ValueList<?> valueList = rootTag.getValueList();
 		StringBuffer sb = new StringBuffer();
 		sb.append("<select name=").append("'").append(name).append("'").append(attributes).append(">");
 		if (bodyContent != null && bodyContent.getString() != null) {
@@ -75,7 +75,7 @@ public class DefaultSelectTag extends BodyTagSupport {
 			if (svalues != null) {
 				values = Arrays.asList(svalues);
 			}
-			for (Iterator<Object> iter = valueList.getList().iterator(); iter.hasNext();) {
+			for (Iterator<?> iter = valueList.getList().iterator(); iter.hasNext();) {
 				Object bean = iter.next();
 				String value = BeanUtils.getProperty(bean, this.value);
 				sb.append("<option ");

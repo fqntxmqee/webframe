@@ -85,7 +85,9 @@ public abstract class AbstractJdbcAdapter extends AbstractValueListAdapter {
 	 * @see org.webframe.web.page.ValueListAdapter#getValueList(java.lang.String,
 	 *      org.webframe.web.page.ValueListInfo)
 	 */
-	public ValueList getValueList(String name, ValueListInfo info) {
+	@SuppressWarnings({
+				"unchecked", "rawtypes"})
+	public <X> ValueList<X> getValueList(String name, ValueListInfo info) {
 		if (info.getSortingColumn() == null) {
 			info.setPrimarySortColumn(getDefaultSortColumn());
 			info.setPrimarySortDirection(getDefaultSortDirectionInteger());
@@ -147,7 +149,7 @@ public abstract class AbstractJdbcAdapter extends AbstractValueListAdapter {
 					result.beforeFirst();
 				}
 			}
-			List<Object> list = processResultSet(name, result, (doSqlPaging) ? numberPerPage : Integer.MAX_VALUE, info);
+			List<?> list = processResultSet(name, result, (doSqlPaging) ? numberPerPage : Integer.MAX_VALUE, info);
 			if (!doSqlPaging) {
 				info.setTotalNumberOfEntries(list.size());
 			}
@@ -185,7 +187,7 @@ public abstract class AbstractJdbcAdapter extends AbstractValueListAdapter {
 	 *           parameters from controler. (Like in DefaultWrapperAdapter)
 	 * @return The List of VOs.
 	 */
-	public abstract List<Object> processResultSet(String name, ResultSet result, int numberPerPage, ValueListInfo info)
+	public abstract List<?> processResultSet(String name, ResultSet result, int numberPerPage, ValueListInfo info)
 				throws SQLException;
 
 	/**

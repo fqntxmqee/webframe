@@ -43,7 +43,7 @@ public class ValueListTest extends BaseSpringTests {
 	public void testGetValueListBySqlAdapter() {
 		String sqlAdapter = "testListSqlAdapter";
 		ValueListInfo info = new ValueListInfo();
-		ValueList valueList = valueListHelper.getValueList(sqlAdapter, info);
+		ValueList<Object> valueList = valueListHelper.getValueList(sqlAdapter, info);
 		List<Object> list = valueList.getList();
 		Assert.assertEquals("testListSqlAdapter 查询数据记录不正确！", 2, list.size());
 		System.out.println(list.toString());
@@ -53,7 +53,7 @@ public class ValueListTest extends BaseSpringTests {
 	public void testGetValueListByHqlAdapter() {
 		String hqlAdapter = "testListHqlAdapter";
 		ValueListInfo info = new ValueListInfo();
-		ValueList valueList = valueListHelper.getValueList(hqlAdapter, info);
+		ValueList<Object> valueList = valueListHelper.getValueList(hqlAdapter, info);
 		List<Object> list = valueList.getList();
 		Assert.assertEquals("testListHqlAdapter 查询数据记录不正确！", 2, list.size());
 		for (Object object : list) {

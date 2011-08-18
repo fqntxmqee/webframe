@@ -23,20 +23,21 @@ package org.webframe.web.page;
 
 /**
  * @author mwilson, azachar
- *
  */
-public interface ValueListHandler
-{
-   /** The name that should be used to bind this service to
-    * a JNDI tree or the like **/
-   static String DEFAULT_SERVICE_NAME = "valueListHandler";
+public interface ValueListHandler {
 
-   /** Gets a ValueList with the given name.
-    * 
-    * @param name The name of the <CODE>ValueList</CODE>
-    * @param info The <CODE>ValueListInfo</CODE> information.
-    * @see org.webframe.web.page.ValueListHandler#getPostProcessedValueList(ValueList, int)
-    * @return The <CODE>ValueList</CODE>.
-    */
-   ValueList getValueList(String name, ValueListInfo info);
+	/**
+	 * The name that should be used to bind this service to a JNDI tree or the like
+	 **/
+	static String	DEFAULT_SERVICE_NAME	= "valueListHandler";
+
+	/**
+	 * Gets a ValueList with the given name.
+	 * 
+	 * @param name The name of the <CODE>ValueList</CODE>
+	 * @param info The <CODE>ValueListInfo</CODE> information.
+	 * @see org.webframe.web.page.ValueListHandler#getPostProcessedValueList(ValueList, int)
+	 * @return The <CODE>ValueList</CODE>.
+	 */
+	<X> ValueList<X> getValueList(String name, ValueListInfo info);
 }

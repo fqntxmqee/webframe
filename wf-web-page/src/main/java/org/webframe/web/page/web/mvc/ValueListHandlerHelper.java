@@ -69,7 +69,7 @@ public class ValueListHandlerHelper {
 	 * @param info
 	 * @return ValueList
 	 */
-	public ValueList getValueList(String name, ValueListInfo info) {
+	public <X> ValueList<X> getValueList(String name, ValueListInfo info) {
 		return getValueListHandler().getValueList(name, info);
 	}
 
@@ -99,7 +99,7 @@ public class ValueListHandlerHelper {
 	 * @param tableId
 	 * @return ValueListInfo
 	 */
-	public ValueListInfo getValueListInfo(HttpServletRequest request, String tableId) {
+	public <X> ValueListInfo getValueListInfo(HttpServletRequest request, String tableId) {
 		if (request == null) {
 			final String message = "getValueListInfo - request is null!";
 			LOGGER.error(message);
@@ -162,7 +162,7 @@ public class ValueListHandlerHelper {
 	 * @param valueListName the name used in the &lt;vlh:root value="valueListName" ... to retrieve
 	 * @param tableId unique id in the session
 	 */
-	public void backupAndSet(HttpServletRequest request, ValueList valueList, String valueListName, String tableId) {
+	public void backupAndSet(HttpServletRequest request, ValueList<?> valueList, String valueListName, String tableId) {
 		backupInfoFor(request, valueList == null ? null : valueList.getValueListInfo(), tableId);
 		setValueListTo(request, valueList, valueListName);
 	}
@@ -174,7 +174,7 @@ public class ValueListHandlerHelper {
 	 * @param valueList ValueList to store
 	 * @param valueListName request attribute's
 	 */
-	public void setValueListTo(HttpServletRequest request, ValueList valueList, String valueListName) {
+	public void setValueListTo(HttpServletRequest request, ValueList<?> valueList, String valueListName) {
 		if (valueListName != null && valueListName.length() > 0) {
 			request.setAttribute(valueListName, valueList);
 			if (LOGGER.isDebugEnabled()) {

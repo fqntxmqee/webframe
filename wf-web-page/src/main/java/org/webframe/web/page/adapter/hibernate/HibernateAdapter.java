@@ -140,7 +140,7 @@ public class HibernateAdapter extends AbstractValueListAdapter {
 	 *      org.webframe.web.page.ValueListInfo)
 	 */
 	@SuppressWarnings("unchecked")
-	public ValueList getValueList(String name, ValueListInfo info) {
+	public <X> ValueList<X> getValueList(String name, ValueListInfo info) {
 		LOGGER.debug("getValueList(String, ValueListInfo) - start");
 		if (info.getSortingColumn() == null) {
 			info.setPrimarySortColumn(getDefaultSortColumn());
@@ -226,7 +226,7 @@ public class HibernateAdapter extends AbstractValueListAdapter {
 				list = query.list();
 				info.setTotalNumberOfEntries(list.size());
 			}
-			ValueList returnValueList = getListBackedValueList(info, list);
+			ValueList<X> returnValueList = getListBackedValueList(info, list);
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Retrieved list was wrapped in valuelist, info=" + info);
 			}
@@ -247,7 +247,9 @@ public class HibernateAdapter extends AbstractValueListAdapter {
 	 * @param list
 	 * @return DefaultListBackValueList instance
 	 */
-	protected ValueList getListBackedValueList(ValueListInfo info, List<Object> list) {
+	@SuppressWarnings({
+				"rawtypes", "unchecked"})
+	protected <X> ValueList<X> getListBackedValueList(ValueListInfo info, List<?> list) {
 		return new DefaultListBackedValueList(list, info);
 	}
 

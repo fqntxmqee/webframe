@@ -60,8 +60,10 @@ public class InvertedRowTag extends DefaultRowTag {
 
 	private String										format				= DEFAULT_FORMAT;
 
+	@SuppressWarnings({
+				"rawtypes", "unchecked"})
 	public void convertValueList() throws JspException {
-		ValueList vl = getRootTag().getValueList();
+		ValueList<?> vl = getRootTag().getValueList();
 		try {
 			while (vl.hasNext()) {
 				Object bean = vl.next();

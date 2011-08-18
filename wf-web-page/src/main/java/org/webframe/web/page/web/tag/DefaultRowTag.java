@@ -97,7 +97,7 @@ public class DefaultRowTag extends ConfigurableTag {
 	public int doStartTag() throws JspException {
 		init();
 		// If the valuelist is empty, render only header
-		ValueList valueList = getRootTag().getValueList();
+		ValueList<?> valueList = getRootTag().getValueList();
 		if (valueList == null || valueList.getList() == null || valueList.getList().size() == 0) {
 			getRootTag().setValueList(ValueListNullSpacer.getInstance());
 			LOGGER.warn("ValueList '"

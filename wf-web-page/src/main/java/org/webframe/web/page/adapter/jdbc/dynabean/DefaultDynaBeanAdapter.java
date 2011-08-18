@@ -37,7 +37,7 @@ public class DefaultDynaBeanAdapter extends AbstractDynaJdbcAdapter {
 		int rowIndex = 0;
 		for (Iterator<DynaBean> rows = rsdc.iterator(); rows.hasNext() && rowIndex < numberPerPage; rowIndex++) {
 			try {
-				DynaBean oldRow = rows.next();
+				DynaBean oldRow = (DynaBean) rows.next();
 				DynaBean newRow = bdc.newInstance();
 				DynaProperty[] properties = oldRow.getDynaClass().getDynaProperties();
 				for (int i = 0, length = properties.length; i < length; i++) {
