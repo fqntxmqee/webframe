@@ -137,8 +137,10 @@ public abstract class ReflectionUtils extends org.springframework.util.Reflectio
 				Method method = superClass.getDeclaredMethod(methodName, parameterTypes);
 				method.setAccessible(true);
 				return method;
-			} catch (NoSuchMethodException e) {// NOSONAR
-				log.warn(e.toString() + "[" + superClass + "]");
+			} catch (NoSuchMethodException e) {
+				if (superClass.getSuperclass() == Object.class) {
+					log.warn(e.toString() + "[" + superClass + "]");
+				}
 				// Method不在当前类定义,继续向上转型
 			}
 		}
@@ -235,8 +237,10 @@ public abstract class ReflectionUtils extends org.springframework.util.Reflectio
 				Field field = superClass.getDeclaredField(fieldName);
 				field.setAccessible(true);
 				return field;
-			} catch (NoSuchFieldException e) {// NOSONAR
-				log.warn(e.toString() + "[" + superClass + "]");
+			} catch (NoSuchFieldException e) {
+				if (superClass.getSuperclass() == Object.class) {
+					log.warn(e.toString() + "[" + superClass + "]");
+				}
 				// Field不在当前类定义,继续向上转型
 			}
 		}
