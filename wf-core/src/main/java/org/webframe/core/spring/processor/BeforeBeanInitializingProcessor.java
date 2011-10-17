@@ -124,7 +124,7 @@ public class BeforeBeanInitializingProcessor implements BeanPostProcessor, Order
 		List<Object> propertyValue;
 		if (!beanWrapper.isReadableProperty(getPropertyName())) {
 			Object bean = beanWrapper.getWrappedInstance();
-			propertyValue = (List<Object>) ReflectionUtils.getFieldValue(bean, getPropertyName());
+			propertyValue = new ArrayList<Object>((List<Object>) ReflectionUtils.getFieldValue(bean, getPropertyName()));
 		} else {
 			propertyValue = (List<Object>) beanWrapper.getPropertyValue(getPropertyName());
 		}
