@@ -61,6 +61,7 @@ public class WFDataSource implements DataSource, InitializingBean {
 
 	public WFDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
+		DataSourceUtil.initDataSource(this);
 	}
 
 	public WFDataSource(String databaseType, String poolType) throws Exception {
@@ -70,6 +71,7 @@ public class WFDataSource implements DataSource, InitializingBean {
 		if (databaseType != null) {
 			this.setDatabaseType(databaseType);
 		}
+		DataSourceUtil.initDataSource(this);
 	}
 
 	@Override

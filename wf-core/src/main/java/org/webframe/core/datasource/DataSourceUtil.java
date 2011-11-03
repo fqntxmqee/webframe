@@ -3,16 +3,12 @@ package org.webframe.core.datasource;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.StringTokenizer;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.webframe.core.util.SqlScriptsUtils;
 
 /**
  * 数据源工具类
@@ -23,12 +19,16 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class DataSourceUtil {
 
-	private static final Log		log						= LogFactory.getLog(DataSourceUtil.class);
-
 	private static DataBaseType	defaultDataBaseType	= DataBaseType.未知数据库;
+
+	private static WFDataSource	dataSource				= null;
 
 	static void initDataBaseType(DataBaseType dataBaseType) {
 		defaultDataBaseType = dataBaseType;
+	}
+
+	static void initDataSource(WFDataSource ds) {
+		dataSource = ds;
 	}
 
 	/**
@@ -41,28 +41,24 @@ public abstract class DataSourceUtil {
 	 * @author: 黄国庆 2011-1-17 下午02:32:31
 	 */
 	public static void executeSqlScripts(Reader initScripts, DataSource ds) throws SQLException, IOException {
-		Connection conn = ds.getConnection();
-		try {
-			String sql = IOUtils.toString(initScripts);
-			StringTokenizer tokenizer = new StringTokenizer(sql, ";");
-			log.info("Execute DB DataSource with sql:");
-			while (tokenizer.hasMoreTokens()) {
-				String tokenSql = tokenizer.nextToken();
-				log.info(tokenSql);
-				if ("".equals(tokenSql.trim())) continue;
-				Statement stat = null;
-				try {
-					stat = conn.createStatement();
-					stat.execute(tokenSql);
-				} catch (SQLException e) {
-					throw new SQLException("execute sql error:" + e + " error sql:\n" + tokenSql + " cause:" + e);
-				} finally {
-					if (stat != null) stat.close();
-				}
-			}
-		} finally {
-			conn.close();
+		if (DataSourceUtil.getDataBaseType() != DataBaseType.HSQLDB) {
+			SqlScriptsUtils.executeBatchSql(SqlScriptsUtils.analyzeSqlFile(IOUtils.toString(initScripts)), ds);
+		} else {
+			SqlScriptsUtils.executeSql(SqlScriptsUtils.analyzeSqlFile(IOUtils.toString(initScripts)), ds);
 		}
+	}
+
+	/**
+	 * 执行sql脚本
+	 * 
+	 * @param initScripts
+	 * @param ds
+	 * @throws SQLException
+	 * @throws IOException
+	 * @author: 黄国庆 2011-1-17 下午02:32:31
+	 */
+	public static void executeSqlScripts(Reader initScripts) throws SQLException, IOException {
+		executeSqlScripts(initScripts, dataSource);
 	}
 
 	public static DataBaseType getDataBaseType() {
@@ -70,5 +66,9 @@ public abstract class DataSourceUtil {
 			defaultDataBaseType = DataBaseType.未知数据库;
 		}
 		return defaultDataBaseType;
+	}
+
+	public static WFDataSource getDataSource() {
+		return dataSource;
 	}
 }
