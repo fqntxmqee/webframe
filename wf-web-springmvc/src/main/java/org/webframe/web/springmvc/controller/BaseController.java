@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +34,7 @@ public class BaseController extends MultiActionController {
 	 * valuelist 查询页面，查询条件form元素的name名称正则， 例如：<input type="text" name="attribute(name)" />; <input
 	 * type="hidden" name="attribute(id)" />
 	 */
-	private static final String	ATTR_MAP_REGEX	= "attribute\\((\\S*)\\)";
+	protected static final String	ATTR_MAP_REGEX	= "attribute\\((\\S*)\\)";
 
 	protected Log						log				= LogFactory.getLog(getClass());
 
@@ -54,26 +55,23 @@ public class BaseController extends MultiActionController {
 	 * @return
 	 * @author: 黄国庆 2011-1-22 下午12:06:38
 	 */
-	@SuppressWarnings("unchecked")
 	protected Map<String, Object> getQueryMap(HttpServletRequest request, Class<? extends BaseEntity> clazz) {
-		Map<String, String[]> mapParam = request.getParameterMap();
 		Map<String, Object> attrMap = new HashMap<String, Object>();
-		for (Map.Entry<String, String[]> entry : mapParam.entrySet()) {
-			String key = entry.getKey();
-			List<String> mathsList = PatternUtil.matchs(ATTR_MAP_REGEX, key);
-			if (!mathsList.isEmpty() && entry.getValue() != null) {
-				String name = mathsList.get(0);
-				// 如果clazz为null，不验证数据类型，无法转换数据类型
-				if (clazz == null) {
-					if (entry.getValue().length >= 1) {
-						attrMap.put(name, entry.getValue()[0]);
+		Set<?> keys = request.getParameterMap().keySet();
+		for (Object key : keys) {
+			if (key == null) continue;
+			String value = request.getParameter(key.toString());
+			if (value != null) {
+				List<String> mathsList = PatternUtil.matchs(ATTR_MAP_REGEX, key.toString());
+				if (!mathsList.isEmpty()) {
+					String name = mathsList.get(0);
+					// 如果clazz为null，不验证数据类型，无法转换数据类型
+					if (clazz == null) {
+						attrMap.put(name, value);
+						continue;
 					}
-					continue;
-				}
-				Class<?> propertyClass = BeanUtils.findPropertyType(name, new Class<?>[]{
-					clazz});
-				for (String value : entry.getValue()) {
-					if (value == null || "".equals(value)) continue;
+					Class<?> propertyClass = BeanUtils.findPropertyType(name, new Class<?>[]{
+						clazz});
 					// 如果查询条件属性对应的model属性的类型为Boolean或boolean，将查询条件的值转换为boolean类型
 					if (Boolean.class.isAssignableFrom(propertyClass) || boolean.class.equals(propertyClass)) {
 						attrMap.put(name, Boolean.parseBoolean(value));
@@ -86,6 +84,8 @@ public class BaseController extends MultiActionController {
 					} else {
 						attrMap.put(name, value);
 					}
+				} else {
+					attrMap.put(key.toString(), value);
 				}
 			}
 		}

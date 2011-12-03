@@ -37,23 +37,23 @@ public class BaseValueListController extends BaseController {
 	/**
 	 * 默认valuelist 保存到request中的变量名
 	 */
-	private final String					DEFAULT_VALUELIST_REQUEST_LIST_NAME	= "vlhMap";
+	protected static final String		DEFAULT_VALUELIST_REQUEST_LIST_NAME	= "vlhMap";
 
 	/**
 	 * Request域中分页显示记录数param key
 	 */
-	private final String					PARAM_PAGING_NUMBER_PER					= "limit";
+	protected static final String		PARAM_PAGING_NUMBER_PER					= "limit";
 
 	/**
 	 * Request域中第几页param key
 	 */
-	private final String					PARAM_PAGING_PAGE							= "start";
+	protected static final String		PARAM_PAGING_PAGE							= "start";
 
-	private final String					PARAM_DEBUG									= "debug";
+	protected static final String		PARAM_DEBUG									= "debug";
+
+	protected static final String		BEAN_NAME_VALUELIST_HELPER				= "valueListHelper";
 
 	private ValueListHandlerHelper	valueListHelper;
-
-	protected final String				BEAN_NAME_VALUELIST_HELPER				= "valueListHelper";
 
 	/**
 	 * 根据业务模块模型对象类型，获取该模块默认列表页的Hql查询语句的valuelist Adapter，包括查询条件；
@@ -76,18 +76,17 @@ public class BaseValueListController extends BaseController {
 	 * 
 	 * @param list valuelist实例
 	 */
-	@SuppressWarnings("unchecked")
-	protected StringBuilder valueListToJson(ValueList list) {
+	protected StringBuilder valueListToJson(ValueList<?> list) {
 		StringBuilder sb = new StringBuilder("[");
 		List<?> list_ = list.getList();
 		if (list_ != null && list_.size() > 0) {
 			Object obj = list_.get(0);
 			if (obj instanceof BasicDynaBean) {
-				sb.append(basicDynaBeanToJson((List<BasicDynaBean>) list_));
+				sb.append(basicDynaBeanToJson(list_));
 			} else if (obj instanceof BaseEntity) {
-				sb.append(baseEntityToJson((List<BaseEntity>) list_));
+				sb.append(baseEntityToJson(list_));
 			} else if (obj instanceof HashMap) {
-				sb.append(hashMapToJson((List<HashMap<String, Object>>) list_));
+				sb.append(hashMapToJson(list_));
 			} else {
 				log.warn(obj != null ? "ValueList中集合对象类型为：" + obj.toString() : "null");
 			}
@@ -141,7 +140,7 @@ public class BaseValueListController extends BaseController {
 		Map<String, Object> queryMap = getValueListQureyMap(queries, tableId, request);
 		disposeValueListDebugParam(queries, request);
 		ValueListInfo info = getValueListInfo(queryMap);
-		ValueList valueList = getValueList(adapter, info);
+		ValueList<?> valueList = getValueList(adapter, info);
 		if (valueListName == null) valueListName = DEFAULT_VALUELIST_REQUEST_LIST_NAME;
 		getValueListHelper().backupAndSet(request, valueList, valueListName, tableId);
 	}
@@ -169,10 +168,22 @@ public class BaseValueListController extends BaseController {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午08:38:10
 	 */
-	protected ValueList getValueList(String adapter, HttpServletRequest request) {
+	protected ValueList<?> getValueList(String adapter, HttpServletRequest request) {
 		Map<String, Object> queryMap = getQueryMap(request);
 		disposeValueListDebugParam(queryMap, request);
 		ValueListInfo info = getValueListInfo(queryMap);
+		parsePagingPage(request, info);
+		return getValueList(adapter, info);
+	}
+
+	/**
+	 * 处理分页查询，每页查询的记录条数，指定查询第几页
+	 * 
+	 * @param request
+	 * @param info
+	 * @author 黄国庆 2011-12-3 下午05:00:29
+	 */
+	protected void parsePagingPage(HttpServletRequest request, ValueListInfo info) {
 		try {
 			// 处理分页查询，每页查询的记录条数
 			String pagingNumberPer = request.getParameter(PARAM_PAGING_NUMBER_PER);
@@ -192,7 +203,6 @@ public class BaseValueListController extends BaseController {
 				log.error("Request Param: " + PARAM_PAGING_NUMBER_PER + "不是数值类型！");
 			}
 		}
-		return getValueList(adapter, info);
 	}
 
 	/**
@@ -203,7 +213,7 @@ public class BaseValueListController extends BaseController {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午04:29:27
 	 */
-	protected ValueList getValueList(String adapter, Map<String, Object> queries) {
+	protected ValueList<?> getValueList(String adapter, Map<String, Object> queries) {
 		return getValueList(adapter, getValueListInfo(queries));
 	}
 
@@ -215,7 +225,7 @@ public class BaseValueListController extends BaseController {
 	 * @return
 	 * @author 黄国庆 2011-4-25 下午08:10:17
 	 */
-	protected ValueList getValueList(String adapter, ValueListInfo info) {
+	protected ValueList<?> getValueList(String adapter, ValueListInfo info) {
 		if (info.getFilters().containsKey(PARAM_DEBUG)) {
 			reloadValueListSpringContext();
 		}
@@ -285,10 +295,10 @@ public class BaseValueListController extends BaseController {
 		return queryMap;
 	}
 
-	private StringBuilder basicDynaBeanToJson(List<BasicDynaBean> basicDynaBeanList) {
+	private StringBuilder basicDynaBeanToJson(List<?> basicDynaBeanList) {
 		StringBuilder sb = new StringBuilder();
-		for (Iterator<BasicDynaBean> iterator = basicDynaBeanList.iterator(); iterator.hasNext();) {
-			BasicDynaBean dynaBean = iterator.next();
+		for (Iterator<?> iterator = basicDynaBeanList.iterator(); iterator.hasNext();) {
+			BasicDynaBean dynaBean = (BasicDynaBean) iterator.next();
 			DynaProperty[] dynaProperties = dynaBean.getDynaClass().getDynaProperties();
 			sb.append("{");
 			for (int i = 0; i < dynaProperties.length; i++) {
@@ -310,10 +320,10 @@ public class BaseValueListController extends BaseController {
 		return sb;
 	}
 
-	private StringBuilder baseEntityToJson(List<BaseEntity> basicDynaBeanList) {
+	private StringBuilder baseEntityToJson(List<?> basicDynaBeanList) {
 		StringBuilder sb = new StringBuilder();
-		for (Iterator<BaseEntity> iterator = basicDynaBeanList.iterator(); iterator.hasNext();) {
-			BaseEntity baseEntity = iterator.next();
+		for (Iterator<?> iterator = basicDynaBeanList.iterator(); iterator.hasNext();) {
+			BaseEntity baseEntity = (BaseEntity) iterator.next();
 			String string = JSONObject.fromObject(baseEntity).toString();
 			sb.append(string);
 			if (iterator.hasNext()) {
@@ -323,10 +333,10 @@ public class BaseValueListController extends BaseController {
 		return sb;
 	}
 
-	private StringBuilder hashMapToJson(List<HashMap<String, Object>> basicDynaBeanList) {
+	private StringBuilder hashMapToJson(List<?> basicDynaBeanList) {
 		StringBuilder sb = new StringBuilder();
-		for (Iterator<HashMap<String, Object>> iterator = basicDynaBeanList.iterator(); iterator.hasNext();) {
-			HashMap<String, Object> hashMap = iterator.next();
+		for (Iterator<?> iterator = basicDynaBeanList.iterator(); iterator.hasNext();) {
+			HashMap<?, ?> hashMap = (HashMap<?, ?>) iterator.next();
 			String string = JSONObject.fromObject(hashMap).toString();
 			sb.append(string);
 			if (iterator.hasNext()) {
