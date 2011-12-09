@@ -6,26 +6,23 @@
 package org.webframe.web.valuelist;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.json.JSONObject;
-import net.sf.json.util.JSONUtils;
+import net.sf.json.JSONArray;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.webframe.core.model.BaseEntity;
 import org.webframe.core.util.BeanUtils;
 import org.webframe.core.util.PropertyConfigurerUtils;
 import org.webframe.web.page.ValueList;
 import org.webframe.web.page.ValueListInfo;
+import org.webframe.web.page.adapter.ValueListAdapterManager;
 import org.webframe.web.page.web.ValueListRequestUtil;
 import org.webframe.web.page.web.mvc.ValueListHandlerHelper;
 import org.webframe.web.spring.WFClassPathXmlApplicationContext;
@@ -36,7 +33,6 @@ import org.webframe.web.util.WebFrameUtils;
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-9 下午09:22:09
  */
-@SuppressWarnings("unchecked")
 public class ValueListUtils {
 
 	/**
@@ -50,19 +46,19 @@ public class ValueListUtils {
 	/**
 	 * 默认valuelist 保存到request中的变量名
 	 */
-	private final static String				DEFAULT_VALUELIST_REQUEST_LIST_NAME	= "vlhMap";
+	public final static String					DEFAULT_VALUELIST_REQUEST_LIST_NAME	= "vlhMap";
 
 	/**
 	 * Request域中分页显示记录数param key
 	 */
-	private final static String				PARAM_PAGING_NUMBER_PER					= "limit";
+	public final static String					PARAM_PAGING_NUMBER_PER					= "limit";
 
 	/**
 	 * Request域中第几页param key
 	 */
-	private final static String				PARAM_PAGING_PAGE							= "start";
+	public final static String					PARAM_PAGING_PAGE							= "start";
 
-	private final static String				PARAM_DEBUG									= "debug";
+	public final static String					PARAM_DEBUG									= "debug";
 
 	private final static Log					log											= LogFactory.getLog(ValueListUtils.class);
 
@@ -89,22 +85,12 @@ public class ValueListUtils {
 	 * 
 	 * @param list valuelist实例
 	 */
-	public static StringBuilder valueListToJson(ValueList<?> list) {
-		StringBuilder sb = new StringBuilder("[");
+	public static JSONArray valueListToJson(ValueList<?> list) {
 		List<?> list_ = list.getList();
-		if (list_ != null && list_.size() > 0) {
-			Object obj = list_.get(0);
-			if (obj instanceof BasicDynaBean) {
-				sb.append(basicDynaBeanToJson((List<BasicDynaBean>) list_));
-			} else if (obj instanceof BaseEntity) {
-				sb.append(baseEntityToJson((List<BaseEntity>) list_));
-			} else if (obj instanceof HashMap) {
-				sb.append(hashMapToJson((List<HashMap<String, Object>>) list_));
-			} else {
-				log.warn(obj != null ? "ValueList中集合对象类型为：" + obj.toString() : "null");
-			}
+		if (list_ != null) {
+			return JSONArray.fromObject(list_);
 		}
-		return sb.append("]");
+		return new JSONArray();
 	}
 
 	/**
@@ -185,6 +171,18 @@ public class ValueListUtils {
 		Map<String, Object> queryMap = getQueryMap(request);
 		disposeValueListDebugParam(queryMap, request);
 		ValueListInfo info = getValueListInfo(queryMap);
+		parsePagingPage(request, info);
+		return getValueList(adapter, info);
+	}
+
+	/**
+	 * 处理分页查询，每页查询的记录条数，指定查询第几页
+	 * 
+	 * @param request
+	 * @param info
+	 * @author 黄国庆 2011-12-3 下午05:00:29
+	 */
+	public static void parsePagingPage(HttpServletRequest request, ValueListInfo info) {
 		try {
 			// 处理分页查询，每页查询的记录条数
 			String pagingNumberPer = request.getParameter(PARAM_PAGING_NUMBER_PER);
@@ -204,7 +202,6 @@ public class ValueListUtils {
 				log.error("Request Param: " + PARAM_PAGING_NUMBER_PER + "不是数值类型！");
 			}
 		}
-		return getValueList(adapter, info);
 	}
 
 	/**
@@ -228,9 +225,6 @@ public class ValueListUtils {
 	 * @author 黄国庆 2011-4-25 下午08:10:17
 	 */
 	public static <X> ValueList<X> getValueList(String adapter, ValueListInfo info) {
-		if (info.getFilters().containsKey(PARAM_DEBUG)) {
-			reloadValueListSpringContext();
-		}
 		return getValueListHelper().getValueList(adapter, info);
 	}
 
@@ -254,14 +248,17 @@ public class ValueListUtils {
 		if (PropertyConfigurerUtils.getBoolean("vlh.debug")) {
 			log.info("重新加载资源目录valuelist配置文件!");
 			try {
-				ClassPathXmlApplicationContext cpxac = new WFClassPathXmlApplicationContext(new String[]{
-					PropertyConfigurerUtils.getString("vlh.debug.location")}, WebFrameUtils.getApplicationContext());
-				ValueListHandlerHelper valueListHelper = cpxac.getBean(BEAN_NAME_VALUELIST_HELPER,
-					ValueListHandlerHelper.class);
-				setValueListHelper(valueListHelper);
+				WFClassPathXmlApplicationContext wfcax = new WFClassPathXmlApplicationContext(new String[]{
+					PropertyConfigurerUtils.getString("vlh.debug.location")}, false, WebFrameUtils.getApplicationContext());
+				wfcax.setAllowBeanDefinitionOverriding(true);
+				wfcax.refresh();
+				Map<String, ValueListAdapterManager> maps = wfcax.getBeansOfType(ValueListAdapterManager.class);
+				for (String key : maps.keySet()) {
+					ValueListAdapterManager adapterManager = maps.get(key);
+					adapterManager.postProcessBeforeInitialization(wfcax.getBean("valueListHandler"), "valueListHandler");
+				}
 			} catch (BeansException be) {
-				be.printStackTrace();
-				log.error("重新加载valuelist配置文件失败！");
+				log.error("重新加载valuelist配置文件失败！", be);
 			}
 		}
 	}
@@ -275,24 +272,22 @@ public class ValueListUtils {
 	 * @author: 黄国庆 2011-1-22 下午12:06:38
 	 */
 	public static Map<String, Object> getQueryMap(HttpServletRequest request, Class<? extends BaseEntity> clazz) {
-		Map<String, String[]> mapParam = request.getParameterMap();
 		Map<String, Object> attrMap = new HashMap<String, Object>();
-		for (Map.Entry<String, String[]> entry : mapParam.entrySet()) {
-			String key = entry.getKey();
-			List<String> mathsList = PatternUtil.matchs(ATTR_MAP_REGEX, key);
-			if (!mathsList.isEmpty() && entry.getValue() != null) {
-				String name = mathsList.get(0);
-				// 如果clazz为null，不验证数据类型，无法转换数据类型
-				if (clazz == null) {
-					if (entry.getValue().length >= 1) {
-						attrMap.put(name, entry.getValue()[0]);
+		Set<?> keys = request.getParameterMap().keySet();
+		for (Object key : keys) {
+			if (key == null) continue;
+			String value = request.getParameter(key.toString());
+			if (value != null) {
+				List<String> mathsList = PatternUtil.matchs("attribute\\((\\S*)\\)", key.toString());
+				if (!mathsList.isEmpty()) {
+					String name = mathsList.get(0);
+					// 如果clazz为null，不验证数据类型，无法转换数据类型
+					if (clazz == null) {
+						attrMap.put(name, value);
+						continue;
 					}
-					continue;
-				}
-				Class<?> propertyClass = BeanUtils.findPropertyType(name, new Class<?>[]{
-					clazz});
-				for (String value : entry.getValue()) {
-					if (value == null || "".equals(value)) continue;
+					Class<?> propertyClass = BeanUtils.findPropertyType(name, new Class<?>[]{
+						clazz});
 					// 如果查询条件属性对应的model属性的类型为Boolean或boolean，将查询条件的值转换为boolean类型
 					if (Boolean.class.isAssignableFrom(propertyClass) || boolean.class.equals(propertyClass)) {
 						attrMap.put(name, Boolean.parseBoolean(value));
@@ -305,6 +300,8 @@ public class ValueListUtils {
 					} else {
 						attrMap.put(name, value);
 					}
+				} else {
+					attrMap.put(key.toString(), value);
 				}
 			}
 		}
@@ -353,57 +350,6 @@ public class ValueListUtils {
 		}
 		queryMap.putAll(queries);
 		return queryMap;
-	}
-
-	private static StringBuilder basicDynaBeanToJson(List<BasicDynaBean> basicDynaBeanList) {
-		StringBuilder sb = new StringBuilder();
-		for (Iterator<BasicDynaBean> iterator = basicDynaBeanList.iterator(); iterator.hasNext();) {
-			BasicDynaBean dynaBean = iterator.next();
-			DynaProperty[] dynaProperties = dynaBean.getDynaClass().getDynaProperties();
-			sb.append("{");
-			for (int i = 0; i < dynaProperties.length; i++) {
-				sb.append("\"");
-				sb.append(dynaProperties[i].getName());
-				sb.append("\":");
-				Object o = dynaBean.get(dynaProperties[i].getName());
-				String value = (o == null) ? "" : o.toString();
-				sb.append(JSONUtils.valueToString(value));
-				if (i != dynaProperties.length - 1) {
-					sb.append(",");
-				}
-			}
-			sb.append("}");
-			if (iterator.hasNext()) {
-				sb.append(",");
-			}
-		}
-		return sb;
-	}
-
-	private static StringBuilder baseEntityToJson(List<BaseEntity> basicDynaBeanList) {
-		StringBuilder sb = new StringBuilder();
-		for (Iterator<BaseEntity> iterator = basicDynaBeanList.iterator(); iterator.hasNext();) {
-			BaseEntity baseEntity = iterator.next();
-			String string = JSONObject.fromObject(baseEntity).toString();
-			sb.append(string);
-			if (iterator.hasNext()) {
-				sb.append(",");
-			}
-		}
-		return sb;
-	}
-
-	private static StringBuilder hashMapToJson(List<HashMap<String, Object>> basicDynaBeanList) {
-		StringBuilder sb = new StringBuilder();
-		for (Iterator<HashMap<String, Object>> iterator = basicDynaBeanList.iterator(); iterator.hasNext();) {
-			HashMap<String, Object> hashMap = iterator.next();
-			String string = JSONObject.fromObject(hashMap).toString();
-			sb.append(string);
-			if (iterator.hasNext()) {
-				sb.append(",");
-			}
-		}
-		return sb;
 	}
 
 	private static void disposeValueListDebugParam(Map<String, Object> queries, HttpServletRequest request) {
