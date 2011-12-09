@@ -47,7 +47,7 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 		try {
 			return Integer.parseInt(result);
 		} catch (NumberFormatException e) {
-			log.error("指定key：" + key.toString() + " 的value值不为整数！");
+			log.error("指定key：" + key.toString() + " 的value值不为整数！", e);
 			return 0;
 		}
 	}
@@ -65,7 +65,7 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 		try {
 			return Double.parseDouble(result);
 		} catch (NumberFormatException e) {
-			log.error("指定key：" + key.toString() + " 的value值不为浮点数！");
+			log.error("指定key：" + key.toString() + " 的value值不为浮点数！", e);
 			return Double.NaN;
 		}
 	}
@@ -113,11 +113,11 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 			Class<?> clazz = PropertyConfigurerUtils.class.getClassLoader().loadClass(result);
 			return clazz.newInstance();
 		} catch (ClassNotFoundException e) {
-			log.error("指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！");
+			log.error("指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！", e);
 		} catch (InstantiationException e) {
-			log.error("指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！");
+			log.error("指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！", e);
 		} catch (IllegalAccessException e) {
-			log.error("指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！");
+			log.error("指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！", e);
 		}
 		return null;
 	}

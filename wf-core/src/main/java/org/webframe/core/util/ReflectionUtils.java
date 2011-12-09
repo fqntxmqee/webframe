@@ -139,7 +139,7 @@ public abstract class ReflectionUtils extends org.springframework.util.Reflectio
 				return method;
 			} catch (NoSuchMethodException e) {
 				if (superClass.getSuperclass() == Object.class) {
-					log.warn(e.toString() + "[" + superClass + "]");
+					log.warn(e.toString() + "[" + superClass + "]", e);
 				}
 				// Method不在当前类定义,继续向上转型
 			}
@@ -239,7 +239,7 @@ public abstract class ReflectionUtils extends org.springframework.util.Reflectio
 				return field;
 			} catch (NoSuchFieldException e) {
 				if (superClass.getSuperclass() == Object.class) {
-					log.warn(e.toString() + "[" + superClass + "]");
+					log.warn(e.toString() + "[" + superClass + "]", e);
 				}
 				// Field不在当前类定义,继续向上转型
 			}

@@ -59,6 +59,7 @@ public class HibernateEntityUtils extends ModulePluginUtils {
 		SystemLogUtils.rootPrintln("Annotation 加载Entity开始！");
 		while (dirverInfos.hasMoreElements()) {
 			ModulePluginDriverInfo driverInfo = dirverInfos.nextElement();
+			if (driverInfo.getDriver().getEntityLocation() == null) continue;
 			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载Entity！");
 			Resource[] resources = HibernateEntityUtils.getEntityResources(driverInfo, RESOURCE_PATTERN_ENTITY);
 			if (resources == null) continue;

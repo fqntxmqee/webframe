@@ -119,7 +119,7 @@ public class DateUtils {
 			String str = (now == null ? null : df.format(now));
 			return str;
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("无法解析 format: " + format, e);
 			return null;
 		}
 	}
@@ -180,8 +180,7 @@ public class DateUtils {
 		try {
 			nowDate = df.parse(date);
 		} catch (ParseException e) {
-			e.printStackTrace();
-			log.debug("无法解析" + date);
+			log.error("无法解析" + date, e);
 		}
 		return nowDate;
 	}
