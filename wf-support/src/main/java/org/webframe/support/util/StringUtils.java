@@ -16,4 +16,10 @@ public class StringUtils extends org.springframework.util.StringUtils {
 	public static String getSeparator() {
 		return File.separator;
 	}
+
+	public static String getFileDirectory(String filePath) {
+		if (filePath == null) return null;
+		int index = filePath.lastIndexOf("/");
+		return filePath.substring(0, index + 1);
+	}
 }

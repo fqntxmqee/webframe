@@ -14,7 +14,7 @@ public abstract class AbstractModulePluginDriver implements ModulePluginDriver {
 
 	@Override
 	public String getEntityLocation() {
-		return "*";
+		return null;
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public abstract class AbstractModulePluginDriver implements ModulePluginDriver {
 
 	@Override
 	public String getSpringContextLocation() {
-		return null;
+		return "/spring";
 	}
 
 	@Override

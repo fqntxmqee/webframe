@@ -7,7 +7,9 @@ import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -24,17 +26,19 @@ import org.webframe.support.util.StringUtils;
  */
 public class JarResource extends AbstractFileResolvingResource {
 
-	private String					jarName		= null;
+	private String							jarName				= null;
 
-	private JarURLConnection	jarURLConnection;
+	private JarURLConnection			jarURLConnection;
 
-	private JarEntry				jarEntry		= null;
+	private JarEntry						jarEntry				= null;
 
-	private String					path			= null;
+	private String							path					= null;
 
-	private Set<String>			entriesPath	= null;
+	private Set<String>					entriesPath			= null;
 
-	private JarFile				jarFile		= null;
+	private Map<String, Set<String>>	entryFilesPathMap	= new HashMap<String, Set<String>>(16);
+
+	private JarFile						jarFile				= null;
 
 	public JarResource(JarURLConnection jarURLConnection) throws IOException {
 		if (jarURLConnection == null) {
@@ -46,7 +50,18 @@ public class JarResource extends AbstractFileResolvingResource {
 		entriesPath = new HashSet<String>(16);
 		for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 			JarEntry entry = entries.nextElement();
-			entriesPath.add(entry.getName());
+			String name = entry.getName();
+			String key = name;
+			if (!name.endsWith("/")) {
+				key = StringUtils.getFileDirectory(name);
+			}
+			Set<String> pathSets = entryFilesPathMap.get(key);
+			if (pathSets == null) {
+				pathSets = new HashSet<String>();
+				entryFilesPathMap.put(key, pathSets);
+			}
+			pathSets.add(name);
+			entriesPath.add(name);
 		}
 	}
 
@@ -133,6 +148,11 @@ public class JarResource extends AbstractFileResolvingResource {
 			return (this.jarName.equals(otherRes.jarName) && this.jarURLConnection.getContentLength() == otherRes.jarURLConnection.getContentLength());
 		}
 		return false;
+	}
+
+	public Set<String> getEntryFilesByDir(String directory) {
+		if (directory == null) return null;
+		return entryFilesPathMap.get(resolveJarEntryPath(directory));
 	}
 
 	public JarEntry getJarEntry(String entryName) {

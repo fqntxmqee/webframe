@@ -48,6 +48,10 @@ public class JarResourceLoader extends DefaultResourceLoader {
 		return entriesPath;
 	}
 
+	public Set<String> getEntryFilesByDir(String directory) {
+		return jarResource.getEntryFilesByDir(directory);
+	}
+
 	public JarURLConnection getJarURLConnection() {
 		return jarCon;
 	}

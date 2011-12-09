@@ -9,6 +9,7 @@ import java.util.Set;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.webframe.support.util.StringUtils;
 
 /**
  * JarResource资源类，用于匹配搜索jar包中的资源文件
@@ -38,7 +39,8 @@ public class JarResourcePatternResolver extends PathMatchingResourcePatternResol
 	protected Resource[] findPathMatchingJarResources(String locationPattern) {
 		List<Resource> result = new ArrayList<Resource>(16);
 		JarResourceLoader jarResourceLoader = (JarResourceLoader) getResourceLoader();
-		Set<String> entriesPath = jarResourceLoader.getEntriesPath();
+		String directory = StringUtils.getFileDirectory(locationPattern);
+		Set<String> entriesPath = jarResourceLoader.getEntryFilesByDir(directory);
 		if (entriesPath == null) return result.toArray(new Resource[result.size()]);
 		for (String entryPath : entriesPath) {
 			String path = "/" + entryPath;
