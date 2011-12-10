@@ -96,7 +96,8 @@ public class BeforeBeanInitializingProcessor implements BeanPostProcessor, Order
 		Class<?> propertyType = beanWrapper.getPropertyType(getPropertyName());
 		if (Map.class.isAssignableFrom(propertyType)) {
 			disposeMapProperty(beanWrapper);
-		} else if (List.class.isAssignableFrom(propertyType)) {
+		} else if (List.class.isAssignableFrom(propertyType)
+					|| ReflectionUtils.getFieldValue(bean, getPropertyName()) instanceof List) {
 			disposeListProperty(beanWrapper);
 		} else if (propertyType.isArray()) {
 			disposeArrayProperty(beanWrapper);
@@ -136,7 +137,7 @@ public class BeforeBeanInitializingProcessor implements BeanPostProcessor, Order
 	}
 
 	private void disposeArrayProperty(BeanWrapperImpl beanWrapper) {
-		Object[] propertyValue;
+		Object[] propertyValue = null;
 		if (!beanWrapper.isReadableProperty(getPropertyName())) {
 			Object bean = beanWrapper.getWrappedInstance();
 			propertyValue = (Object[]) ReflectionUtils.getFieldValue(bean, getPropertyName());
