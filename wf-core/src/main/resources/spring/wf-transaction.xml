@@ -11,8 +11,8 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd ">
 
 	<!-- 事务处理 -->
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"
-		p:sessionFactory-ref="sessionFactory" />
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		p:dataSource-ref="dataSource" />
 
 	<!--
 		the transactional advice (what 'happens'; see the <aop:advisor/> bean
