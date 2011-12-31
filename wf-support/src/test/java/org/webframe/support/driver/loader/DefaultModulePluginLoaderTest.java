@@ -5,6 +5,8 @@
 
 package org.webframe.support.driver.loader;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.webframe.support.driver.exception.DriverNotExistException;
 
@@ -13,6 +15,8 @@ import org.webframe.support.driver.exception.DriverNotExistException;
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-6 下午01:40:02
  */
 public class DefaultModulePluginLoaderTest {
+
+	private static final Log	log	= LogFactory.getLog(DefaultModulePluginLoaderTest.class);
 
 	/**
 	 * Test method for
@@ -24,14 +28,14 @@ public class DefaultModulePluginLoaderTest {
 		try {
 			loader.loadModulePlugin();
 		} catch (DriverNotExistException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		String[] drivers = new String[]{
 					"org.webframe.support.NotExistModulePluginDriver", null};
 		try {
 			loader.loadModulePlugin(drivers);
 		} catch (DriverNotExistException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 	}
 }

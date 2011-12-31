@@ -32,15 +32,15 @@ public class ModulePluginUtilsTest extends BaseTests {
 		try {
 			ModulePluginUtils.cacheModulePluginConfig(null);
 		} catch (ModulePluginConfigException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		try {
 			String realPath = new ClassPathResource("/LICENSE.txt", getClass()).getFile().getAbsolutePath();
 			ModulePluginUtils.cacheModulePluginConfig(realPath);
 		} catch (ModulePluginConfigException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		String realPath = getClass().getResource("/").getPath();
 		ModulePluginUtils.cacheModulePluginConfig(realPath);
