@@ -7,13 +7,19 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.webframe.support.SpringContextUtils;
+import org.webframe.support.driver.resource.filter.JarResourceFilter;
+import org.webframe.support.driver.resource.filter.ResourceFilter;
 
 /**
+ * 扩展spring XmlWebApplicationContext；添加自定义spring cfg获取，并支持ResourceFilter过滤
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">huangguoqing</a>
- * @version $Id: WFApplicationContext.java,v 1.1.2.2 2010/08/06 08:46:31 huangguoqing Exp $
- *          Create: 2010-4-22 下午01:18:10
+ * @version $Id: WFApplicationContext.java,v 1.1.2.2 2010/08/06 08:46:31 huangguoqing Exp $ Create:
+ *          2010-4-22 下午01:18:10
  */
 public class WFApplicationContext extends XmlWebApplicationContext {
+
+	private ResourceFilter	resourceFilter	= null;
 
 	public WFApplicationContext() {
 		super();
@@ -27,7 +33,11 @@ public class WFApplicationContext extends XmlWebApplicationContext {
 
 	@Override
 	protected void initBeanDefinitionReader(XmlBeanDefinitionReader beanDefinitionReader) {
-		beanDefinitionReader.loadBeanDefinitions(SpringContextUtils.getSpringContextResources());
+		ResourceFilter resourceFilter = getResourceFilter();
+		if (resourceFilter == null) {
+			resourceFilter = new JarResourceFilter();
+		}
+		beanDefinitionReader.loadBeanDefinitions(resourceFilter.filter(SpringContextUtils.getSpringContextResources()));
 	}
 
 	@Override
@@ -37,5 +47,16 @@ public class WFApplicationContext extends XmlWebApplicationContext {
 			return new String[0];
 		}
 		return locations;
+	}
+
+	protected ResourceFilter getResourceFilter() {
+		if (resourceFilter == null) {
+			resourceFilter = new JarResourceFilter();
+		}
+		return resourceFilter;
+	}
+
+	public void setResourceFilter(ResourceFilter resourceFilter) {
+		this.resourceFilter = resourceFilter;
 	}
 }
