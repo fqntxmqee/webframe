@@ -8,13 +8,15 @@ import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.webframe.test.web.BaseWebServerTests;
 
@@ -24,9 +26,11 @@ import org.webframe.test.web.BaseWebServerTests;
  */
 public class BaseHttpClientTests extends BaseWebServerTests {
 
-	protected final static String			defaultEncode	= org.apache.http.protocol.HTTP.UTF_8;
+	protected final static String					defaultEncode	= org.apache.http.protocol.HTTP.UTF_8;
 
-	protected final static HttpClient	client			= new DefaultHttpClient();
+	protected final static DefaultHttpClient	client			= new DefaultHttpClient();
+
+	private HttpContext								context			= null;
 
 	protected String getBaseUrl() {
 		return getServerURL();
@@ -64,7 +68,10 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 */
 	protected String getSend(String url) throws Exception {
 		HttpEntity httpEntity = getExcute(url).getEntity();
-		// 取得返回的字符串
+		/*
+		 *  取得返回的字符串，EntityUtils.toString方法会关闭httpEntity中的InputStream流，
+		 *  不需要再使用EntityUtils.consume(entity);
+		 */
 		return EntityUtils.toString(httpEntity, defaultEncode);
 	}
 
@@ -93,7 +100,10 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 */
 	protected String postSend(String url, List<NameValuePair> params) throws Exception {
 		HttpEntity httpEntity = postExcute(url, params).getEntity();
-		// 取得返回的字符串
+		/*
+		 *  取得返回的字符串，EntityUtils.toString方法会关闭httpEntity中的InputStream流，
+		 *  不需要再使用EntityUtils.consume(entity);
+		 */
 		return EntityUtils.toString(httpEntity, defaultEncode);
 	}
 
@@ -108,7 +118,7 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	protected HttpResponse getExcute(String url) throws Exception {
 		// HttpPost连接对象
 		HttpGet httpRequest = getHttpGet(url);
-		return client.execute(httpRequest);
+		return client.execute(httpRequest, context);
 	}
 
 	/**
@@ -140,7 +150,7 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 		HttpEntity httpentity = new UrlEncodedFormEntity(params, defaultEncode);
 		// 请求httpRequest
 		httpRequest.setEntity(httpentity);
-		return client.execute(httpRequest);
+		return client.execute(httpRequest, context);
 	}
 
 	/**
@@ -184,5 +194,24 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 			}
 		}
 		return nameValuePairs;
+	}
+
+	protected void setContext(HttpContext context) {
+		this.context = context;
+	}
+
+	protected final HttpContext getContext() {
+		return this.context;
+	}
+
+	/**
+	 * 开启安全认证后，可以访问受限制资源
+	 * 
+	 * @param usernamePassword 例如：'admin:123456'
+	 * @author 黄国庆 2012-1-27 上午08:19:22
+	 */
+	protected final void enableAuth(String usernamePassword) {
+		client.getCredentialsProvider().setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+			new UsernamePasswordCredentials(usernamePassword));
 	}
 }

@@ -25,6 +25,7 @@ public class BaseWebServerTestsTest extends BaseHttpClientTests {
 
 	@Test
 	public void testHttpGet() throws Exception {
+		enableAuth("admin:1");
 		Map<String, Object> params = new HashMap<String, Object>();
 		// 添加要传递的参数
 		params.put(TestServlet.ROLE, role);

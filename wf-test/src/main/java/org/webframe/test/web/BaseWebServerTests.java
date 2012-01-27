@@ -7,7 +7,6 @@ package org.webframe.test.web;
 
 import org.junit.runner.RunWith;
 import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
@@ -16,25 +15,23 @@ import org.mortbay.jetty.Server;
 @RunWith(WFJettyJUnit4Runner.class)
 public class BaseWebServerTests {
 
-	private static Server	server	= WFJettyJUnit4Runner.server;
+	protected static final String	HTTP	= "http";
 
-	protected String			HTTP		= "http";
-
-	protected String			HTTPS		= "https";
+	protected static final String	HTTPS	= "https";
 
 	// 用tomcat容器测试时，需要初始化该值
-	static int					port		= 0;
+	static int							port	= 0;
 
 	// 用tomcat容器测试时，需要初始化该值
-	static String				host		= "";
+	static String						host	= "";
 
 	protected Connector disposeConnector() {
-		Connector[] connectors = server.getConnectors();
+		Connector[] connectors = WFJettyJUnit4Runner.server.getConnectors();
 		return connectors[0];
 	}
 
 	protected int getServerPort() {
-		if (server != null) {
+		if (WFJettyJUnit4Runner.server != null) {
 			Connector connector = disposeConnector();
 			return connector.getPort();
 		} else {
@@ -43,7 +40,7 @@ public class BaseWebServerTests {
 	}
 
 	protected String getServerHost() {
-		if (server != null) {
+		if (WFJettyJUnit4Runner.server != null) {
 			Connector connector = disposeConnector();
 			return connector.getHost();
 		} else {
@@ -51,10 +48,24 @@ public class BaseWebServerTests {
 		}
 	}
 
+	/**
+	 * 默认获取http协议的ServerURL
+	 * 
+	 * @return
+	 * @author 黄国庆 2012-1-26 下午09:21:01
+	 */
 	protected String getServerURL() {
 		return getServerURL(HTTP);
 	}
 
+	/**
+	 * 指定URL协议类型，获取URL
+	 * 
+	 * @param protocol {@link org.webframe.test.web.BaseWebServerTests.HTTP} 或
+	 *           {@link org.webframe.test.web.BaseWebServerTests.HTTPS}
+	 * @return
+	 * @author 黄国庆 2012-1-26 下午09:21:51
+	 */
 	protected String getServerURL(String protocol) {
 		return protocol + "://" + getServerHost() + ":" + getServerPort();
 	}
