@@ -2,7 +2,7 @@
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
 
 
-<Configure id="webAppContext" class="org.mortbay.jetty.webapp.WebAppContext">
+<Configure id="webAppContext" class="org.eclipse.jetty.webapp.WebAppContext">
 
 
 	<Set name="contextPath">/</Set>

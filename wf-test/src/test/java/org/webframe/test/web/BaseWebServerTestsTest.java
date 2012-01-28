@@ -31,7 +31,7 @@ public class BaseWebServerTestsTest extends BaseHttpClientTests {
 		params.put(TestServlet.ROLE, role);
 		params.put(TestServlet.LABEL, label);
 		// 取得返回的字符串
-		String strResult = getSend("/test?" + getUrlParamsString(params));
+		String strResult = sendGet("/test?" + getUrlParamsString(params));
 		SystemLogUtils.println(strResult);
 		Assert.assertTrue("Get请求失败", strResult.startsWith(("GET:" + role + label)));
 	}
@@ -42,7 +42,7 @@ public class BaseWebServerTestsTest extends BaseHttpClientTests {
 		// 添加要传递的参数
 		params.put(TestServlet.ROLE, role);
 		params.put(TestServlet.LABEL, label);
-		String strResult = postSend("/test", params);
+		String strResult = sendPost("/test", params);
 		SystemLogUtils.println(strResult);
 		Assert.assertTrue("Post请求失败", strResult.startsWith(("POST:" + role + label)));
 	}

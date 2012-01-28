@@ -12,6 +12,15 @@
 		<session-timeout>30</session-timeout>
 	</session-config>
 	
+	<filter>
+		<filter-name>testFilter</filter-name>
+		<filter-class>org.webframe.test.web.TestFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>testFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
 	<servlet>
 		<servlet-name>testServlet</servlet-name>
 		<servlet-class>org.webframe.test.web.TestServlet</servlet-class>

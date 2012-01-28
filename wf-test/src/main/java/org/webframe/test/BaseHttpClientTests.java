@@ -44,7 +44,11 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-1-26 上午09:17:27
 	 */
 	protected final HttpGet getHttpGet(String url) {
-		return new HttpGet(getBaseUrl() + url);
+		String baseUrl = getBaseUrl();
+		if (url != null && (url.toLowerCase().startsWith("http:") || url.toLowerCase().startsWith("https:"))) {
+			baseUrl = "";
+		}
+		return new HttpGet(baseUrl + url);
 	}
 
 	/**
@@ -66,8 +70,8 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @throws Exception
 	 * @author 黄国庆 2012-1-26 上午09:18:28
 	 */
-	protected String getSend(String url) throws Exception {
-		HttpEntity httpEntity = getExcute(url).getEntity();
+	protected String sendGet(String url) throws Exception {
+		HttpEntity httpEntity = executeGet(url).getEntity();
 		/*
 		 *  取得返回的字符串，EntityUtils.toString方法会关闭httpEntity中的InputStream流，
 		 *  不需要再使用EntityUtils.consume(entity);
@@ -84,9 +88,9 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @throws Exception
 	 * @author 黄国庆 2012-1-26 上午09:20:01
 	 */
-	protected String postSend(String url, Map<String, Object> params) throws Exception {
+	protected String sendPost(String url, Map<String, Object> params) throws Exception {
 		// 取得返回的字符串
-		return postSend(url, getPairs(params));
+		return sendPost(url, getPairs(params));
 	}
 
 	/**
@@ -98,8 +102,8 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @throws Exception
 	 * @author 黄国庆 2012-1-26 上午09:22:38
 	 */
-	protected String postSend(String url, List<NameValuePair> params) throws Exception {
-		HttpEntity httpEntity = postExcute(url, params).getEntity();
+	protected String sendPost(String url, List<NameValuePair> params) throws Exception {
+		HttpEntity httpEntity = executePost(url, params).getEntity();
 		/*
 		 *  取得返回的字符串，EntityUtils.toString方法会关闭httpEntity中的InputStream流，
 		 *  不需要再使用EntityUtils.consume(entity);
@@ -115,7 +119,7 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @throws Exception
 	 * @author 黄国庆 2012-1-26 上午09:23:49
 	 */
-	protected HttpResponse getExcute(String url) throws Exception {
+	protected HttpResponse executeGet(String url) throws Exception {
 		// HttpPost连接对象
 		HttpGet httpRequest = getHttpGet(url);
 		return client.execute(httpRequest, context);
@@ -130,8 +134,8 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @throws Exception
 	 * @author 黄国庆 2012-1-26 上午09:25:30
 	 */
-	protected HttpResponse postExcute(String url, Map<String, Object> params) throws Exception {
-		return postExcute(url, getPairs(params));
+	protected HttpResponse executePost(String url, Map<String, Object> params) throws Exception {
+		return executePost(url, getPairs(params));
 	}
 
 	/**
@@ -143,7 +147,7 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @throws Exception
 	 * @author 黄国庆 2012-1-26 上午09:26:44
 	 */
-	protected HttpResponse postExcute(String url, List<NameValuePair> params) throws Exception {
+	protected HttpResponse executePost(String url, List<NameValuePair> params) throws Exception {
 		// HttpPost连接对象
 		HttpPost httpRequest = getHttpPost(url);
 		// 设置字符集

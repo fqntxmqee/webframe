@@ -7,10 +7,10 @@ package org.webframe.test.web;
 
 import java.io.InputStream;
 
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.xml.XmlConfiguration;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
-import org.mortbay.jetty.Server;
-import org.mortbay.xml.XmlConfiguration;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>

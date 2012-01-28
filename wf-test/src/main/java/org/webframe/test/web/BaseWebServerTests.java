@@ -5,8 +5,8 @@
 
 package org.webframe.test.web;
 
+import org.eclipse.jetty.server.Connector;
 import org.junit.runner.RunWith;
-import org.mortbay.jetty.Connector;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>

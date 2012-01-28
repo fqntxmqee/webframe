@@ -32,7 +32,6 @@ public class TestServlet extends HttpServlet {
 		System.out.println("SessionId: " + req.getSession());
 		String role_ = req.getParameter(ROLE);
 		String label_ = req.getParameter(LABEL);
-		resp.setCharacterEncoding("UTF-8");
 		resp.getWriter().println("GET:" + role_ + label_);
 	}
 
@@ -41,7 +40,6 @@ public class TestServlet extends HttpServlet {
 		System.out.println("SessionId: " + req.getSession());
 		String role_ = req.getParameter(ROLE);
 		String label_ = req.getParameter(LABEL);
-		resp.setCharacterEncoding("UTF-8");
 		resp.getWriter().println("POST:" + role_ + label_);
 	}
 }
