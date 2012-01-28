@@ -20,7 +20,7 @@ import org.webframe.support.util.SystemLogUtils;
  */
 public class SpringContextUtils extends ModulePluginUtils {
 
-	private static final String	RESOURCE_PATTERN_SPRING	= "/**/wf-*.xml";
+	private static final String	RESOURCE_PATTERN_SPRING	= "/wf-*.xml";
 
 	/**
 	 * @return not null
