@@ -18,6 +18,9 @@
 	
 	
 	<!-- ************************************     监听器 begin     ************************************ -->
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
 	<!--Spring ApplicationContext 载入 -->
 	<listener>
 		<listener-class>org.webframe.web.spring.WFContextLoaderListener</listener-class>
@@ -25,9 +28,6 @@
 	<!-- Spring 刷新Introspector防止内存泄露 -->
 	<listener>
 		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
 	</listener>
 	<!-- ************************************     监听器  end      ************************************ -->
 	
@@ -68,4 +68,13 @@
 	</filter-mapping>
 	<!-- ************************************   过滤器 映射 end   ************************************ -->
 
+	<servlet>
+		<servlet-name>myServlet</servlet-name>
+		<servlet-class>org.webframe.web.servlet.MyServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>myServlet</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
 </web-app>

@@ -33,6 +33,12 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>wf-test</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
 			<scope>test</scope>
 		</dependency>
 		<!-- spring begin -->
