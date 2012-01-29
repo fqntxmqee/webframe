@@ -6,8 +6,6 @@
 package org.webframe.test.web;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.jetty.deploy.App;
 import org.eclipse.jetty.deploy.providers.ContextProvider;
@@ -36,7 +34,7 @@ public class WFJettyContextProvider extends ContextProvider {
 	@Override
 	protected void doStart() throws Exception {
 		super.doStart();
-		Resource resource = getMonitoredDir();
+		Resource resource = getMonitoredDirResource();
 		if (resource instanceof JarResource) {
 			fileAdded(resource.getName());
 		}
@@ -44,10 +42,8 @@ public class WFJettyContextProvider extends ContextProvider {
 
 	protected ContextHandler jarResourceXml(URL url) throws Exception {
 		XmlConfiguration xmlc = new XmlConfiguration(url);
-		Map<String, Object> props = new HashMap<String, Object>();
-		props.put("Server", getDeploymentManager().getServer());
-		if (getConfigurationManager() != null) props.putAll(getConfigurationManager().getProperties());
-		xmlc.setProperties(props);
+		xmlc.getIdMap().put("Server", getDeploymentManager().getServer());
+		if (getConfigurationManager() != null) xmlc.getProperties().putAll(getConfigurationManager().getProperties());
 		return (ContextHandler) xmlc.configure();
 	}
 }

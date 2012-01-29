@@ -87,7 +87,7 @@
 		<Call name="addAppProvider">
 			<Arg>
 				<New class="org.webframe.test.web.WFJettyContextProvider">
-					<Set name="monitoredDir">
+					<Set name="monitoredDirResource">
 						<Call name="newClassPathResource" class="org.eclipse.jetty.util.resource.Resource">
 							<Arg>context/wf-jetty.xml</Arg>
 						</Call>
