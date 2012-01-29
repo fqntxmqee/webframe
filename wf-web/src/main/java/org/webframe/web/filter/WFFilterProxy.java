@@ -16,8 +16,12 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.filter.GenericFilterBean;
 
 /**
+ * 扩展{@link org.springframework.web.filter.DelegatingFilterProxy}，支持自定义Filter链的配置
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-21 上午10:49:26
+ * @since 2012-1-29 上午09:19:03
+ * @see org.springframework.web.filter.DelegatingFilterProxy
+ * @version
  */
 public class WFFilterProxy extends DelegatingFilterProxy {
 

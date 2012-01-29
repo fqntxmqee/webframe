@@ -6,10 +6,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValue;
 
 /**
+ * 扩展{@link org.springframework.beans.BeanWrapperImpl}，提供spring配置文件中Bean实例化之后，对对象相关属性的处理
  * 
- * @author <a href="mailto:guoqing.huang@foxmail.com">huangguoqing</a>
- * @version $Id: WFBeanWrapper.java,v 1.1.2.2 2010/05/25 01:36:56 huangguoqing Exp $ Create:
- *          2010-4-22 下午01:22:39
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
+ * @since 2012-1-29 上午09:20:19
+ * @version
  */
 public class WFBeanWrapper extends BeanWrapperImpl {
 

@@ -11,9 +11,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author <a href="mailto:guoqing.huang@foxmail.com">huangguoqing</a>
- * @version $Id: codetemplates.xml,v 1.3 2009/05/05 02:30:07 huangguoqing Exp $ Create: 2011-1-21
- *          下午03:17:04
+ * 正则匹配器工具类
+ * 
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
+ * @since 2012-1-29 上午09:28:26
+ * @version
  */
 public abstract class PatternUtil {
 

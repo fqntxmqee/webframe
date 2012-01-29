@@ -5,8 +5,11 @@ import org.springframework.web.context.support.AbstractRefreshableWebApplication
 import org.webframe.web.spring.ServiceHelper;
 
 /**
+ * webframe框架的工具类，可以获取spring框架中注入的Bean，动态注入Bean；当在Web应用中运行，可以获取Web应用的上下文、项目的物理位置
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-3 上午07:41:19
+ * @since 2012-1-29 上午09:28:57
+ * @version
  */
 public final class WebFrameUtils extends ServiceHelper {
 

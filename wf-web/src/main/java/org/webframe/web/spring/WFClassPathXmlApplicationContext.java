@@ -7,6 +7,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
+ * 更改{@link org.springframework.context.support.ClassPathXmlApplicationContext} BeanFactory创建，使用
+ * {@link WFListableBeanFactory} 实例
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-2 上午11:33:16
  */

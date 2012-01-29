@@ -7,18 +7,14 @@ import org.webframe.support.driver.ModulePluginManager;
 /**
  * web模块插件驱动
  * 
- * @author <a href="mailto:guoqing.huang@foxmail.com>黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-3-18 下午06:55:55
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
+ * @since 2012-1-29 上午09:36:26
+ * @version
  */
 public class WebModulePluginDriver extends AbstractModulePluginDriver {
 
 	static {
 		ModulePluginManager.registerDriver(new WebModulePluginDriver());
-	}
-
-	@Override
-	public String getSpringContextLocation() {
-		return "/spring";
 	}
 
 	@Override

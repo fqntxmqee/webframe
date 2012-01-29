@@ -53,12 +53,11 @@ public abstract class ServiceHelper {
 		return gtx.getBean(beanName);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <X> X createBean(String beanName, Class<X> clazz) {
 		initGenericApplicationContext();
 		BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
 		gtx.registerBeanDefinition(beanName, beanDefinitionBuilder.getBeanDefinition());
-		return (X) gtx.getBean(beanName);
+		return gtx.getBean(beanName, clazz);
 	}
 
 	private static void initGenericApplicationContext() {

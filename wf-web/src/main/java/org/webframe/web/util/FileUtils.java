@@ -13,8 +13,11 @@ import java.io.InputStream;
 import org.webframe.support.util.SystemLogUtils;
 
 /**
+ * 文件工具类，提供单个文件的复制
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-9 下午09:03:21
+ * @since 2012-1-29 上午09:27:23
+ * @version
  */
 public class FileUtils {
 
@@ -34,6 +37,13 @@ public class FileUtils {
 		}
 	}
 
+	/**
+	 * 复制单个文件
+	 * 
+	 * @param inStream
+	 * @param targetFile
+	 * @author 黄国庆 2012-1-29 上午09:27:47
+	 */
 	public static void copyFile(InputStream inStream, File targetFile) {
 		try {
 			// 新文件目录不存在,则创建

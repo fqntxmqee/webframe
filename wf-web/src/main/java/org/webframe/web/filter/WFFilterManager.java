@@ -4,8 +4,11 @@ package org.webframe.web.filter;
 import org.webframe.core.spring.processor.BeanPropertyListAppender;
 
 /**
+ * 管理、加载spring配置文件中的Filter
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-21 下午02:24:21
+ * @since 2012-1-29 上午09:18:32
+ * @version
  */
 public class WFFilterManager extends BeanPropertyListAppender {
 

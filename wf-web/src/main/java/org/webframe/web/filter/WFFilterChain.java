@@ -14,20 +14,23 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * webframe框架过滤器链，用于过滤器的spring文件配置
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-21 下午02:06:07
+ * @since 2012-1-29 上午09:17:06
+ * @version
  */
 public class WFFilterChain implements FilterChain {
 
-	private final FilterChain		originalChain;
+	private final FilterChain	originalChain;
 
-	private final List<Filter>		additionalFilters;
+	private final List<Filter>	additionalFilters;
 
-	private int							currentPosition	= 0;
+	private int						currentPosition	= 0;
 
-	protected Log						log					= LogFactory.getLog(getClass());
+	protected Log					log					= LogFactory.getLog(getClass());
 
-	private WFFilterProxy	webframeFilterProxy;
+	private WFFilterProxy		webframeFilterProxy;
 
 	public WFFilterChain(FilterChain chain, List<Filter> additionalFilters) {
 		this.originalChain = chain;

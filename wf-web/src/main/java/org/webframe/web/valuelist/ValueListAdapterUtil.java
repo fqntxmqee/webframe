@@ -17,9 +17,11 @@ import org.webframe.web.page.adapter.ValueListAdapterManager;
 import org.webframe.web.spring.ServiceHelper;
 
 /**
- * @author <a href="mailto:guoqing.huang@foxmail.com">huangguoqing</a>
- * @version $Id: codetemplates.xml,v 1.3 2009/05/05 02:30:07 huangguoqing Exp $ Create: 2011-1-20
- *          下午04:24:48
+ * ValueListApapter工具类，提供动态创建Adapter
+ * 
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
+ * @since 2012-1-29 上午09:32:00
+ * @version
  */
 public abstract class ValueListAdapterUtil {
 
@@ -27,9 +29,11 @@ public abstract class ValueListAdapterUtil {
 
 	private static Map<String, ValueListAdapter>	adapterCache			= null;
 
-	private static final String						parentHqlAdapterName	= "abstractHibernate30Adapter";
+	// 确任与wf-web-page模块中的wf-page-hql.xml配置文件中的Adapter名字一致
+	private static final String						parentHqlAdapterName	= "abstractHibernateAdapter";
 
-	private static final String						parentSqlAdapterName	= "sqlSimpleHashMapAdapter";
+	// 确任与wf-web-page模块中的wf-page-sql.xml配置文件中的Adapter名字一致
+	private static final String						parentSqlAdapterName	= "sqlHashMapAdapter";
 
 	static void addValueListAdapterMap(Map<String, ValueListAdapter> adapterMap) {
 		if (adapterCache == null) {

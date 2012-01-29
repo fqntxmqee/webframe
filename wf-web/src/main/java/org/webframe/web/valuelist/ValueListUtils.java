@@ -30,8 +30,11 @@ import org.webframe.web.util.PatternUtil;
 import org.webframe.web.util.WebFrameUtils;
 
 /**
+ * ValueList工具类
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-9 下午09:22:09
+ * @since 2012-1-29 上午09:11:05
+ * @version
  */
 public class ValueListUtils {
 
@@ -137,7 +140,6 @@ public class ValueListUtils {
 	 */
 	public static void setValueListToRequest(String adapter, Map<String, Object> queries, String tableId, HttpServletRequest request, String valueListName) {
 		Map<String, Object> queryMap = getValueListQureyMap(queries, tableId, request);
-		disposeValueListDebugParam(queries, request);
 		ValueListInfo info = getValueListInfo(queryMap);
 		ValueList<?> valueList = getValueList(adapter, info);
 		if (valueListName == null) valueListName = DEFAULT_VALUELIST_REQUEST_LIST_NAME;
@@ -169,7 +171,6 @@ public class ValueListUtils {
 	 */
 	public static <X> ValueList<X> getValueList(String adapter, HttpServletRequest request) {
 		Map<String, Object> queryMap = getQueryMap(request);
-		disposeValueListDebugParam(queryMap, request);
 		ValueListInfo info = getValueListInfo(queryMap);
 		parsePagingPage(request, info);
 		return getValueList(adapter, info);
@@ -326,10 +327,6 @@ public class ValueListUtils {
 		return valueListHelper;
 	}
 
-	public static void setValueListHelper(ValueListHandlerHelper helper) {
-		valueListHelper = helper;
-	}
-
 	/**
 	 * 获取valuelist的查询信息
 	 * 
@@ -350,11 +347,5 @@ public class ValueListUtils {
 		}
 		queryMap.putAll(queries);
 		return queryMap;
-	}
-
-	private static void disposeValueListDebugParam(Map<String, Object> queries, HttpServletRequest request) {
-		if (request.getParameter(PARAM_DEBUG) != null) {
-			queries.put(PARAM_DEBUG, true);
-		}
 	}
 }

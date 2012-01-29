@@ -17,8 +17,11 @@ import org.webframe.support.util.SystemLogUtils;
 import org.webframe.web.util.WebSourcesUtils;
 
 /**
+ * 扩展spring {@link org.springframework.web.context.ContextLoaderListener} webframe框架web加载入口
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-5 下午02:53:00
+ * @since 2012-1-29 上午09:08:42
+ * @version
  */
 public class WFContextLoaderListener extends ContextLoaderListener {
 

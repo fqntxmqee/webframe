@@ -8,8 +8,11 @@ import java.util.List;
 import javax.servlet.Filter;
 
 /**
+ * 存放spring配置文件中配置的Filter
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-21 下午02:37:12
+ * @since 2012-1-29 上午09:17:59
+ * @version
  */
 public class WFFilterContext {
 

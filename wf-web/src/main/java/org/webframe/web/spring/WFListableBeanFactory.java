@@ -10,11 +10,12 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
 /**
- * 类功能描述：
+ * 扩展{@link org.springframework.beans.factory.support.DefaultListableBeanFactory}，使用自定义
+ * {@link WFBeanWrapper}，更改Bean实例化过程
  * 
- * @author <a href="mailto:guoqing.huang@foxmail.com">huangguoqing</a>
- * @version $Id: WFListableBeanFactory.java,v 1.1.2.1 2010/04/22 07:46:09 huangguoqing Exp $
- *          Create: 2010-4-22 下午01:19:43
+ * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
+ * @since 2012-1-29 上午09:24:41
+ * @version
  */
 public class WFListableBeanFactory extends DefaultListableBeanFactory {
 
