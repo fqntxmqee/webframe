@@ -45,6 +45,7 @@
 		<module>wf-web-springmvc</module>
 		<module>wf-web-front</module>
 		<module>wf-easy</module>
+		<module>wf-web-security</module>
 	</modules>
 
 	<properties>

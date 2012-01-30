@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<b:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:b="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+	<http realm="Contacts Realm" auto-config="true">
+		<intercept-url pattern="/" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<intercept-url pattern="/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<intercept-url pattern="/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<intercept-url pattern="/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<intercept-url pattern="/j_spring_security_switch_user" access="ROLE_SUPERVISOR" />
+		<intercept-url pattern="/debug*" access="ROLE_ADMINISTRATOR" />
+		<intercept-url pattern="/**" access="ROLE_USER" />
+
+		<form-login login-page="/login" default-target-url="/manage" authentication-failure-url="/login?login_error=1" />
+		<http-basic />
+		<logout logout-success-url="/manage" />
+		<remember-me />
+		<custom-filter ref="switchUserProcessingFilter" position="SWITCH_USER_FILTER" />
+	</http>
+
+	<authentication-manager>
+		<authentication-provider user-service-ref="userDetailsService">
+			<password-encoder hash="md5" />
+		</authentication-provider>
+	</authentication-manager>
+
+	<b:bean id="userDetailsService" class="">
+		<!-- org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl -->
+		<b:property name="dataSource" ref="dataSource" />
+		<b:property name="usersByUsernameQuery">
+			<b:value>
+				SELECT u.LOGIN_NAME_,u.PASSWORD_,u.ENABLED_
+				,u.ORG_ID_,org.LABEL_,u.REAL_NAME_,u.EMAIL_,u.ID_ FROM t_users u
+				left join t_org org
+				on u.ORG_ID_ = org.ID_ where u.status_ ='1' and
+				org.status_ ='1' and u.LOGIN_NAME_ = ?
+			</b:value>
+		</b:property>
+		<b:property name="authoritiesByUsernameQuery">
+			<b:value>
+				SELECT LOGIN_NAME_,ROLE_ FROM t_users left join t_user_role
+				on t_users.id_ = t_user_role.USER_ID_ left join t_role on
+				t_user_role.role_id_ = t_role.id_ WHERE t_users.status_ ='1' and
+				t_role.status_ ='1' and LOGIN_NAME_ = ?
+			</b:value>
+		</b:property>
+	</b:bean>
+
+	<!-- Automatically receives AuthenticationEvent messages -->
+	<b:bean id="loggerListener" class="org.springframework.security.authentication.event.LoggerListener" />
+
+	<!-- Filter used to switch the user context. Note: the switch and exit url 
+		must be secured based on the role granted the ability to 'switch' to another 
+		user -->
+	<!-- In this example 'rod' has ROLE_SUPERVISOR that can switch to regular 
+		ROLE_USER(s) -->
+	<b:bean id="switchUserProcessingFilter"
+		class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter" autowire="byType">
+		<b:property name="targetUrl" value="/secure/index.html" />
+	</b:bean>
+</b:beans>
