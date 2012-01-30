@@ -32,6 +32,7 @@ public class BaseValueListController extends BaseController {
 	@Override
 	public ModelAndView handleException(Exception ex, HttpServletRequest req, HttpServletResponse res) throws Exception {
 		if (ex instanceof ValueListException) {
+			res.setStatus(500);
 			return handleValueListException((ValueListException) ex, req, res);
 		} else {
 			return super.handleException(ex, req, res);
