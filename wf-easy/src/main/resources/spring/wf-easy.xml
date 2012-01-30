@@ -1,0 +1,143 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<!-- REST -->
+	<bean id="moduleRestController" class="org.webframe.web.springmvc.controller.ModuleRestController" scope="prototype"/>
+	<bean class="org.webframe.web.springmvc.view.ModuleAnnotationHandlerMapping">
+		<property name="defaultModuleHandlerName" value="moduleRestController"/>
+	</bean>
+	
+	<bean class="org.webframe.web.springmvc.view.ModuleAnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<!-- 解析json请求数据，将json转换为java对象-->
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+				
+				<!-- 解析xml请求数据，将xml转换为java对象-->
+				<bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+					<constructor-arg>
+						<bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+							<property name="streamDriver">
+								<bean class="com.thoughtworks.xstream.io.xml.DomDriver" />
+							</property>
+							<property name="autodetectAnnotations" value="true"/>
+
+							<!--可以与xml互换的对象，需要使用XStream的注解，注解的使用方法请参XStream官网
+							<property name="annotatedClasses">
+								<list>
+									<value>com.xxx.XxxxDTO</value>
+								</list>
+							</property>
+							-->
+						</bean>
+					</constructor-arg>
+				</bean>
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.ResourceHttpMessageConverter" />
+				<!--可以增加其他数据类型,请参考spring的API-->
+			</list>
+		</property>
+	</bean>
+
+	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<!-- 使用ModuleTemplateLoader加载后缀为ftl的文件-->
+		<property name="postTemplateLoaders">
+			<list>
+				<bean class="org.webframe.web.springmvc.view.freemarker.ModuleTemplateLoader"/>
+			</list>
+		</property>
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="configLocation" value="classpath:freemarker.properties"/>
+		<property name="freemarkerVariables">
+			<map>
+				<entry key="xml_escape">
+					<bean class="freemarker.template.utility.XmlEscape"/>
+				</entry>
+				<entry key="html_escape">
+					<bean class="freemarker.template.utility.HtmlEscape" />
+				</entry>
+			</map>
+		</property>
+		<!--可以增加其他freemarker的配置，详情请参阅FreeMarkerConfigurerAPI-->
+	</bean>
+	
+	<bean id="contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="1"/>
+		<property name="ignoreAcceptHeader" value="true" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />
+				<entry key="html" value="text/html" />
+			</map>
+		</property>
+
+		<property name="defaultViews">
+			<list>
+				<!-- for application/json -->
+				<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+				<!-- for application/xml -->
+				<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<constructor-arg>
+						<bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+							<property name="supportedClasses">
+								<list>
+									<value>org.webframe.core.model.BaseEntity</value>
+								</list>
+							</property>
+						</bean>
+					</constructor-arg>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- set the max upload size100MB -->
+		<property name="maxUploadSize">
+			<value>104857600</value>
+		</property>
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+	</bean>
+	
+	<!---->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.webframe.web.springmvc.view.jstl.ModuleJstlView"/>
+		<property name="order" value="2"/>
+		<property name="prefix" value="/jsp" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<bean class="org.webframe.web.springmvc.view.freemarker.ModuleFreeMarkerViewResolver">
+		<property name="order" value="3"/>
+		<property name="cache" value="true" />
+		<property name="prefix" value="" />
+		<property name="suffix" value=".ftl" />
+		<property name="contentType" value="text/html;charset=utf-8" />
+		<property name="exposeRequestAttributes" value="true"/>
+		<property name="exposeSpringMacroHelpers" value="true" />
+	</bean>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" p:basename="i18n/messages" />
+
+	<!-- Mapping exception to the handler view -->
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<!-- to /exception/error.jsp -->
+		<property name="defaultErrorView" value="/exception/error" />
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.webframe.core.exception.ServiceException">/exception/service</prop>
+				<prop key="org.webframe.web.exception.WebFrameException">/exception/error</prop>
+			</props>
+		</property>
+	</bean>
+</beans>

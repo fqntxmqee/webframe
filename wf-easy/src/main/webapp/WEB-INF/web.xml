@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+						http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+	<display-name>WebFrame</display-name>
+	<description>
+		WebFrame System ! https://github.com/fqntxmqee/webframe
+	</description>
+
+	<distributable />
+
+	<!-- session超时定义,单位为分钟 -->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	
+	
+	<!-- ************************************     监听器 begin     ************************************ -->
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	<!--Spring ApplicationContext 载入 -->
+	<listener>
+		<listener-class>org.webframe.web.spring.WFContextLoaderListener</listener-class>
+	</listener>
+	<!-- Spring 刷新Introspector防止内存泄露 -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+	<!-- ************************************     监听器  end      ************************************ -->
+	
+	
+	<!-- ************************************应用范围内参数初始化 begin************************************ -->
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>webframe.root</param-value>
+	</context-param>
+
+	<!-- 日志 -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:log4j.properties</param-value>
+	</context-param>
+	
+	<!-- WebFrame框架模块插件驱动加载器 -->
+	<context-param>
+		<param-name>modulePluginLoaderName</param-name>
+		<param-value>org.webframe.support.driver.loader.PropertiesModulePluginLoader</param-value>
+	</context-param>
+	<!-- ************************************应用范围内参数初始化 end************************************ -->
+
+
+	<!-- ************************************     过滤器 begin     ************************************ -->
+	<!-- WebFrame框架过滤器代理链 -->
+	<filter>
+		<filter-name>wfFilterChain</filter-name>
+		<filter-class>org.webframe.web.filter.WFFilterProxy</filter-class>
+	</filter>
+	
+	<!--
+		浏览器不支持put,delete等method,由该filter将/blog?_method=delete转换为标准的http
+		delete方法
+	-->
+	<filter>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+	<!-- ************************************     过滤器 end     ************************************ -->
+	
+	
+	<!-- ************************************   过滤器 映射 begin   ************************************ -->
+	<filter-mapping>
+		<filter-name>wfFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<servlet-name>SpringMVC</servlet-name>
+	</filter-mapping>
+	<!-- ************************************   过滤器 映射 end   ************************************ -->
+	
+	
+	<!-- ************************************   Servlet begin    ************************************ -->
+	<servlet>
+		<servlet-name>SpringMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextAttribute</param-name>
+			<param-value>org.springframework.web.context.WebApplicationContext.ROOT</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<!-- ************************************    Servlet end      ************************************ -->
+	
+	
+	<!-- ************************************  Servlet 映射begin  ************************************ -->
+	<!-- 覆盖default servlet的/, SpringMVC servlet将处理原来处理静态资源的映射 -->   
+	<servlet-mapping>   
+	    <servlet-name>SpringMVC</servlet-name>   
+	    <url-pattern>/</url-pattern>   
+	</servlet-mapping>
+	<!-- ************************************   Servlet 映射end   ************************************ -->
+</web-app>

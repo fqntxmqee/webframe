@@ -44,6 +44,7 @@
 		<module>wf-struts</module>
 		<module>wf-web-springmvc</module>
 		<module>wf-web-front</module>
+		<module>wf-easy</module>
 	</modules>
 
 	<properties>
