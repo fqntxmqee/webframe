@@ -4,13 +4,16 @@ package org.webframe.web.springmvc.view.freemarker;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 /**
+ * Jar包中freemarker模板视图解析器
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-6-28 下午08:47:58
+ * @since 2012-1-30 下午12:46:57
+ * @version
  */
-public class ModuleFreeMarkerViewResolver extends FreeMarkerViewResolver {
+public class JarFreeMarkerViewResolver extends FreeMarkerViewResolver {
 
 	@Override
 	protected Class<?> requiredViewClass() {
-		return ModuleFreeMarkerView.class;
+		return JarFreeMarkerView.class;
 	}
 }

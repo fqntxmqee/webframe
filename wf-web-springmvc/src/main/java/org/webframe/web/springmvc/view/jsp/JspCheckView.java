@@ -1,5 +1,9 @@
+/*
+ * wf-web-springmvc
+ * Created on 2012-1-30-下午01:50:11
+ */
 
-package org.webframe.web.springmvc.view.jstl;
+package org.webframe.web.springmvc.view.jsp;
 
 import java.io.File;
 import java.util.Locale;
@@ -9,21 +13,24 @@ import javax.servlet.ServletContext;
 import org.springframework.web.servlet.view.JstlView;
 
 /**
+ * 先检查Jsp物理文件是否存在
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-6-28 下午08:48:46
+ * @since 2012-1-30 下午01:50:11
+ * @version
  */
-public class ModuleJstlView extends JstlView {
+public class JspCheckView extends JstlView {
 
-	private String	realPath	= "";
+	private String	jspRealPath	= "";
 
 	@Override
 	public boolean checkResource(Locale locale) throws Exception {
-		return new File(realPath).exists();
+		return new File(jspRealPath).exists();
 	}
 
 	@Override
 	protected void initServletContext(ServletContext servletContext) {
 		super.initServletContext(servletContext);
-		realPath = servletContext.getRealPath(getUrl());
+		jspRealPath = servletContext.getRealPath(getUrl());
 	}
 }

@@ -7,14 +7,12 @@
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-
-	<!-- REST -->
-	<bean id="moduleRestController" class="org.webframe.web.springmvc.controller.ModuleRestController" scope="prototype"/>
-	<bean class="org.webframe.web.springmvc.view.ModuleAnnotationHandlerMapping">
-		<property name="defaultModuleHandlerName" value="moduleRestController"/>
-	</bean>
 	
-	<bean class="org.webframe.web.springmvc.view.ModuleAnnotationMethodHandlerAdapter">
+	<!-- 把标记了@Controller注解的类转换为bean -->     
+	<context:component-scan base-package="org.webframe.web.springmvc.controller" />
+	
+	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->     
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
 			<list>
 				<!-- 解析json请求数据，将json转换为java对象-->
@@ -53,7 +51,7 @@
 		<!-- 使用ModuleTemplateLoader加载后缀为ftl的文件-->
 		<property name="postTemplateLoaders">
 			<list>
-				<bean class="org.webframe.web.springmvc.view.freemarker.ModuleTemplateLoader"/>
+				<bean class="org.webframe.web.springmvc.view.freemarker.JarTemplateLoader"/>
 			</list>
 		</property>
 		<property name="defaultEncoding" value="UTF-8" />
@@ -102,25 +100,15 @@
 		</property>
 	</bean>
 
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<!-- set the max upload size100MB -->
-		<property name="maxUploadSize">
-			<value>104857600</value>
-		</property>
-		<property name="maxInMemorySize">
-			<value>4096</value>
-		</property>
-	</bean>
-	
-	<!---->
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass" value="org.webframe.web.springmvc.view.jstl.ModuleJstlView"/>
+		<property name="viewClass" value="org.webframe.web.springmvc.view.jsp.JspCheckView"/>
+		<property name="contentType" value="text/html;charset=utf-8" />
 		<property name="order" value="2"/>
 		<property name="prefix" value="/jsp" />
 		<property name="suffix" value=".jsp" />
 	</bean>
 	
-	<bean class="org.webframe.web.springmvc.view.freemarker.ModuleFreeMarkerViewResolver">
+	<bean class="org.webframe.web.springmvc.view.freemarker.JarFreeMarkerViewResolver">
 		<property name="order" value="3"/>
 		<property name="cache" value="true" />
 		<property name="prefix" value="" />
@@ -131,16 +119,4 @@
 	</bean>
 	
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" p:basename="i18n/messages" />
-
-	<!-- Mapping exception to the handler view -->
-	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-		<!-- to /exception/error.jsp -->
-		<property name="defaultErrorView" value="/exception/error" />
-		<property name="exceptionMappings">
-			<props>
-				<prop key="org.webframe.core.exception.ServiceException">/exception/service</prop>
-				<prop key="org.webframe.web.exception.WebFrameException">/exception/error</prop>
-			</props>
-		</property>
-	</bean>
 </beans>
