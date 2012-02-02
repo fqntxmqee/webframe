@@ -22,11 +22,6 @@ public class CoreModulePluginDriver extends AbstractModulePluginDriver {
 	}
 
 	@Override
-	public String getSpringContextLocation() {
-		return "/spring";
-	}
-
-	@Override
 	public String getModuleName() {
 		return "CoreModule";
 	}

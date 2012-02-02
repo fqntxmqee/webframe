@@ -12,10 +12,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping;
-import org.webframe.core.model.BaseEntity;
 import org.webframe.core.service.IBaseEntityService;
 import org.webframe.core.util.EntityUtils;
 import org.webframe.easy.controller.ModuleRestController;
+import org.webframe.easy.model.EasyEntity;
 import org.webframe.easy.util.ModuleUrlPathHelper;
 
 /**
@@ -70,13 +70,13 @@ public class ModuleAnnotationHandlerMapping extends DefaultAnnotationHandlerMapp
 			if (moduleHandler instanceof ModuleRestController) {
 				ModuleRestController moduleRestController = (ModuleRestController) moduleHandler;
 				moduleRestController.setModuleName(moduleName);
-				BaseEntity entity = (BaseEntity) BeanUtils.instantiateClass(EntityUtils.getEntityClass(moduleName));
+				EasyEntity entity = (EasyEntity) BeanUtils.instantiateClass(EntityUtils.getEntityClass(moduleName));
 				moduleRestController.setDefaultActions(entity.defaultModuleActionTypes());
 				try {
 					// 根据业务模块名称获取业务模块特有的Servcie，如果找到，保存到moduleRestController中。
 					Object moduleService = getBean(moduleName + defaultServiceSuffix);
 					if (moduleService != null && moduleService instanceof IBaseEntityService) {
-						moduleRestController.setBaseService((IBaseEntityService<BaseEntity>) moduleService);
+						moduleRestController.setBaseService((IBaseEntityService<EasyEntity>) moduleService);
 						if (log.isInfoEnabled()) {
 							log.info("业务模块：" + moduleName + "使用自定义的Service：(" + moduleService.getClass().getName() + ")！");
 						}

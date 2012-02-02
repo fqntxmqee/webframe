@@ -20,6 +20,11 @@ public class TestUserModulePluginDriver extends AbstractModulePluginDriver {
 	}
 
 	@Override
+	public String getSpringContextLocation() {
+		return null;
+	}
+
+	@Override
 	public String getModuleName() {
 		return "TestUserModule";
 	}

@@ -33,12 +33,18 @@ public class BaseEntityService<T extends BaseEntity> extends BaseService impleme
 		entityClass = ReflectionUtils.getSuperClassGenricType(getClass());
 	}
 
+	@Override
+	public BaseEntityService<T> getSubClassEntityService(Class<T> entityClass) {
+		this.entityClass = entityClass;
+		return this;
+	}
+
 	protected final Class<T> getEntityClass() {
 		return this.entityClass;
 	}
 
 	protected IBaseEntityDao<T> getBaseEntityDao() {
-		return baseEntityDao;
+		return baseEntityDao.getSubClassEntityDao(entityClass);
 	}
 
 	@Override

@@ -5,11 +5,16 @@
 
 package org.webframe.web.springmvc.test;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.webframe.core.model.UUIDEntity;
+import org.hibernate.annotations.GenericGenerator;
+import org.webframe.core.model.BaseEntity;
+import org.webframe.core.model.IUUIDEntity;
 
 /**
  * 测试持久类
@@ -20,7 +25,7 @@ import org.webframe.core.model.UUIDEntity;
  */
 @Entity
 @Table(name = "T_TEST")
-public class TTest extends UUIDEntity {
+public class TTest extends BaseEntity implements IUUIDEntity {
 
 	/**
 	 * 
@@ -34,6 +39,14 @@ public class TTest extends UUIDEntity {
 	private double					xinzid				= 5000.23;
 
 	private float					xinzif				= 3000.33f;
+
+	@Id
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid")
+	@Column(name = "ID_", length = 32, updatable = false, insertable = false)
+	public String getId() {
+		return id;
+	}
 
 	@Transient
 	public boolean isEnable() {

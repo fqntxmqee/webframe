@@ -25,7 +25,7 @@ public class BaseServiceTest extends BaseSpringTests {
 
 	private static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
 
-	private String									testUserName	= "testuser";
+	private String									testUserName	= "testuserservice";
 
 	/**
 	 * Test method for

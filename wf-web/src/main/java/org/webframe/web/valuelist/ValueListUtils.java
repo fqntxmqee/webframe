@@ -68,22 +68,6 @@ public class ValueListUtils {
 	private static ValueListHandlerHelper	valueListHelper;
 
 	/**
-	 * 根据业务模块模型对象类型，获取该模块默认列表页的Hql查询语句的valuelist Adapter，包括查询条件；
-	 * 业务模块模型对象的getViewElementList()方法提供查询条件;
-	 * 
-	 * @param entityClass 业务模块模型对象类型
-	 * @author: 黄国庆 2011-1-22 下午12:10:10
-	 */
-	public static void getDefaultListHqlAdapter(Class<? extends BaseEntity> entityClass) {
-		/**
-		 * 如果valuelist Adapter容器中没有该模型对象的Adapter，则生成该模型对象的Adapter， 并保存到valuelist Adapter容器中
-		 */
-		if (!ValueListAdapterUtil.hasAdapter(entityClass)) {
-			ValueListAdapterUtil.generateHqlAdapter(entityClass, null);
-		}
-	}
-
-	/**
 	 * 将valuelist中的list拼成json，返回json数组，例如：[]或[{},{}]
 	 * 
 	 * @param list valuelist实例
@@ -94,36 +78,6 @@ public class ValueListUtils {
 			return JSONArray.fromObject(list_);
 		}
 		return new JSONArray();
-	}
-
-	/**
-	 * 根据业务模块模型对象类型和valuelist查询条件，执行业务模块的查询，并把查询结果保存到request域中，
-	 * 默认使用key：DEFAULT_VALUELIST_REQUEST_LIST_NAME
-	 * 
-	 * @param entityClass 业务模块模型对象类型
-	 * @param queries valuelist 查询条件
-	 * @param request
-	 * @author: 黄国庆 2011-1-22 下午12:09:59
-	 */
-	public static void setValueListToRequest(Class<? extends BaseEntity> entityClass, Map<String, Object> queries, HttpServletRequest request) {
-		getDefaultListHqlAdapter(entityClass);
-		setValueListToRequest(ValueListAdapterUtil.generateHqlAdapterName(entityClass), queries, "listTable", request,
-			null);
-	}
-
-	/**
-	 * 根据业务模块模型对象类型从request域中获取valuelist查询条件，然后执行业务模块的查询，并把查询结果保存到request域中，
-	 * 默认使用key：DEFAULT_VALUELIST_REQUEST_LIST_NAME，值为：vlhMap
-	 * 
-	 * @param entityClass 业务模块模型对象类型
-	 * @param request
-	 * @author: 黄国庆 2011-1-22 下午12:09:59
-	 */
-	public static void setValueListToRequest(Class<? extends BaseEntity> entityClass, HttpServletRequest request) {
-		getDefaultListHqlAdapter(entityClass);
-		Map<String, Object> queries = getQueryMap(request, entityClass);
-		setValueListToRequest(ValueListAdapterUtil.generateHqlAdapterName(entityClass), queries, "listTable", request,
-			null);
 	}
 
 	/**

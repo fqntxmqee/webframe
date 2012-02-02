@@ -2,18 +2,17 @@
 package org.webframe.core.module.testUser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.webframe.core.model.BaseTreeEntity;
-import org.webframe.core.model.action.ModuleActionType;
-import org.webframe.core.model.form.ViewElement;
-import org.webframe.core.model.form.ViewElement.QueryConditionType;
-import org.webframe.core.model.form.ViewElementType;
+import org.hibernate.annotations.GenericGenerator;
+import org.webframe.core.model.BaseEntity;
+import org.webframe.core.model.IUUIDEntity;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com>黄国庆 </a>
@@ -21,7 +20,7 @@ import org.webframe.core.model.form.ViewElementType;
  */
 @Entity
 @Table(name = "T_TEST_USER")
-public class TTestUser extends BaseTreeEntity {
+public class TTestUser extends BaseEntity implements IUUIDEntity {
 
 	/**
 	 * 
@@ -47,6 +46,14 @@ public class TTestUser extends BaseTreeEntity {
 
 	public TTestUser(TTestUser testUser) {
 		this.testUser = testUser;
+	}
+
+	@Id
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid")
+	@Column(name = "ID_", length = 32, updatable = false, insertable = false)
+	public String getId() {
+		return id;
 	}
 
 	@Override
@@ -104,46 +111,5 @@ public class TTestUser extends BaseTreeEntity {
 
 	public void setLikes(String likes) {
 		this.likes = likes;
-	}
-
-	@Override
-	public List<ViewElement> viewElementList() {
-		List<ViewElement> viewElements = super.viewElementList();
-		ViewElement viewElement;
-		viewElements.add(new ViewElement("名称", "name", ViewElementType.TEXT, ""));
-		viewElements.add(new ViewElement("密码", "password", ViewElementType.PASSWORD, "").setListPageConfig(false, false,
-			null));
-		viewElements.add(new ViewElement("排序", "index", ViewElementType.TEXT, "").setListPageConfig(true, false, null));
-		viewElement = new ViewElement("状态", "enabled", ViewElementType.SELECT, "");
-		viewElement.setValueMap(new HashMap<String, Object>() {
-
-			private static final long	serialVersionUID	= -4441777963201624419L;
-			{
-				put("true", "启用");
-				put("false", "禁用");
-			}
-		});
-		viewElements.add(viewElement.setListPageConfig(true, true, QueryConditionType.布尔类型));
-		viewElement = new ViewElement("性别", "sex", ViewElementType.SELECT, "");
-		viewElement.setValueMap(new HashMap<String, Object>() {
-
-			private static final long	serialVersionUID	= -4441777963201624419L;
-			{
-				put("man", "男");
-				put("woman", "女");
-			}
-		});
-		viewElements.add(viewElement.setListPageConfig(true, true, QueryConditionType.等值类型));
-		viewElements.add(new ViewElement("爱好", "likes", ViewElementType.TEXT, "").setListPageConfig(true, false, null));
-		viewElements.add(new ViewElement("创建时间", "createTime", ViewElementType.TEXT, "").setFormed(false)
-			.setListPageConfig(true, true, QueryConditionType.区间类型));
-		viewElements.add(new ViewElement("修改时间", "modifyTime", ViewElementType.TEXT, "").setFormed(false)
-			.setListPageConfig(false, false, null));
-		return viewElements;
-	}
-
-	@Override
-	protected ModuleActionType[] excludeModuleActionTypes() {
-		return new ModuleActionType[]{};
 	}
 }

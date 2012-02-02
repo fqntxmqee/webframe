@@ -21,12 +21,16 @@ import org.webframe.test.BaseSpringTests;
  */
 public class BaseEntityServiceTest extends BaseSpringTests {
 
-	@Autowired
 	private IBaseEntityService<TTestUser>	baseEntityService;
 
 	private static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
 
 	private String									testUserName	= "testuser";
+
+	@Autowired
+	public void setBaseEntityService(IBaseEntityService<TTestUser> baseEntityService) {
+		this.baseEntityService = baseEntityService.getSubClassEntityService(TTestUser.class);
+	}
 
 	/**
 	 * Test method for

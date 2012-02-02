@@ -1,5 +1,5 @@
 
-package org.webframe.core.model.form;
+package org.webframe.easy.model.form;
 
 /**
  * 页面视图元素类型
