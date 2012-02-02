@@ -1,5 +1,5 @@
 
-package org.webframe.core.model.form;
+package org.webframe.easy.model.form;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

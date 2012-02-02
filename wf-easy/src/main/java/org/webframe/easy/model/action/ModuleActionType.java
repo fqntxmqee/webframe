@@ -1,5 +1,5 @@
 
-package org.webframe.core.model.action;
+package org.webframe.easy.model.action;
 
 /**
  * 业务模块的默认动作类型，包括新增、修改、查询、删除、禁用、启用等功能

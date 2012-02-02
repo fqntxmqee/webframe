@@ -16,6 +16,8 @@ import org.webframe.core.model.BaseEntity;
  */
 public interface IBaseEntityService<T extends BaseEntity> extends IBaseService {
 
+	BaseEntityService<T> getSubClassEntityService(Class<T> entityClass);
+
 	/**
 	 * 保存实体对象
 	 * 

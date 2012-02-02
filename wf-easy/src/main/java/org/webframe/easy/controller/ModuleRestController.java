@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.webframe.core.exception.ServiceException;
-import org.webframe.core.model.BaseEntity;
-import org.webframe.core.model.action.ModuleActionType;
 import org.webframe.core.service.IBaseEntityService;
 import org.webframe.core.util.BeanUtils;
 import org.webframe.core.util.EntityUtils;
+import org.webframe.easy.model.EasyEntity;
+import org.webframe.easy.model.action.ModuleActionType;
 import org.webframe.easy.util.ModuleUrlPathHelper;
 import org.webframe.web.exception.WebFrameException;
 import org.webframe.web.springmvc.controller.BaseRestController;
@@ -36,10 +36,10 @@ import org.webframe.web.springmvc.controller.BaseRestController;
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-6-28 下午08:21:47
  */
 @RequestMapping("/module")
-public class ModuleRestController extends BaseRestController<BaseEntity, String> {
+public class ModuleRestController extends BaseRestController<EasyEntity, String> {
 
 	@Autowired
-	protected IBaseEntityService<BaseEntity>	baseEntityService;
+	protected IBaseEntityService<EasyEntity>	baseEntityService;
 
 	private Set<ModuleActionType>					defaultActions		= new HashSet<ModuleActionType>(0);
 
@@ -56,7 +56,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 	private final String								FORWORD_REDIRECT	= "redirect:/";
 
 	@Override
-	public ModelAndView _new(HttpServletRequest request, HttpServletResponse response, BaseEntity model)
+	public ModelAndView _new(HttpServletRequest request, HttpServletResponse response, EasyEntity model)
 				throws WebFrameException {
 		if (!defaultActions.contains(ModuleActionType.新增)) {
 			throwModuleFunctionExcludeException(ModuleActionType.新增);
@@ -73,7 +73,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 		if (!defaultActions.contains(ModuleActionType.删除)) {
 			throwModuleFunctionExcludeException(ModuleActionType.删除);
 		}
-		BaseEntity model = BeanUtils.instantiateClass(getModuleClass(request));
+		EasyEntity model = BeanUtils.instantiateClass(getModuleClass(request));
 		for (int i = 0; i < ids.length; i++) {
 			String id = ids[i];
 			model = baseEntityService.findEntity(getModuleClass(request), id);
@@ -83,7 +83,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 	}
 
 	@Override
-	public ModelAndView create(HttpServletRequest request, HttpServletResponse response, BaseEntity model)
+	public ModelAndView create(HttpServletRequest request, HttpServletResponse response, EasyEntity model)
 				throws WebFrameException, ServiceException {
 		if (!defaultActions.contains(ModuleActionType.新增)) {
 			throwModuleFunctionExcludeException(ModuleActionType.新增);
@@ -98,7 +98,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 		if (!defaultActions.contains(ModuleActionType.删除)) {
 			throwModuleFunctionExcludeException(ModuleActionType.删除);
 		}
-		BaseEntity model = baseEntityService.findEntity(getModuleClass(request), id);
+		EasyEntity model = baseEntityService.findEntity(getModuleClass(request), id);
 		baseEntityService.deleteEntity(model);
 		return index(request, model);
 	}
@@ -109,7 +109,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 		if (!defaultActions.contains(ModuleActionType.修改)) {
 			throwModuleFunctionExcludeException(ModuleActionType.修改);
 		}
-		BaseEntity model = baseEntityService.findEntity(getModuleClass(request), id);
+		EasyEntity model = baseEntityService.findEntity(getModuleClass(request), id);
 		ModelAndView mv = getModuleModelAndView(request, FORWORD_EDIT, model);
 		ModelMap modelMap = mv.getModelMap();
 		modelMap.addAttribute("action", "/" + getModuleName(request));
@@ -124,7 +124,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 	 * @return
 	 * @author: 黄国庆 2011-1-22 下午12:24:09
 	 */
-	protected ModelAndView getListPageModelAndView(HttpServletRequest request, BaseEntity model) {
+	protected ModelAndView getListPageModelAndView(HttpServletRequest request, EasyEntity model) {
 		ModelAndView mv = new ModelAndView(getListPageRedirect(getModuleName(request)));
 		processRequestAttribute(request, model, mv.getModelMap());
 		return mv;
@@ -138,8 +138,8 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 	 * @author: 黄国庆 2011-1-7 上午11:21:12
 	 */
 	@SuppressWarnings("unchecked")
-	protected Class<BaseEntity> getModuleClass(HttpServletRequest request) {
-		return (Class<BaseEntity>) EntityUtils.getEntityClass(getModuleName(request));
+	protected Class<EasyEntity> getModuleClass(HttpServletRequest request) {
+		return (Class<EasyEntity>) EntityUtils.getEntityClass(getModuleName(request));
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 	 * @return
 	 * @author: 黄国庆 2011-1-7 上午11:21:44
 	 */
-	protected ModelAndView getModuleModelAndView(HttpServletRequest request, String forwordType, BaseEntity model) {
+	protected ModelAndView getModuleModelAndView(HttpServletRequest request, String forwordType, EasyEntity model) {
 		String moduleName = getModuleName(request);
 		ModelAndView mv = new ModelAndView("/" + moduleName + forwordType);
 		processRequestAttribute(request, model, mv.getModelMap());
@@ -174,7 +174,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 	}
 
 	@Override
-	public ModelAndView index(HttpServletRequest request, BaseEntity model) throws WebFrameException {
+	public ModelAndView index(HttpServletRequest request, EasyEntity model) throws WebFrameException {
 		if (!defaultActions.contains(ModuleActionType.查询)) {
 			throwModuleFunctionExcludeException(ModuleActionType.查询);
 		}
@@ -187,7 +187,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 		return mv;
 	}
 
-	private void processRequestAttribute(HttpServletRequest request, BaseEntity model, ModelMap modelMap) {
+	private void processRequestAttribute(HttpServletRequest request, EasyEntity model, ModelMap modelMap) {
 		// 获取查询条件，以attribute(id)为name的form元素
 		Map<String, Object> queryMap = getQueryMap(request, model.getClass());
 		modelMap.addAttribute("queryMap", queryMap);
@@ -196,7 +196,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 		modelMap.addAttribute("attrList", model.viewElementList());
 	}
 
-	public void setBaseService(IBaseEntityService<BaseEntity> baseService) {
+	public void setBaseService(IBaseEntityService<EasyEntity> baseService) {
 		this.baseEntityService = baseService;
 	}
 
@@ -214,7 +214,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 		if (!defaultActions.contains(ModuleActionType.查看)) {
 			throwModuleFunctionExcludeException(ModuleActionType.查看);
 		}
-		BaseEntity model = baseEntityService.findEntity(getModuleClass(request), id);
+		EasyEntity model = baseEntityService.findEntity(getModuleClass(request), id);
 		ModelAndView mv = getModuleModelAndView(request, FORWORD_SHOW, model);
 		return mv;
 	}
@@ -225,7 +225,7 @@ public class ModuleRestController extends BaseRestController<BaseEntity, String>
 		if (!defaultActions.contains(ModuleActionType.修改)) {
 			throwModuleFunctionExcludeException(ModuleActionType.修改);
 		}
-		BaseEntity model = baseEntityService.findEntity(getModuleClass(request), id);
+		EasyEntity model = baseEntityService.findEntity(getModuleClass(request), id);
 		// TODO bind(request, model);
 		baseEntityService.updateEntity(model);
 		return index(request, model);

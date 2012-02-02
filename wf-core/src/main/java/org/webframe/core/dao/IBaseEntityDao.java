@@ -16,6 +16,8 @@ import org.webframe.core.model.BaseEntity;
  */
 public interface IBaseEntityDao<T extends BaseEntity> extends IBaseDao {
 
+	BaseEntityDao<T> getSubClassEntityDao(Class<T> entityClass);
+
 	/**
 	 * 保存实体对象
 	 * 

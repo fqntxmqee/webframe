@@ -25,6 +25,12 @@ public class BaseEntityDao<T extends BaseEntity> extends BaseDao implements IBas
 		entityClass = ReflectionUtils.getSuperClassGenricType(getClass());
 	}
 
+	@Override
+	public BaseEntityDao<T> getSubClassEntityDao(Class<T> entityClass) {
+		this.entityClass = entityClass;
+		return this;
+	}
+
 	protected final Class<T> getEntityClass() {
 		return this.entityClass;
 	}

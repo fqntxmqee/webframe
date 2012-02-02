@@ -22,12 +22,16 @@ import org.webframe.test.BaseSpringTests;
  */
 public class BaseEntityDaoTest extends BaseSpringTests {
 
-	@Autowired
 	private IBaseEntityDao<TTestUser>		baseEntityDao;
 
 	private static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
 
-	private String									testUserName	= "testuser";
+	private String									testUserName	= "testuserdao";
+
+	@Autowired
+	public void setBaseEntityDao(IBaseEntityDao<TTestUser> baseEntityDao) {
+		this.baseEntityDao = baseEntityDao.getSubClassEntityDao(TTestUser.class);
+	}
 
 	/**
 	 * Test method for {@link org.webframe.core.dao.BaseEntityDao#saveEntity(java.lang.Object)}.
