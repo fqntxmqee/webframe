@@ -11,6 +11,9 @@
 	<!-- 把标记了@Controller注解的类转换为bean -->     
 	<context:component-scan base-package="org.webframe.web.springmvc.controller" />
 	
+	<!-- 注入AnnotationHandlerMapping -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+	
 	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->     
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
