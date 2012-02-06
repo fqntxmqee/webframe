@@ -2,6 +2,7 @@
 package org.webframe.test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +33,26 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 
 	private HttpContext								context			= null;
 
+	private static Map<String, Boolean>			userOnceMap		= new HashMap<String, Boolean>();
+
 	protected String getBaseUrl() {
 		return getServerURL();
+	}
+
+	/**
+	 * 获取url全路径包括主机和端口，默认使用http；
+	 * 
+	 * @param url
+	 * @return
+	 * @author 黄国庆 2012-2-6 上午08:25:29
+	 */
+	protected String getUrl(String url) {
+		String baseUrl = getBaseUrl();
+		if (url == null) return baseUrl;
+		if (url.toLowerCase().startsWith("http:") || url.toLowerCase().startsWith("https:")) {
+			baseUrl = "";
+		}
+		return baseUrl + url;
 	}
 
 	/**
@@ -44,11 +63,7 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-1-26 上午09:17:27
 	 */
 	protected final HttpGet getHttpGet(String url) {
-		String baseUrl = getBaseUrl();
-		if (url != null && (url.toLowerCase().startsWith("http:") || url.toLowerCase().startsWith("https:"))) {
-			baseUrl = "";
-		}
-		return new HttpGet(baseUrl + url);
+		return new HttpGet(getUrl(url));
 	}
 
 	/**
@@ -59,7 +74,7 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-1-26 上午09:17:51
 	 */
 	protected final HttpPost getHttpPost(String url) {
-		return new HttpPost(getBaseUrl() + url);
+		return new HttpPost(getUrl(url));
 	}
 
 	/**
@@ -71,12 +86,7 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-1-26 上午09:18:28
 	 */
 	protected String sendGet(String url) throws Exception {
-		HttpEntity httpEntity = executeGet(url).getEntity();
-		/*
-		 *  取得返回的字符串，EntityUtils.toString方法会关闭httpEntity中的InputStream流，
-		 *  不需要再使用EntityUtils.consume(entity);
-		 */
-		return EntityUtils.toString(httpEntity, defaultEncode);
+		return getResponseContent(executeGet(url));
 	}
 
 	/**
@@ -103,12 +113,7 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-1-26 上午09:22:38
 	 */
 	protected String sendPost(String url, List<NameValuePair> params) throws Exception {
-		HttpEntity httpEntity = executePost(url, params).getEntity();
-		/*
-		 *  取得返回的字符串，EntityUtils.toString方法会关闭httpEntity中的InputStream流，
-		 *  不需要再使用EntityUtils.consume(entity);
-		 */
-		return EntityUtils.toString(httpEntity, defaultEncode);
+		return getResponseContent(executePost(url, params));
 	}
 
 	/**
@@ -155,6 +160,15 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 		// 请求httpRequest
 		httpRequest.setEntity(httpentity);
 		return client.execute(httpRequest, context);
+	}
+
+	protected String getResponseContent(HttpResponse res) throws Exception {
+		HttpEntity httpEntity = res.getEntity();
+		/*
+		 *  取得返回的字符串，EntityUtils.toString方法会关闭httpEntity中的InputStream流，
+		 *  不需要再使用EntityUtils.consume(entity);
+		 */
+		return EntityUtils.toString(httpEntity, defaultEncode);
 	}
 
 	/**
@@ -217,5 +231,57 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	protected final void enableAuth(String usernamePassword) {
 		client.getCredentialsProvider().setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
 			new UsernamePasswordCredentials(usernamePassword));
+	}
+
+	/**
+	 * 使用默认的登陆链接进行登陆：url("/j_spring_security_check"), user("admin:1")
+	 * 
+	 * @throws Exception
+	 * @author 黄国庆 2012-2-6 上午08:45:58
+	 */
+	protected void login() throws Exception {
+		login("/j_spring_security_check", "admin:1");
+	}
+
+	/**
+	 * 执行登陆方法后，就有权限方法其他资源
+	 * 
+	 * @param loginUrl 登陆url，例如：'/j_spring_security_check'
+	 * @param usernamePassword 用户信息，例如："admin:1"
+	 * @throws Exception
+	 * @author 黄国庆 2012-2-6 上午08:45:16
+	 */
+	protected void login(String loginUrl, String usernamePassword) throws Exception {
+		if (usernamePassword == null) {
+			throw new IllegalArgumentException("Username:password string may not be null!");
+		}
+		Map<String, Object> user = new HashMap<String, Object>();
+		int index = usernamePassword.indexOf(':');
+		if (index >= 0) {
+			user.put("j_username", usernamePassword.substring(0, index));
+			user.put("j_password", usernamePassword.substring(index + 1));
+		} else {
+			user.put("j_username", "usernamePassword");
+			user.put("j_password", null);
+		}
+		login(loginUrl, user);
+	}
+
+	/**
+	 * 执行登陆方法后，就有权限方法其他资源
+	 * 
+	 * @param loginUrl 登陆url，例如：'/j_spring_security_check'
+	 * @param user 包含用户信息的Map，例如：user.put("j_username", "admin");user.put("j_password", "1");
+	 * @throws Exception
+	 * @author 黄国庆 2012-2-6 上午08:38:11
+	 */
+	protected void login(String loginUrl, Map<String, Object> user) throws Exception {
+		if (user == null) {
+			throw new IllegalArgumentException("user map may not be null!");
+		}
+		if (userOnceMap.get(user.toString()) != null) return;
+		HttpResponse response = executePost(loginUrl, user);
+		EntityUtils.consume(response.getEntity());
+		userOnceMap.put(user.toString(), true);
 	}
 }

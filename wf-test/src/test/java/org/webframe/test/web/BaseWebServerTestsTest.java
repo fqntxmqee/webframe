@@ -23,6 +23,10 @@ public class BaseWebServerTestsTest extends BaseHttpClientTests {
 
 	private String	label	= "呼呼";
 
+	public BaseWebServerTestsTest() throws Exception {
+		login();
+	}
+
 	@Test
 	public void testHttpGet() throws Exception {
 		enableAuth("admin:1");
