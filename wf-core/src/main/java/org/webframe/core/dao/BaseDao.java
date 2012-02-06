@@ -116,8 +116,8 @@ public class BaseDao extends HibernateDaoSupport implements IBaseDao {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <X> X queryUniqueObject(String hql, Class<X> clazz) {
-		@SuppressWarnings("unchecked")
 		List<X> list = (List<X>) query(hql);
 		if (list == null || list.size() == 0) return null;
 		if (list.size() == 1) return list.get(0);

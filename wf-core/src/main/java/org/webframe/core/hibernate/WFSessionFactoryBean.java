@@ -12,6 +12,7 @@ import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 import org.webframe.core.datasource.WFDataSource;
+import org.webframe.core.util.PropertyConfigurerUtils;
 
 public class WFSessionFactoryBean extends AnnotationSessionFactoryBean {
 
@@ -20,6 +21,8 @@ public class WFSessionFactoryBean extends AnnotationSessionFactoryBean {
 	private static final String		defaultLobHandlerString	= "default";
 
 	private static final String		HIBERNATE_DIALECT			= "hibernate.dialect";
+
+	private static final String		HIBERNATE_LOAD				= "hibernate.load";
 
 	private TypeFilter[]					entityTypeFilters;
 
@@ -45,6 +48,10 @@ public class WFSessionFactoryBean extends AnnotationSessionFactoryBean {
 	}
 
 	protected SessionFactory buildSessionFactory() throws Exception {
+		// 如果配置文件中hibernate.load为，则不加载hibernate，不生成可以使用的SessionFacotry
+		if ("false".equals(PropertyConfigurerUtils.getString(HIBERNATE_LOAD))) {
+			return new NullSessionFactory();
+		}
 		if (hasWFDataSource()) {
 			// 设置lobhandler
 			WFDataSource bds = (WFDataSource) this.getDataSource();
