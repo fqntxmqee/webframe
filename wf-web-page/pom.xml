@@ -44,9 +44,9 @@
 
 		<!-- tomcat -->
 		<dependency>
-			<groupId>org.apache.tomcat</groupId>
+			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
-			<version>${tomcat.version}</version>
+			<version>2.2</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

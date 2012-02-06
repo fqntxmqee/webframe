@@ -46,12 +46,11 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 	@Override
 	public void loadModulePlugin() throws DriverNotExistException {
 		try {
-			Properties properties;
+			Properties properties = PropertiesLoaderUtils.loadAllProperties(modulePluginProperties);
 			Resource res = new ClassPathResource(modulePluginProperties);
 			if (res.exists()) {
-				properties = PropertiesLoaderUtils.loadProperties(res);
-			} else {
-				properties = PropertiesLoaderUtils.loadAllProperties(modulePluginProperties);
+				Properties override = PropertiesLoaderUtils.loadProperties(res);
+				properties.putAll(override);
 			}
 			Set<Object> driverSet = new HashSet<Object>();
 			for (Object key : properties.keySet()) {

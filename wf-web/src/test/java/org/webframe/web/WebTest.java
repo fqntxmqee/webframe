@@ -17,7 +17,7 @@ import org.webframe.test.BaseHttpClientTests;
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-26 下午01:51:53
  */
-public class WebIT extends BaseHttpClientTests {
+public class WebTest extends BaseHttpClientTests {
 
 	private static final String	name	= "Filter 测试！";
 
