@@ -20,4 +20,12 @@ public interface ModulePluginLoader {
 	 * @author 黄国庆 2011-4-5 下午02:19:08
 	 */
 	void loadModulePlugin() throws DriverNotExistException;
+
+	/**
+	 * 是否开启Webframe框架日志
+	 * 
+	 * @param enable
+	 * @author 黄国庆 2012-2-7 下午02:44:56
+	 */
+	void enableWebframeLog(boolean enable);
 }

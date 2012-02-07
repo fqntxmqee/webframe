@@ -7,15 +7,17 @@ package org.webframe.support.util;
  */
 public final class SystemLogUtils {
 
+	public static boolean	enableSystemLog	= true;
+
 	private SystemLogUtils() {
 	}
 
 	public static void println(Object msg) {
-		System.out.println(msg);
+		if (enableSystemLog) System.out.println(msg);
 	}
 
 	public static void errorPrintln(Object msg) {
-		System.err.println("[ERROR] " + msg);
+		if (enableSystemLog) System.err.println("[ERROR] " + msg);
 	}
 
 	public static void rootPrintln(Object msg) {
