@@ -61,7 +61,7 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 			String[] drivers = driverSet.toArray(new String[driverSet.size()]);
 			loadModulePlugin(drivers);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 }

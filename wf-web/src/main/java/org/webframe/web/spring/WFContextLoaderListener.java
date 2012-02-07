@@ -27,6 +27,8 @@ public class WFContextLoaderListener extends ContextLoaderListener {
 
 	private String	MODULE_PLUGIN_DRIVER_LOADER	= "modulePluginLoaderName";
 
+	private String	WEBFRAME_SYSTEM_LOG				= "webframeSystemLog";
+
 	private String	defaultModulePluginLoaderName	= null;
 
 	private String	webRealPath							= null;
@@ -66,6 +68,9 @@ public class WFContextLoaderListener extends ContextLoaderListener {
 		}
 		try {
 			pluginLoader.loadModulePlugin();
+			if ("false".equals(servletContext.getInitParameter(WEBFRAME_SYSTEM_LOG))) {
+				pluginLoader.enableWebframeLog(false);
+			}
 		} catch (DriverNotExistException e) {
 			SystemLogUtils.errorPrintln(e.getMessage());
 		}

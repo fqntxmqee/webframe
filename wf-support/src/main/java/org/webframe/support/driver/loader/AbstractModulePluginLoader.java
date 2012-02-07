@@ -1,7 +1,10 @@
 
 package org.webframe.support.driver.loader;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.webframe.support.driver.exception.DriverNotExistException;
+import org.webframe.support.util.SystemLogUtils;
 
 /**
  * 抽象模块插件加载器，提供class.forName加载模块插件类
@@ -10,6 +13,8 @@ import org.webframe.support.driver.exception.DriverNotExistException;
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-5 下午02:21:01
  */
 public abstract class AbstractModulePluginLoader implements ModulePluginLoader {
+
+	protected Log	log	= LogFactory.getLog(getClass());
 
 	/**
 	 * 通过给定的模块插件驱动类全路径数组，加载模块插件驱动
@@ -36,5 +41,10 @@ public abstract class AbstractModulePluginLoader implements ModulePluginLoader {
 			driverNotExists = driverNotExists.substring(0, driverNotExists.lastIndexOf("|"));
 			throw new DriverNotExistException(driverNotExists);
 		}
+	}
+
+	@Override
+	public void enableWebframeLog(boolean enable) {
+		SystemLogUtils.enableSystemLog = enable;
 	}
 }
