@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URLConnection;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
@@ -14,6 +17,8 @@ import org.springframework.core.io.ResourceLoader;
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-7 上午09:23:35
  */
 public class ClassUtils extends org.springframework.util.ClassUtils {
+
+	private static final Log	log	= LogFactory.getLog(ClassUtils.class);
 
 	/**
 	 * 指定的class文件是否存在jar包中，true or false；捕获IOException异常，返回false。
@@ -38,7 +43,7 @@ public class ClassUtils extends org.springframework.util.ClassUtils {
 			URLConnection urlConnection = resource.getURL().openConnection();
 			return urlConnection instanceof JarURLConnection;
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			return false;
 		}
 	}
@@ -55,5 +60,27 @@ public class ClassUtils extends org.springframework.util.ClassUtils {
 					+ convertClassNameToResourcePath(clazz.getName())
 					+ CLASS_FILE_SUFFIX;
 		return new DefaultResourceLoader().getResource(resourcePath);
+	}
+
+	/**
+	 * 如果clazz在jar包中，返回null；否则返回clazz所在的classes的根目录
+	 * 
+	 * @param clazz
+	 * @return
+	 * @author 黄国庆 2012-2-7 下午12:58:15
+	 */
+	public static Resource getClassesRootResource(Class<?> clazz) {
+		String classesRoot = "";
+		try {
+			Resource clazzResource = getResource(clazz);
+			if (isInJar(clazzResource)) return null;
+			String file = clazzResource.getURL().getFile();
+			String clazzPath = convertClassNameToResourcePath(clazz.getName());
+			String[] arr = file.split(clazzPath);
+			classesRoot = arr[0];
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return new FileSystemResource(classesRoot);
 	}
 }

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.webframe.support.driver.exception.DriverNotExistException;
 import org.webframe.support.driver.exception.ModulePluginConfigException;
@@ -172,14 +171,8 @@ public abstract class ModulePluginUtils {
 	 */
 	protected static Resource[] getResources(ModulePluginDriverInfo driverInfo, String pattern) {
 		try {
-			JarResourcePatternResolver jarResourcePatternResolver;
-			if (driverInfo.isInJar()) {
-				jarResourcePatternResolver = new JarResourcePatternResolver(driverInfo.jarResourceLoader);
-			} else {
-				jarResourcePatternResolver = new JarResourcePatternResolver(new DefaultResourceLoader());
-				pattern = PREFIX_CLASSPATH + pattern;
-			}
-			return jarResourcePatternResolver.getResources(pattern);
+			JarResourcePatternResolver jarResolver = new JarResourcePatternResolver(driverInfo.getDriverClass());
+			return jarResolver.getResources(pattern);
 		} catch (IOException e) {
 			return null;
 		}

@@ -33,4 +33,15 @@ public class ClassUtilsTest {
 		Resource resource = ClassUtils.getResource(getClass());
 		Assert.assertTrue("org.webframe.support.util.ClassUtils类文件应该存在！", resource.exists());
 	}
+
+	/**
+	 * Test method for
+	 * {@link org.webframe.support.util.ClassUtils#getClassesRootResource(java.lang.Class)}.
+	 */
+	@Test
+	public void testGetClassesRootResource() {
+		Resource resource = ClassUtils.getClassesRootResource(getClass());
+		Assert.assertNotNull("org.webframe.support.util.ClassUtils不在jar包中！", resource);
+		Assert.assertTrue("org.webframe.support.util.ClassUtils类文件应该存在！", resource.exists());
+	}
 }

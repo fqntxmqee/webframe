@@ -1,14 +1,19 @@
 
 package org.webframe.support.driver.resource.jar;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.webframe.support.util.ClassUtils;
 import org.webframe.support.util.StringUtils;
 
 /**
@@ -19,20 +24,41 @@ import org.webframe.support.util.StringUtils;
  */
 public class JarResourcePatternResolver extends PathMatchingResourcePatternResolver {
 
+	private Class<?>	jarClass	= null;
+
 	public JarResourcePatternResolver(Class<?> jarClass) throws IOException {
 		this(new JarResourceLoader(jarClass));
+		this.jarClass = jarClass;
 	}
 
-	public JarResourcePatternResolver(ResourceLoader resourceLoader) {
+	private JarResourcePatternResolver(ResourceLoader resourceLoader) {
 		super(resourceLoader);
 	}
 
 	@Override
 	public Resource[] getResources(String locationPattern) throws IOException {
-		if (getResourceLoader() instanceof JarResourceLoader) {
+		if (ClassUtils.isInJar(this.jarClass)) {
 			return findPathMatchingJarResources(locationPattern);
 		} else {
-			return super.getResources(locationPattern);
+			Resource classRoot = ClassUtils.getClassesRootResource(this.jarClass);
+			String directory = determineRootDir(locationPattern);
+			String pattern = locationPattern.replaceAll(directory, "");
+			Resource dirRoot = classRoot.createRelative(directory);
+			if (dirRoot.exists()) {
+				List<Resource> finder = new ArrayList<Resource>();
+				Collection<?> files = FileUtils.listFiles(dirRoot.getFile(), null, true);
+				for (Object object : files) {
+					if (!(object instanceof File)) continue;
+					File file = (File) object;
+					String filename = file.getName();
+					if (getPathMatcher().match(pattern, filename)) {
+						finder.add(new FileSystemResource(file));
+					}
+				}
+				return finder.toArray(new Resource[finder.size()]);
+			} else {
+				return null;
+			}
 		}
 	}
 
