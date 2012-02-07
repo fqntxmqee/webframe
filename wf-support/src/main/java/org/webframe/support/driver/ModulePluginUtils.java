@@ -108,6 +108,25 @@ public abstract class ModulePluginUtils {
 	}
 
 	/**
+	 * 获取指定驱动接口的驱动类集合
+	 * 
+	 * @param clazz 继承ModulePluginDriver接口的子接口
+	 * @return
+	 * @author 黄国庆 2012-2-7 上午09:00:21
+	 */
+	public static Enumeration<ModulePluginDriverInfo> getDriverInfos(Class<? extends ModulePluginDriver> clazz) {
+		Enumeration<ModulePluginDriverInfo> infos = getDriverInfos();
+		Vector<ModulePluginDriverInfo> drivers = new Vector<ModulePluginDriverInfo>();
+		while (infos.hasMoreElements()) {
+			ModulePluginDriverInfo driverInfo = infos.nextElement();
+			if (clazz != null && clazz.isAssignableFrom(driverInfo.getDriver().getClass())) {
+				drivers.add(driverInfo);
+			}
+		}
+		return drivers.elements();
+	}
+
+	/**
 	 * 根据模块驱动类名称，获取模块驱动类详细信息
 	 * 
 	 * @param driverClassName 模块驱动类名称，字符串（包括包路径）

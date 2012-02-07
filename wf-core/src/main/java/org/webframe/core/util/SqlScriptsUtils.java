@@ -13,7 +13,11 @@ import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
@@ -22,6 +26,13 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.Resource;
+import org.webframe.core.datasource.DataBaseType;
+import org.webframe.core.sql.ISqlScriptSupport;
+import org.webframe.support.driver.ModulePluginDriver;
+import org.webframe.support.driver.ModulePluginDriverInfo;
+import org.webframe.support.driver.ModulePluginUtils;
+import org.webframe.support.util.SystemLogUtils;
 
 /**
  * SqlScripts工具类
@@ -29,13 +40,66 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-10-31 下午03:37:54
  */
-public abstract class SqlScriptsUtils {
+public abstract class SqlScriptsUtils extends ModulePluginUtils {
 
-	private static Log	log				= LogFactory.getLog(SqlScriptsUtils.class);
+	private static Log				log								= LogFactory.getLog(SqlScriptsUtils.class);
 
-	public static String	SQL_SEMICOLON	= ";";
+	protected static final String	RESOURCE_PATTERN_SQL_PRE	= "/sql-init-";
 
-	public static String	SQL_NOTE			= "(--)|(\\/\\*)";
+	protected static final String	RESOURCE_PATTERN_SQL_SUF	= "-*.sql";
+
+	public static String				SQL_SEMICOLON					= ";";
+
+	public static String				SQL_NOTE							= "(--)|(\\/\\*)";
+
+	public static void modulesSqlScriptsInit(DataBaseType dataBaseType, DataSource ds) {
+		Enumeration<ModulePluginDriverInfo> dirverInfos = getDriverInfos(ISqlScriptSupport.class);
+		List<Resource> resourcesList = new ArrayList<Resource>(8);
+		SystemLogUtils.rootPrintln("加载Module init sqlscripts files 开始！");
+		String pattern = RESOURCE_PATTERN_SQL_PRE + dataBaseType.getValue() + RESOURCE_PATTERN_SQL_SUF;
+		while (dirverInfos.hasMoreElements()) {
+			ModulePluginDriverInfo driverInfo = dirverInfos.nextElement();
+			ModulePluginDriver driver = driverInfo.getDriver();
+			if (!(driver instanceof ISqlScriptSupport)) continue;
+			ISqlScriptSupport sqlScript = (ISqlScriptSupport) driver;
+			if (sqlScript.getSqlScriptLocation() == null) continue;
+			pattern = sqlScript.getSqlScriptLocation() + pattern;
+			Resource[] resources = getResources(driverInfo, pattern);
+			if (resources == null) continue;
+			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载Init SqlScripts File(" + resources.length + "个)！");
+			resourcesList.addAll(Arrays.asList(resources));
+		}
+		SystemLogUtils.rootPrintln("加载Module init sqlscripts files 结束！");
+		SystemLogUtils.rootPrintln("开始执行Module init sqlscripts files！");
+		if (dataBaseType != DataBaseType.HSQLDB) {
+			batchExcuteSqlScripts(resourcesList, ds);
+		} else {
+			excuteSqlScripts(resourcesList, ds);
+		}
+		SystemLogUtils.rootPrintln("结束执行Module init sqlscripts files！");
+	}
+
+	public static void batchExcuteSqlScripts(List<Resource> resources, DataSource ds) {
+		for (Resource resource : resources) {
+			try {
+				SystemLogUtils.secondPrintln("批量执行 '" + resource.getFilename() + "' SQL 脚本文件！");
+				executeBatchSql(analyzeSqlFile(resource.getInputStream()), ds);
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+	}
+
+	public static void excuteSqlScripts(List<Resource> resources, DataSource ds) {
+		for (Resource resource : resources) {
+			try {
+				SystemLogUtils.secondPrintln("执行 " + resource.getFilename() + " SQL 脚本文件！");
+				executeSql(analyzeSqlFile(resource.getInputStream()), ds);
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+	}
 
 	/**
 	 * 解析sql脚本文件，去除注释（"--"或"/*"开始的行），返回记录sql语句所在行的Map集合，Map的key为sql语句所在的行。

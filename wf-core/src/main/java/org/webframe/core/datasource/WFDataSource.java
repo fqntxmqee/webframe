@@ -2,9 +2,7 @@
 package org.webframe.core.datasource;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,12 +14,12 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.Resource;
 import org.webframe.core.datasource.hsqldb.HsqldbDataSourceUtil;
 import org.webframe.core.exception.datasource.ConnectionPoolNotExistException;
 import org.webframe.core.exception.datasource.DataBaseNotExistException;
 import org.webframe.core.util.BeanUtils;
 import org.webframe.core.util.PropertyConfigurerUtils;
+import org.webframe.core.util.SqlScriptsUtils;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -53,10 +51,6 @@ public class WFDataSource implements DataSource, InitializingBean {
 	// 数据源
 	private DataSource				dataSource			= null;
 
-	private String						initSqlScript;
-
-	private Resource[]				initSqlScriptLocations;
-
 	private String						encoding				= Charset.defaultCharset().name();
 
 	public WFDataSource(DataSource dataSource) {
@@ -79,7 +73,9 @@ public class WFDataSource implements DataSource, InitializingBean {
 		if (this.dataSource == null) {
 			this.init();
 		}
-		this.initSqlScript();
+		if (PropertyConfigurerUtils.getBoolean("sql.init")) {
+			this.initSqlScript();
+		}
 	}
 
 	public Connection getConnection() throws SQLException {
@@ -127,22 +123,6 @@ public class WFDataSource implements DataSource, InitializingBean {
 
 	public DataBaseType getDatabaseType() {
 		return databaseType;
-	}
-
-	public String getInitSqlScript() {
-		return initSqlScript;
-	}
-
-	public void setInitSqlScript(String initSqlScript) {
-		this.initSqlScript = initSqlScript;
-	}
-
-	public Resource[] getInitSqlScriptLocations() {
-		return initSqlScriptLocations;
-	}
-
-	public void setInitSqlScriptLocations(Resource[] initSqlScriptLocations) {
-		this.initSqlScriptLocations = initSqlScriptLocations;
 	}
 
 	public String getEncoding() {
@@ -237,14 +217,7 @@ public class WFDataSource implements DataSource, InitializingBean {
 	 * @author: 黄国庆 2011-1-17 下午02:57:46
 	 */
 	private void initSqlScript() throws SQLException, IOException {
-		if (this.initSqlScriptLocations != null) {
-			for (Resource r : this.initSqlScriptLocations) {
-				DataSourceUtil.executeSqlScripts(new InputStreamReader(r.getInputStream(), this.encoding), dataSource);
-			}
-		}
-		if (this.initSqlScript != null) {
-			DataSourceUtil.executeSqlScripts(new StringReader(this.initSqlScript), dataSource);
-		}
+		SqlScriptsUtils.modulesSqlScriptsInit(getDatabaseType(), this);
 	}
 
 	private void checkPoolType(String poolType) {
