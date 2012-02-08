@@ -49,6 +49,11 @@
 		<param-name>modulePluginLoaderName</param-name>
 		<param-value>org.webframe.support.driver.loader.PropertiesModulePluginLoader</param-value>
 	</context-param>
+	<!-- WebFrame框架日志是否启动 -->
+	<context-param>
+		<param-name>webframeSystemLog</param-name>
+		<param-value>false</param-value>
+	</context-param>
 	<!-- ************************************应用范围内参数初始化 end************************************ -->
 
 
@@ -70,6 +75,16 @@
 
 
 	<!-- ************************************   Servlet begin    ************************************ -->
+	<!--sitemesh freemarker -->
+	<servlet>
+		<servlet-name>sitemesh-freemarker</servlet-name>
+		<servlet-class>org.webframe.web.front.sitemesh.FreemarkerDecoratorServlet</servlet-class>
+		<init-param>
+			<param-name>default_encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 	<servlet>
 		<servlet-name>SpringMVC</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -83,6 +98,11 @@
 	
 	
 	<!-- ************************************  Servlet 映射begin  ************************************ -->
+	<servlet-mapping>
+		<servlet-name>sitemesh-freemarker</servlet-name>
+		<url-pattern>*.dec</url-pattern>
+	</servlet-mapping>
+	
 	<!-- 覆盖default servlet的/, SpringMVC servlet将处理原来处理静态资源的映射 -->   
 	<servlet-mapping>   
 	    <servlet-name>SpringMVC</servlet-name>   

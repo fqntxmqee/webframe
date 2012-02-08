@@ -28,11 +28,16 @@ public class FrontModulePluginDriver extends AbstractModulePluginDriver {
 
 	@Override
 	public String getWebSourcesLocation() {
-		return "/jsp";
+		return "/WEB-INF";
 	}
 
 	@Override
-	public String getSpringContextLocation() {
-		return "/spring";
+	public String getEntityLocation() {
+		return null;
+	}
+
+	@Override
+	public String getViewTempletLocation() {
+		return "view";
 	}
 }
