@@ -50,7 +50,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+		
+		<skipTests>false</skipTests>
+		
 		<plugin.resources.version>2.4.2</plugin.resources.version>
 		<plugin.compiler.version>2.3.2</plugin.compiler.version>
 		<plugin.jar.version>2.3.1</plugin.jar.version>
@@ -168,20 +170,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${plugin.surefire.version}</version>
-				<executions>
-					<execution>
-						<id>run-integration-test</id>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<includes>
-								<include>**/*IT.java</include>
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
+				<configuration>
+					<skipTests>${skipTests}</skipTests>
+				</configuration>
 			</plugin>
 
 			<!-- 覆盖率测试插件 -->
