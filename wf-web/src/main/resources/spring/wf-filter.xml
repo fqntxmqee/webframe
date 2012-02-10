@@ -24,7 +24,7 @@
 					<property name="forceEncoding" value="true"/>
 				</bean>
 				<!-- Hibernate长Session -->
-				<bean class="org.springframework.orm.hibernate3.support.OpenSessionInViewFilter">
+				<bean class="org.webframe.web.filter.WFLongSessionFilter">
 					<property name="singleSession" value="true"/>
 				</bean>
 			</list>
