@@ -2,13 +2,16 @@
 package org.webframe.core.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.core.io.Resource;
 
 /**
  * 扩展PropertyPlaceholderConfigurer类，提供直接访问properties的方法
@@ -23,6 +26,59 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 	private static Properties					ps						= null;
 
 	private static Map<Object, Properties>	propertiesCache	= new HashMap<Object, Properties>();
+
+	private static final String				PS_OVERRIDE			= "-override";
+
+	private static final String				PS_SUFFIX			= ".properties";
+
+	@Override
+	public void setLocation(Resource location) {
+		this.setLocations(new Resource[]{
+			location});
+	}
+
+	@Override
+	public void setLocations(Resource[] locations) {
+		if (locations == null) return;
+		List<Resource> list = new ArrayList<Resource>();
+		for (Resource resource : locations) {
+			if (resource == null) continue;
+			String name = resource.getFilename();
+			if (name == null || !name.endsWith(PS_SUFFIX)) continue;
+			String overrideName = null;
+			try {
+				// 如果项目中classes文件夹中有原始配置，优先原始配置
+				if (resource.getFile() != null) {
+					list.add(resource);
+					continue;
+				}
+				/*
+				 * 如果项目中classes文件夹中没有原始配置，即使jar包中有，
+				 * 任会查找jar包或classes文件夹是否有override文件，如果存在，则使用，
+				 * 如果不存在则使用jar包中的元素配置
+				 */
+				overrideName = name.substring(0, name.lastIndexOf(PS_SUFFIX));
+				overrideName += PS_OVERRIDE + PS_SUFFIX;
+				Resource overrideResource = resource.createRelative(overrideName);
+				if (overrideResource.exists()) {
+					list.add(overrideResource);
+					if (log.isInfoEnabled()) {
+						log.info("加载" + overrideName + "配置文件替换" + name + "配置文件!");
+					}
+					continue;
+				}
+			} catch (IOException e) {
+				if (overrideName == null) {
+					log.error("没有" + name + "配置文件！");
+					continue;
+				} else {
+					log.error("没有" + overrideName + "配置文件！");
+				}
+			}
+			list.add(resource);
+		}
+		super.setLocations(list.toArray(new Resource[list.size()]));
+	}
 
 	@Override
 	protected Properties mergeProperties() throws IOException {
