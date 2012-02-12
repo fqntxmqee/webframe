@@ -11,6 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.PathMatcher;
 import org.webframe.support.util.ClassUtils;
 
 /**
@@ -48,8 +49,8 @@ public class JarResourceLoader extends DefaultResourceLoader {
 		return entriesPath;
 	}
 
-	public Set<String> getEntryFilesByDir(String directory) {
-		return jarResource.getEntryFilesByDir(directory);
+	public Set<String> getEntryFilesByDir(String directory, PathMatcher matcher) {
+		return jarResource.getEntryFilesByDir(directory, matcher);
 	}
 
 	public JarURLConnection getJarURLConnection() {

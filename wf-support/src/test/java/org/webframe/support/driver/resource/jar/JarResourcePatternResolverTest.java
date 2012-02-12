@@ -12,6 +12,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.ClassUtils;
+import org.webframe.support.util.SystemLogUtils;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
@@ -37,6 +39,10 @@ public class JarResourcePatternResolverTest {
 			Assert.assertTrue("/LICENSE.txt文件Resource应该为JarResource!", resource instanceof JarResource);
 			Resource[] resources = resolver.getResources("/org/junit/*.class");
 			Assert.assertEquals("/org/junit/包下，应该只有12个类文件！", 12, resources.length);
+			resolver = new JarResourcePatternResolver(ClassUtils.class);
+			resources = resolver.getResources("/org/springframework/util/**/*.class");
+			Assert.assertEquals("/org/springframework/util中class数目不正确！", 92, resources.length);
+			SystemLogUtils.println("/org/springframework/util包中共(" + resources.length + ")class");
 		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}

@@ -66,7 +66,7 @@ public class JarResourcePatternResolver extends PathMatchingResourcePatternResol
 		List<Resource> result = new ArrayList<Resource>(16);
 		JarResourceLoader jarResourceLoader = (JarResourceLoader) getResourceLoader();
 		String directory = StringUtils.getFileDirectory(locationPattern);
-		Set<String> entriesPath = jarResourceLoader.getEntryFilesByDir(directory);
+		Set<String> entriesPath = jarResourceLoader.getEntryFilesByDir(directory, getPathMatcher());
 		if (entriesPath == null) return result.toArray(new Resource[result.size()]);
 		for (String entryPath : entriesPath) {
 			String path = "/" + entryPath;

@@ -16,6 +16,7 @@ import java.util.jar.JarFile;
 
 import org.springframework.core.io.AbstractFileResolvingResource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.PathMatcher;
 import org.webframe.support.util.StringUtils;
 
 /**
@@ -26,19 +27,19 @@ import org.webframe.support.util.StringUtils;
  */
 public class JarResource extends AbstractFileResolvingResource {
 
-	private String							jarName				= null;
+	private String									jarName				= null;
 
-	private JarURLConnection			jarURLConnection;
+	private final JarURLConnection			jarURLConnection;
 
-	private JarEntry						jarEntry				= null;
+	private JarEntry								jarEntry				= null;
 
-	private String							path					= null;
+	private final String							path					= null;
 
-	private Set<String>					entriesPath			= null;
+	private Set<String>							entriesPath			= null;
 
-	private Map<String, Set<String>>	entryFilesPathMap	= new HashMap<String, Set<String>>(16);
+	private final Map<String, Set<String>>	entryFilesPathMap	= new HashMap<String, Set<String>>(16);
 
-	private JarFile						jarFile				= null;
+	private JarFile								jarFile				= null;
 
 	public JarResource(JarURLConnection jarURLConnection) throws IOException {
 		if (jarURLConnection == null) {
@@ -150,9 +151,17 @@ public class JarResource extends AbstractFileResolvingResource {
 		return false;
 	}
 
-	public Set<String> getEntryFilesByDir(String directory) {
+	public Set<String> getEntryFilesByDir(String directory, PathMatcher matcher) {
 		if (directory == null) return null;
-		return entryFilesPathMap.get(resolveJarEntryPath(directory));
+		String pattern = resolveJarEntryPath(directory);
+		if (!matcher.isPattern(pattern)) return entryFilesPathMap.get(pattern);
+		Set<String> matches = new HashSet<String>();
+		for (String key : entryFilesPathMap.keySet()) {
+			if (matcher.match(pattern, key)) {
+				matches.addAll(entryFilesPathMap.get(key));
+			}
+		}
+		return matches;
 	}
 
 	public JarEntry getJarEntry(String entryName) {
