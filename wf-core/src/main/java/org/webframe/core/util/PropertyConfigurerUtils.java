@@ -62,9 +62,15 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 					}
 				}
 				// 如果项目中classes文件夹中有原始配置，优先原始配置
-				if (resource.getFile() != null) {
-					list.add(resource);
-					continue;
+				try {
+					if (resource.getFile() != null) {
+						list.add(resource);
+						continue;
+					}
+				} catch (IOException e) {
+					if (log.isInfoEnabled()) {
+						log.info(name + "配置文件在jar包中!");
+					}
 				}
 				/*
 				 * 如果项目中classes文件夹中没有原始配置，即使jar包中有，
