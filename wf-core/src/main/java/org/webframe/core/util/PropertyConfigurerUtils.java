@@ -29,6 +29,8 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 
 	private static final String				PS_OVERRIDE			= "-override";
 
+	private static final String				PS_DEFAULT			= "-default";
+
 	private static final String				PS_SUFFIX			= ".properties";
 
 	@Override
@@ -45,8 +47,20 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 			if (resource == null) continue;
 			String name = resource.getFilename();
 			if (name == null || !name.endsWith(PS_SUFFIX)) continue;
-			String overrideName = null;
+			String noSuffixName = name.substring(0, name.lastIndexOf(PS_SUFFIX));
+			String defaultName = null, overrideName = null;
 			try {
+				if (!resource.exists()) {
+					defaultName = noSuffixName + PS_DEFAULT + PS_SUFFIX;
+					Resource defaultResource = resource.createRelative(defaultName);
+					if (defaultResource.exists()) {
+						list.add(defaultResource);
+						if (log.isInfoEnabled()) {
+							log.info("系统中没有" + name + "配置文件，采用" + defaultName + "配置文件!");
+						}
+						continue;
+					}
+				}
 				// 如果项目中classes文件夹中有原始配置，优先原始配置
 				if (resource.getFile() != null) {
 					list.add(resource);
@@ -57,8 +71,7 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 				 * 任会查找jar包或classes文件夹是否有override文件，如果存在，则使用，
 				 * 如果不存在则使用jar包中的元素配置
 				 */
-				overrideName = name.substring(0, name.lastIndexOf(PS_SUFFIX));
-				overrideName += PS_OVERRIDE + PS_SUFFIX;
+				overrideName = noSuffixName + PS_OVERRIDE + PS_SUFFIX;
 				Resource overrideResource = resource.createRelative(overrideName);
 				if (overrideResource.exists()) {
 					list.add(overrideResource);
@@ -68,11 +81,13 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 					continue;
 				}
 			} catch (IOException e) {
-				if (overrideName == null) {
+				if (defaultName != null) {
+					log.error("没有" + defaultName + "配置文件！");
+				} else if (overrideName != null) {
+					log.error("没有" + overrideName + "配置文件！");
+				} else {
 					log.error("没有" + name + "配置文件！");
 					continue;
-				} else {
-					log.error("没有" + overrideName + "配置文件！");
 				}
 			}
 			list.add(resource);

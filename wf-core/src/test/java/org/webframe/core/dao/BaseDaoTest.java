@@ -38,7 +38,11 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 
 	private static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
 
-	private String									testUserName	= "testuser";
+	private final String							testUserName	= "testuser";
+
+	@Test
+	public void testNull() {
+	}
 
 	/**
 	 * Test method for {@link org.webframe.core.dao.BaseDao#saveOrUpdate(java.lang.Object)}.
@@ -185,7 +189,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		String queryHql = "from TTestUser";
 		Iterator<TTestUser> iter = (Iterator<TTestUser>) baseDao.iterate(queryHql);
 		while (iter.hasNext()) {
-			TTestUser testUser = (TTestUser) iter.next();
+			TTestUser testUser = iter.next();
 			assertNotNull("iterate方法加载对象，会级联查询，不延迟加载！", testUser);
 		}
 	}
