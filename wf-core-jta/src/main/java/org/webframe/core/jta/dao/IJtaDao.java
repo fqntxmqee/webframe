@@ -20,5 +20,5 @@ public interface IJtaDao extends IBaseDao {
 
 	void createTable(String schema, String tableName, String tableContent);
 
-	DataBaseType getJpaDataBaseType();
+	DataBaseType getJtaDataBaseType();
 }

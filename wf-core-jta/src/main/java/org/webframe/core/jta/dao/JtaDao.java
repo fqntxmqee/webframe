@@ -32,13 +32,13 @@ import org.webframe.core.jta.ColumnType;
 public class JtaDao extends BaseDao implements IJtaDao {
 
 	// 数据库类型
-	private DataBaseType				jtaDatabaseType;
+	private DataBaseType						jtaDatabaseType;
 
 	// 表示表不同字段类型的map
-	private Map<String, String>	types	= new HashMap<String, String>();
+	private final Map<String, String>	types	= new HashMap<String, String>();
 
 	@Autowired
-	private DataSource				jtaDataSource;
+	private DataSource						jtaDataSource;
 
 	@Autowired
 	public void setJtaDataSource(DataSource jtaDataSource) {
@@ -47,7 +47,7 @@ public class JtaDao extends BaseDao implements IJtaDao {
 	}
 
 	@Override
-	public DataBaseType getJpaDataBaseType() {
+	public DataBaseType getJtaDataBaseType() {
 		return jtaDatabaseType;
 	}
 
