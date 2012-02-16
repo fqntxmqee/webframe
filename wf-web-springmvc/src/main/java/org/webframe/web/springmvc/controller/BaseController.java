@@ -279,7 +279,15 @@ public class BaseController {
 		return modelAndView;
 	}
 
-	private void outWrite(HttpServletResponse res, String msg, String contentType) {
+	/**
+	 * 返回流写入信息，并可以指定内容类型
+	 * 
+	 * @param res 返回流
+	 * @param msg 内容
+	 * @param contentType 内容类型
+	 * @author 黄国庆 2012-2-16 上午08:06:29
+	 */
+	protected void outWrite(HttpServletResponse res, String msg, String contentType) {
 		res.setContentType(contentType);
 		try {
 			PrintWriter out = res.getWriter();

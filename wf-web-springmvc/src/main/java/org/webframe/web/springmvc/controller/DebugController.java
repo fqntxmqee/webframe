@@ -12,9 +12,10 @@ import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.webframe.web.valuelist.ValueListUtils;
 
 /**
- * Debug控制器
+ * Debug控制器，当设置为true时，从新加载一次valuelist配置
  * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @since 2012-1-29 下午09:51:11
@@ -38,6 +39,9 @@ public class DebugController extends BaseController {
 	public String index(@PathVariable String isDebug, HttpServletRequest req, HttpServletResponse res) {
 		setAjaxRequest(req);
 		setDebug(BooleanUtils.toBoolean(isDebug));
+		if (isDebug()) {
+			ValueListUtils.reloadValueListSpringContext();
+		}
 		if (log.isDebugEnabled()) {
 			log.debug("设置系统调试模式Debug = " + isDebug);
 		}
