@@ -105,8 +105,8 @@ public class ExtController extends BaseValueListController {
 			outWriteJSON(res, data.toString());
 		} else {
 			AjaxJson ajaxJson = new AjaxJson();
-			ajaxJson.putMsg("data", data);
-			ajaxJson.putMsg("totalCount", list.getValueListInfo().getTotalNumberOfEntries());
+			ajaxJson.put("data", data);
+			ajaxJson.put("totalCount", list.getValueListInfo().getTotalNumberOfEntries());
 			outWriteJSON(res, ajaxJson.toString());
 		}
 		return null;
