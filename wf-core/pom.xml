@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>wf-parent</artifactId>
 		<groupId>org.webframe</groupId>
-		<version>1.1.4</version>
+		<version>1.1.5-SNAPSHOT</version>
 		<relativePath>../wf-parent/pom.xml</relativePath>
 	</parent>
 	
