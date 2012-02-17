@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.webframe.core.exception.ServiceException;
 import org.webframe.core.model.BaseEntity;
 import org.webframe.core.util.BeanUtils;
-import org.webframe.web.exception.WebFrameException;
+import org.webframe.web.page.exp.ValueListException;
 import org.webframe.web.springmvc.bean.AjaxError;
 import org.webframe.web.springmvc.exp.AjaxException;
 import org.webframe.web.util.PatternUtil;
@@ -97,7 +97,7 @@ public class BaseController {
 	 */
 	protected ModelAndView handleAjaxException(AjaxException ae, HttpServletResponse res) {
 		AjaxError ajaxError = ae.getAjaxError();
-		ajaxError.putError("detail", getMessage(ae));
+		ajaxError.addDetailMsg(getMessage(ae));
 		outWriteJSON(res, ajaxError.toString());
 		return null;
 	}
@@ -159,26 +159,26 @@ public class BaseController {
 	}
 
 	/**
-	 * 抛出webframe框架异常
+	 * 抛出Ajax异常
 	 * 
 	 * @param msg 消息
-	 * @throws WebFrameException
+	 * @throws AjaxException
 	 * @author: 黄国庆 2011-1-22 下午12:08:38
 	 */
-	protected void throwWebFrameException(String msg) throws WebFrameException {
-		throw new WebFrameException(msg);
+	protected void throwAjaxException(String msg) throws AjaxException {
+		throw new AjaxException(msg);
 	}
 
 	/**
-	 * 抛出webframe框架异常
+	 * 抛出valuelist异常
 	 * 
-	 * @param msg 消息
+	 * @param adapter valuelist Adapter 名称
 	 * @param cause 异常对象
-	 * @throws WebFrameException
+	 * @throws ValueListException
 	 * @author: 黄国庆 2011-1-22 下午12:09:00
 	 */
-	protected void throwWebFrameException(String msg, Throwable cause) throws WebFrameException {
-		throw new WebFrameException(msg, cause);
+	protected void throwValueListException(String adapter, Throwable cause) throws ValueListException {
+		throw new ValueListException(adapter, cause);
 	}
 
 	/**

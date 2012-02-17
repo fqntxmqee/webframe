@@ -5,10 +5,8 @@
 
 package org.webframe.web.springmvc.bean;
 
-import net.sf.json.JSONObject;
-
 /**
- * Ajax 错误信息
+ * Ajax 错误信息，格式：{success:false, msg:{brief: "", detail: ""}}
  * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @since 2012-1-30 上午08:30:16
@@ -16,30 +14,21 @@ import net.sf.json.JSONObject;
  */
 public class AjaxError extends AjaxJson {
 
-	private JSONObject	error	= null;
-
-	public AjaxError() {
+	public AjaxError(String brief) {
+		super(false, brief);
 	}
 
-	public AjaxError(JSONObject error) {
-		this.error = error;
+	public AjaxError(String brief, String detail) {
+		super(false, brief);
+		addDetailMsg(detail);
 	}
 
-	public AjaxError putError(String key, String error) {
-		createError();
-		this.error.put(key, error);
+	public void addDetailMsg(String value) {
+		addMsg("detail", value);
+	}
+
+	public AjaxError putError(String key, String value) {
+		addMsg(key, value);
 		return this;
-	}
-
-	protected JSONObject createError() {
-		if (this.error == null) this.error = new JSONObject();
-		return this.error;
-	}
-
-	@Override
-	public String toString() {
-		createError();
-		putMsg("error", error);
-		return super.toString();
 	}
 }

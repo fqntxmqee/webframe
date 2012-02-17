@@ -5,10 +5,8 @@
 
 package org.webframe.web.springmvc.bean;
 
-import net.sf.json.JSONObject;
-
 /**
- * Ajax成功信息
+ * Ajax成功信息，格式：{success:true, msg:{brief: ""}}
  * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @since 2012-1-30 上午08:30:09
@@ -16,30 +14,17 @@ import net.sf.json.JSONObject;
  */
 public class AjaxSuccess extends AjaxJson {
 
-	private JSONObject	success	= null;
-
-	public AjaxSuccess() {
+	/**
+	 * 带成功信息的json串
+	 * 
+	 * @param brief 成功信息
+	 */
+	public AjaxSuccess(String brief) {
+		super(true, brief);
 	}
 
-	public AjaxSuccess(JSONObject success) {
-		this.success = success;
-	}
-
-	public AjaxSuccess putSuccess(String key, String success) {
-		createSuccess();
-		this.success.put(key, success);
+	public AjaxSuccess putSuccess(String key, String value) {
+		addMsg(key, value);
 		return this;
-	}
-
-	protected JSONObject createSuccess() {
-		if (this.success == null) this.success = new JSONObject();
-		return this.success;
-	}
-
-	@Override
-	public String toString() {
-		createSuccess();
-		putMsg("success", success);
-		return super.toString();
 	}
 }
