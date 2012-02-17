@@ -64,7 +64,7 @@ public class BaseControllerTest extends BaseHttpClientTests {
 		Assert.assertEquals("Ajax异常捕获失败！", 500, response.getStatusLine().getStatusCode());
 		String json = EntityUtils.toString(response.getEntity(), defaultEncode);
 		JSONObject jsonObject = JSONObject.fromObject(json);
-		String detail = jsonObject.getJSONObject("error").getString("detail");
+		String detail = jsonObject.getJSONObject("msg").getString("detail");
 		Assert.assertTrue("Ajax异常捕获失败！", detail.contains("测试Ajax异常"));
 	}
 

@@ -18,9 +18,6 @@ public class AjaxException extends RuntimeException {
 
 	private AjaxError				ajaxError			= null;
 
-	/**
-	 * 
-	 */
 	private static final long	serialVersionUID	= -8179866059145520037L;
 
 	public AjaxException(String msg) {
@@ -31,11 +28,6 @@ public class AjaxException extends RuntimeException {
 		super(cause);
 	}
 
-	public AjaxException(AjaxError ajaxError, String msg) {
-		super(msg);
-		this.ajaxError = ajaxError;
-	}
-
 	public AjaxException(AjaxError ajaxError, Throwable cause) {
 		super(cause);
 		this.ajaxError = ajaxError;
@@ -43,8 +35,7 @@ public class AjaxException extends RuntimeException {
 
 	public AjaxError getAjaxError() {
 		if (ajaxError == null) {
-			this.ajaxError = new AjaxError();
-			this.ajaxError.putError("brief", "服务器异常，请联系管理员！");
+			this.ajaxError = new AjaxError(getMessage());
 		}
 		return ajaxError;
 	}
