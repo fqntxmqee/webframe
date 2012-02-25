@@ -4,6 +4,7 @@ package org.webframe.web.spring;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
+import org.webframe.support.util.ApplicationContextSupport;
 
 /**
  * 提供根据spring注入bean的name，获取该bean对象
@@ -12,12 +13,7 @@ import org.springframework.context.support.GenericApplicationContext;
  * @version $Id: ServiceHelper.java,v 1.1.2.1.8.2 2010/08/06 08:46:31 huangguoqing Exp $ Create:
  *          2008-10-17 下午05:30:24
  */
-public abstract class ServiceHelper {
-
-	/*
-	 * spring 上下文
-	 */
-	static ApplicationContext						ac		= null;
+public abstract class ServiceHelper extends ApplicationContextSupport {
 
 	private static GenericApplicationContext	gtx	= null;
 
@@ -28,11 +24,11 @@ public abstract class ServiceHelper {
 	 * @author: 黄国庆 2010-12-20 下午01:23:23
 	 */
 	static void init(ApplicationContext context) {
-		ac = context;
+		initAc(context);
 	}
 
 	public static ApplicationContext getApplicationContext() {
-		return ac;
+		return getAc();
 	}
 
 	/**
@@ -42,7 +38,7 @@ public abstract class ServiceHelper {
 	 * @author: 黄国庆 2008-10-17 下午05:35:28
 	 */
 	public static Object getService(String serviceName) {
-		return ac.getBean(serviceName);
+		return getAc().getBean(serviceName);
 	}
 
 	public static Object createBean(String beanName, String parentBeanName) {
@@ -63,7 +59,7 @@ public abstract class ServiceHelper {
 	private static void initGenericApplicationContext() {
 		if (gtx == null) {
 			gtx = new GenericApplicationContext();
-			gtx.setParent(ac);
+			gtx.setParent(getAc());
 		}
 	}
 }

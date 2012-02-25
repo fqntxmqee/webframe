@@ -18,6 +18,7 @@ public class WFXmlContextLoader extends GenericXmlContextLoader {
 
 	private BeanDefinitionReader	beanDefinitionReader	= null;
 
+	@Override
 	protected BeanDefinitionReader createBeanDefinitionReader(final GenericApplicationContext context) {
 		if (beanDefinitionReader == null) {
 			beanDefinitionReader = super.createBeanDefinitionReader(context);
@@ -27,6 +28,7 @@ public class WFXmlContextLoader extends GenericXmlContextLoader {
 
 	@Override
 	protected void prepareContext(GenericApplicationContext context) {
+		TestApplicationContext.init(context);
 		BeanDefinitionReader reader = createBeanDefinitionReader(context);
 		ResourceFilter resourceFilter = getResourceFilter();
 		if (resourceFilter == null) {
