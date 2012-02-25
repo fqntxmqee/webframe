@@ -34,11 +34,11 @@ import org.webframe.test.BaseSpringTransactionalTests;
 public class BaseDaoTest extends BaseSpringTransactionalTests {
 
 	@Autowired
-	private IBaseDao								baseDao;
+	private IBaseDao											baseDao;
 
-	private static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
+	private volatile static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
 
-	private final String							testUserName	= "testuser";
+	private final String										testUserName	= "testuser";
 
 	synchronized static Map<String, TTestUser> getUserMap() {
 		return userMap;
@@ -152,6 +152,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 	@Test
 	public void testLoadAll() {
 		List<TTestUser> list = (List<TTestUser>) baseDao.loadAll(TTestUser.class);
+		assertSame("loadAll方法加载数据不完整！", list.size(), getUserMap().size());
 		for (TTestUser testUser : list) {
 			if (!getUserMap().containsKey(testUser.getId())) {
 				fail("loadAll方法加载数据不完整！");
@@ -229,7 +230,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 	public void testQueryString() {
 		String queryHql = "from TTestUser";
 		List<?> list = baseDao.query(queryHql);
-		assertTrue("query方法查询数据不完整！", list.size() == getUserMap().size());
+		assertSame("query方法查询数据不完整！", list.size(), getUserMap().size());
 	}
 
 	/**
@@ -245,7 +246,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		Type[] types = {
 					Hibernate.STRING, Hibernate.BOOLEAN};
 		List<?> list = baseDao.query(queryHql, values, types);
-		assertTrue("query方法查询数据不完整！", list.size() == getUserMap().size());
+		assertSame("query方法查询数据不完整！", list.size(), getUserMap().size());
 	}
 
 	/**
@@ -273,7 +274,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		Object[] values = {
 					testUserName, true};
 		List<?> list = baseDao.queryByNamedParam(queryHql, params, values);
-		assertTrue("queryByNamedParam方法查询数据不完整！", list.size() == getUserMap().size());
+		assertSame("queryByNamedParam方法查询数据不完整！", list.size(), getUserMap().size());
 	}
 
 	/**
@@ -289,7 +290,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		Type[] types = {
 					Hibernate.STRING, Hibernate.BOOLEAN};
 		List<?> list = baseDao.findBySql(querySql, values, types);
-		assertTrue("findBySql方法查询数据不完整！", list.size() == getUserMap().size());
+		assertSame("findBySql方法查询数据不完整！", list.size(), getUserMap().size());
 	}
 
 	/**
@@ -310,7 +311,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 	public void testFindBySqlString() {
 		String findSql = "select * from T_TEST_USER";
 		List<?> list = baseDao.findBySql(findSql);
-		assertTrue("findBySql方法查询数据不完整！", list.size() == getUserMap().size());
+		assertSame("findBySql方法查询数据不完整！", list.size(), getUserMap().size());
 	}
 
 	/**
@@ -397,6 +398,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 	public void testDeleteAll() {
 		Collection<TTestUser> users = getUserMap().values();
 		baseDao.deleteAll(users);
-		assertTrue("TestUser记录没有删除完！", baseDao.loadAll(TTestUser.class).size() == 0);
+		userMap = new HashMap<String, TTestUser>(8);
+		assertSame("TestUser记录没有删除完！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 }
