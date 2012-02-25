@@ -1,4 +1,4 @@
 language: java
 branches:
-  except:
+  only:
     - hotfixes
