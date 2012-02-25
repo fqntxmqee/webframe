@@ -34,11 +34,11 @@ import org.webframe.test.BaseSpringTransactionalTests;
 public class BaseDaoTest extends BaseSpringTransactionalTests {
 
 	@Autowired
-	private IBaseDao								baseDao;
+	private IBaseDao											baseDao;
 
-	private static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
+	private volatile static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
 
-	private final String							testUserName	= "testuser";
+	private final String										testUserName	= "testuser";
 
 	@Test
 	public void testNull() {
