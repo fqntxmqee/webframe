@@ -18,6 +18,7 @@ import java.util.Map;
 import org.hibernate.Hibernate;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.type.Type;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -30,7 +31,7 @@ import org.webframe.test.BaseSpringTransactionalTests;
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-3-22 下午02:32:41
  */
 @SuppressWarnings("unchecked")
-@TransactionConfiguration(defaultRollback = false)
+@TransactionConfiguration(defaultRollback = true)
 public class BaseDaoTest extends BaseSpringTransactionalTests {
 
 	@Autowired
@@ -40,8 +41,20 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 
 	private final String										testUserName	= "testuser";
 
+	private volatile static boolean						init				= true;
+
 	synchronized static Map<String, TTestUser> getUserMap() {
 		return userMap;
+	}
+
+	@Before
+	public void clean() {
+		if (init) {
+			for (Object o : baseDao.loadAll(TTestUser.class)) {
+				baseDao.delete(o);
+			}
+			init = false;
+		}
 	}
 
 	@Test

@@ -26,7 +26,7 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 
 	private static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
 
-	private String									testUserName	= "testuserdao";
+	private final String							testUserName	= "testuserdao";
 
 	@Autowired
 	public void setBaseEntityDao(IBaseEntityDao<TTestUser> baseEntityDao) {
