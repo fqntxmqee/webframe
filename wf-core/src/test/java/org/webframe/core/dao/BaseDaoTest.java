@@ -60,6 +60,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		entity.setCreateTime(DateUtils.getStandTime());
 		baseDao.saveOrUpdate(entity);
 		getUserMap().put(entity.getId(), entity);
+		assertSame("saveOrUpdate错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -74,6 +75,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		entity.setCreateTime(DateUtils.getStandTime());
 		baseDao.save(entity);
 		getUserMap().put(entity.getId(), entity);
+		assertSame("save错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -98,6 +100,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		for (TTestUser testUser : entityList) {
 			getUserMap().put(testUser.getId(), testUser);
 		}
+		assertSame("saveOrUpdate错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -109,6 +112,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 			testUser.setModifyTime(DateUtils.getStandTime());
 			baseDao.update(testUser);
 		}
+		assertSame("update错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -118,6 +122,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 	public void testUpdateString() {
 		String updateHql = "update TTestUser set modifyTime='" + DateUtils.getStandTime() + "'";
 		baseDao.update(updateHql);
+		assertSame("update错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -130,6 +135,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 			baseDao.refresh(testUser);
 			assertNotSame("hql语句update数据库记录，内存中的数据应该与数据库数据不一致！", modifyTime, testUser.getModifyTime());
 		}
+		assertSame("refresh错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -144,6 +150,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		}
 		TTestUser testUser = (TTestUser) baseDao.load(TTestUser.class, "1");
 		assertNotNull("load方法加载对象，如果指定主键的id不存在，不返回null，返回代理，在使用的时候会抛出异常！", testUser);
+		assertSame("load错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -172,6 +179,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		}
 		TTestUser testUser = (TTestUser) baseDao.get(TTestUser.class, "1");
 		assertNull("get方法加载对象，如果指定主键的id不存在，返回null！", testUser);
+		assertSame("get错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -184,6 +192,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 			TTestUser testUser = (TTestUser) baseDao.loadNotLazy(TTestUser.class, userId);
 			assertNotNull("loadNotLazy方法加载对象，是使用get方法加载，没有指定记录，返回null！", testUser);
 		}
+		assertSame("loadNotLazy错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -197,6 +206,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 			TTestUser testUser = iter.next();
 			assertNotNull("iterate方法加载对象，会级联查询，不延迟加载！", testUser);
 		}
+		assertSame("iterate错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -221,6 +231,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		} catch (NonUniqueObjectException e) {
 			fail("id为：" + id + "的记录不唯一！");
 		}
+		assertSame("queryUniqueObject错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -324,6 +335,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		int max = 3;
 		List<TTestUser> list = (List<TTestUser>) baseDao.findBySql(findSql, TTestUser.class, max);
 		assertTrue("findBySql方法查询数据不完整！", list.size() <= max);
+		assertSame("findBySql错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -332,6 +344,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 	@Test
 	public void testClear() {
 		baseDao.clear();
+		assertSame("clear错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -342,6 +355,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 		for (TTestUser testUser : getUserMap().values()) {
 			baseDao.evict(testUser);
 		}
+		assertSame("evict错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -350,6 +364,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 	@Test
 	public void testEvictSecondLevelCache() {
 		baseDao.evictSecondLevelCache(TTestUser.class);
+		assertSame("evictSecondLevelCache错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -358,6 +373,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 	@Test
 	public void testFlush() {
 		baseDao.flush();
+		assertSame("flush错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -373,6 +389,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 			break;
 		}
 		assertNull("删除id为：" + userId + "的对象失败！", baseDao.get(TTestUser.class, userId));
+		assertSame("delete错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
@@ -389,6 +406,7 @@ public class BaseDaoTest extends BaseSpringTransactionalTests {
 			break;
 		}
 		assertNull("删除id为：" + userId + "的对象失败！", baseDao.get(TTestUser.class, userId));
+		assertSame("delete错误！", baseDao.loadAll(TTestUser.class).size(), getUserMap().size());
 	}
 
 	/**
