@@ -1,2 +1,4 @@
 language: java
-mvn test
+branches:
+  except:
+    - hotfixes
