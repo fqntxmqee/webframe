@@ -263,6 +263,18 @@
 		</plugins>
 	</build>
 
+	<repositories>
+		<repository>
+			<id>sonatype-release</id>
+			<name>SonatypeRelease</name>
+			<url>https://oss.sonatype.org/content/repositories/releases/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</releases>
+		</repository>
+	</repositories>
+	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>Codehaus repository</id>
