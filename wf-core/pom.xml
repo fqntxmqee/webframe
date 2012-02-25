@@ -123,6 +123,10 @@
 					<artifactId>cglib</artifactId>
 					<groupId>cglib</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>jta</artifactId>
+					<groupId>javax.transaction</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -158,6 +162,11 @@
 			<artifactId>aspectjweaver</artifactId>
 			<groupId>org.aspectj</groupId>
 			<version>1.6.8</version>
+		</dependency>
+		<dependency>
+			<artifactId>jta</artifactId>
+			<groupId>javax.transaction</groupId>
+			<version>1.1</version>
 		</dependency>
 	</dependencies>
 	
