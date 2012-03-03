@@ -3,11 +3,17 @@ package org.webframe.core.datasource;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Assert;
 import org.webframe.core.util.SqlScriptsUtils;
 
 /**
@@ -19,16 +25,12 @@ import org.webframe.core.util.SqlScriptsUtils;
  */
 public abstract class DataSourceUtil {
 
-	private static DataBaseType	defaultDataBaseType	= DataBaseType.未知数据库;
+	private static final Log		log					= LogFactory.getLog(DataSourceUtil.class);
 
-	private static WFDataSource	dataSource				= null;
+	private static WFDataSource	defaultDataSource	= null;
 
-	static void initDataBaseType(DataBaseType dataBaseType) {
-		defaultDataBaseType = dataBaseType;
-	}
-
-	static void initDataSource(WFDataSource ds) {
-		dataSource = ds;
+	static void defaultDataSource(WFDataSource ds) {
+		defaultDataSource = ds;
 	}
 
 	/**
@@ -41,10 +43,12 @@ public abstract class DataSourceUtil {
 	 * @author: 黄国庆 2011-1-17 下午02:32:31
 	 */
 	public static void executeSqlScripts(Reader initScripts, DataSource ds) throws SQLException, IOException {
+		String sqlString = IOUtils.toString(initScripts);
+		Map<String, String> sqlMap = SqlScriptsUtils.analyzeSqlFile(sqlString);
 		if (DataSourceUtil.getDataBaseType() != DataBaseType.HSQLDB) {
-			SqlScriptsUtils.executeBatchSql(SqlScriptsUtils.analyzeSqlFile(IOUtils.toString(initScripts)), ds);
+			SqlScriptsUtils.executeBatchSql(sqlMap, ds);
 		} else {
-			SqlScriptsUtils.executeSql(SqlScriptsUtils.analyzeSqlFile(IOUtils.toString(initScripts)), ds);
+			SqlScriptsUtils.executeSql(sqlMap, ds);
 		}
 	}
 
@@ -58,17 +62,44 @@ public abstract class DataSourceUtil {
 	 * @author: 黄国庆 2011-1-17 下午02:32:31
 	 */
 	public static void executeSqlScripts(Reader initScripts) throws SQLException, IOException {
-		executeSqlScripts(initScripts, dataSource);
+		Assert.notNull(defaultDataSource, "默认数据源不存在！");
+		executeSqlScripts(initScripts, defaultDataSource);
 	}
 
 	public static DataBaseType getDataBaseType() {
-		if (defaultDataBaseType == null) {
-			defaultDataBaseType = DataBaseType.未知数据库;
-		}
-		return defaultDataBaseType;
+		Assert.notNull(defaultDataSource, "默认数据源不存在！");
+		return defaultDataSource.getDatabaseType();
 	}
 
-	public static WFDataSource getDataSource() {
-		return dataSource;
+	public static DataBaseType getDataBaseType(DataSource ds) {
+		if (ds instanceof WFDataSource) {
+			return ((WFDataSource) ds).getDatabaseType();
+		}
+		Connection conn = null;
+		try {
+			conn = ds.getConnection();
+			DatabaseMetaData info = conn.getMetaData();
+			String databaseProductName = info.getDatabaseProductName();
+			String lowerCase = databaseProductName.replaceAll(" ", "").toLowerCase();
+			for (DataBaseType dataBaseType : DataBaseType.values()) {
+				if (lowerCase.contains(dataBaseType.getValue())) {
+					return dataBaseType;
+				}
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+		return DataBaseType.未知数据库;
+	}
+
+	public static WFDataSource getDefaultDataSource() {
+		return defaultDataSource;
 	}
 }
