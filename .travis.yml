@@ -2,3 +2,7 @@ language: java
 branches:
   only:
     - hotfixes
+notifications:
+  email:
+    recipients:
+      - guoqing.huang@foxmail.com
