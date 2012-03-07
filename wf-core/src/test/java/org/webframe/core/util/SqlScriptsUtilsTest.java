@@ -39,9 +39,9 @@ public class SqlScriptsUtilsTest extends BaseSpringTests {
 	public void testExecuteBatchSql() throws SQLException {
 		InputStream input = this.getClass().getResourceAsStream("/sql-init-" + DataBaseType.HSQLDB + "-core.sql");
 		if (DataSourceUtil.getDataBaseType() != DataBaseType.HSQLDB) {
-			SqlScriptsUtils.executeBatchSql(SqlScriptsUtils.analyzeSqlFile(input), DataSourceUtil.getDataSource());
+			SqlScriptsUtils.executeBatchSql(SqlScriptsUtils.analyzeSqlFile(input), DataSourceUtil.getDefaultDataSource());
 		} else {
-			SqlScriptsUtils.executeSql(SqlScriptsUtils.analyzeSqlFile(input), DataSourceUtil.getDataSource());
+			SqlScriptsUtils.executeSql(SqlScriptsUtils.analyzeSqlFile(input), DataSourceUtil.getDefaultDataSource());
 		}
 	}
 }

@@ -23,6 +23,7 @@
 		<constructor-arg index="0" value="${connection.databasetype}"/>
 		<!-- 连接池类型 -->
 		<constructor-arg index="1" value="${connection.pooltype}"/>
+		<property name="defaulted" value="true"/>
 	</bean>
 
 	<!-- DriverManagerDataSource is a local DataSource that works in any environment.

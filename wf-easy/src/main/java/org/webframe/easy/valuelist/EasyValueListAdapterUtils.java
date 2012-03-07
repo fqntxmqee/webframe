@@ -10,8 +10,8 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.webframe.core.datasource.DataSourceUtil;
 import org.webframe.core.util.BeanUtils;
-import org.webframe.core.util.DataSourceUtils;
 import org.webframe.easy.model.EasyEntity;
 import org.webframe.easy.model.form.ViewElement;
 import org.webframe.easy.model.form.ViewElement.QueryConditionType;
@@ -49,7 +49,7 @@ public class EasyValueListAdapterUtils extends ValueListAdapterUtil {
 		List<ViewElement> list = entity.viewElementList();
 		// 字符串连接符
 		String contact = "";
-		switch (DataSourceUtils.getDataBaseType()) {
+		switch (DataSourceUtil.getDataBaseType()) {
 			case MYSQL :
 			case ORACLE :
 				contact = "||";

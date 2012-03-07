@@ -45,6 +45,8 @@ public class WFDataSource implements DataSource, InitializingBean {
 	// 默认数据库类型
 	private DataBaseType				databaseType		= DataBaseType.未知数据库;
 
+	private boolean					defaulted			= false;
+
 	// 数据库Hibernate方言
 	private String						dialect				= "";
 
@@ -53,9 +55,11 @@ public class WFDataSource implements DataSource, InitializingBean {
 
 	private String						encoding				= Charset.defaultCharset().name();
 
-	public WFDataSource(DataSource dataSource) {
+	public WFDataSource(DataSource dataSource, String poolType) {
 		this.dataSource = dataSource;
-		DataSourceUtil.initDataSource(this);
+		if (poolType != null) {
+			this.setPoolType(poolType);
+		}
 	}
 
 	public WFDataSource(String databaseType, String poolType) throws Exception {
@@ -65,7 +69,6 @@ public class WFDataSource implements DataSource, InitializingBean {
 		if (databaseType != null) {
 			this.setDatabaseType(databaseType);
 		}
-		DataSourceUtil.initDataSource(this);
 	}
 
 	@Override
@@ -73,11 +76,15 @@ public class WFDataSource implements DataSource, InitializingBean {
 		if (this.dataSource == null) {
 			this.init();
 		}
-		if (PropertyConfigurerUtils.getBoolean("sql.init")) {
-			this.initSqlScript();
+		if (isDefaulted()) {
+			DataSourceUtil.defaultDataSource(this);
+			if (PropertyConfigurerUtils.getBoolean("sql.init")) {
+				this.initSqlScript();
+			}
 		}
 	}
 
+	@Override
 	public Connection getConnection() throws SQLException {
 		if (dataSource == null) {
 			return null;
@@ -85,6 +92,7 @@ public class WFDataSource implements DataSource, InitializingBean {
 		return dataSource.getConnection();
 	}
 
+	@Override
 	public Connection getConnection(String username, String password) throws SQLException {
 		if (this.dataSource == null) {
 			return null;
@@ -117,7 +125,6 @@ public class WFDataSource implements DataSource, InitializingBean {
 
 	public void setDatabaseType(String databaseType) {
 		this.databaseType = DataBaseType.getName(databaseType);
-		DataSourceUtil.initDataBaseType(this.databaseType);
 		checkDataBaseType(databaseType);
 	}
 
@@ -133,6 +140,15 @@ public class WFDataSource implements DataSource, InitializingBean {
 		this.encoding = encoding;
 	}
 
+	public final boolean isDefaulted() {
+		return defaulted;
+	}
+
+	public void setDefaulted(boolean defaulted) {
+		this.defaulted = defaulted;
+	}
+
+	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		if (this.dataSource == null) {
 			return null;
@@ -140,10 +156,12 @@ public class WFDataSource implements DataSource, InitializingBean {
 		return this.dataSource.unwrap(iface);
 	}
 
+	@Override
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
 		return this.dataSource != null && this.dataSource.isWrapperFor(iface);
 	}
 
+	@Override
 	public PrintWriter getLogWriter() throws SQLException {
 		if (this.dataSource == null) {
 			return null;
@@ -151,18 +169,21 @@ public class WFDataSource implements DataSource, InitializingBean {
 		return this.dataSource.getLogWriter();
 	}
 
+	@Override
 	public void setLogWriter(PrintWriter out) throws SQLException {
 		if (this.dataSource != null) {
 			this.dataSource.setLogWriter(out);
 		}
 	}
 
+	@Override
 	public void setLoginTimeout(int seconds) throws SQLException {
 		if (this.dataSource != null) {
 			this.dataSource.setLoginTimeout(seconds);
 		}
 	}
 
+	@Override
 	public int getLoginTimeout() throws SQLException {
 		if (this.dataSource == null) {
 			return 0;

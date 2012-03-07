@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.webframe.core.exception.entity.EntityException;
@@ -27,6 +28,18 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	private static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
 
 	private final String							testUserName	= "testuserdao";
+
+	private volatile static boolean			init				= true;
+
+	@Before
+	public void clean() {
+		if (init) {
+			for (Object o : baseEntityDao.loadAll(TTestUser.class)) {
+				baseEntityDao.delete(o);
+			}
+			init = false;
+		}
+	}
 
 	@Autowired
 	public void setBaseEntityDao(IBaseEntityDao<TTestUser> baseEntityDao) {
