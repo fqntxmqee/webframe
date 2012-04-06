@@ -21,4 +21,8 @@
 			</list>
 		</property>
 	</bean>
+	
+	<!-- 配置BaseDao, BaseService begin-->
+	<context:component-scan base-package="org.webframe.web.menu"/>
+	<!-- 配置BaseDao, BaseService end-->
 </beans>
