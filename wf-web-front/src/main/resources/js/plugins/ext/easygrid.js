@@ -133,7 +133,40 @@
 (function () {
 var gridUrl = "/ext/easygrid";//grid数据后台请求url
 var gridExportUrl = "/ext/gridexport";
-    
+
+function initCheckBox(gridObj) {
+	var sm = new Ext.grid.CheckboxSelectionModel({
+		gridId : gridObj.id,
+		singleSelect : gridObj.singleSelect,
+		checkOnly : gridObj.checkOnly
+	});
+	gridObj.selModel = sm;
+	if(!Ext.isEmpty(gridObj.checkId)){ //多选自动保存编号,需要配置checkId
+		sm.on("rowselect", function(o,index,record){ //保存选中行,翻页保存用
+			var grid = Ext.getCmp(o.gridId);
+			var flag = false;
+			for(var i = 0;i<grid.checkedRecord.length;i++){
+				if(grid.checkedRecord[i][grid.checkId] == record.data[grid.checkId]){
+					flag = true;
+					break;
+				}
+			}
+			if(!flag){
+				grid.checkedRecord.push(record.data);
+			}
+		});
+		sm.on("rowdeselect", function(o,index,record){ //删除选中行,翻页保存用
+			var grid = Ext.getCmp(o.gridId);
+			for(var i = 0;i<grid.checkedRecord.length;i++){
+				if(grid.checkedRecord[i][grid.checkId] == record.data[grid.checkId]){
+					grid.checkedRecord.splice(i,1);
+					return;
+				}
+			}
+		});
+	}
+}
+
 Ext.data.GridHttpProxy = Ext.extend(Ext.data.HttpProxy, {
 	createCallback : function(action, rs) {
 		var _this = this;
@@ -159,6 +192,10 @@ Ext.data.GridHttpProxy = Ext.extend(Ext.data.HttpProxy, {
 			}
 		};
 	}
+});
+
+Ext.override(Ext.grid.EditorGridPanel, {
+	
 });
 
 Ext.grid.EasyGridPanel = Ext.extend(Ext.grid.EditorGridPanel,{
@@ -220,31 +257,7 @@ Ext.grid.EasyGridPanel = Ext.extend(Ext.grid.EditorGridPanel,{
 		if(this.isCheck&&Ext.isEmpty(this.checkOnly)) {
 			this.checkOnly = false;
 		}
-		this.selModel=this.isCheck?new Ext.grid.CheckboxSelectionModel({gridId:this.id,singleSelect:this.singleSelect,checkOnly:this.checkOnly}):null;
-		if(!Ext.isEmpty(this.checkId)){ //多选自动保存编号,需要配置checkId
-			this.selModel.on("rowselect",function(o,index,record){ //保存选中行,翻页保存用
-				var grid = Ext.getCmp(o.gridId);
-				var flag = false;
-				for(var i = 0;i<grid.checkedRecord.length;i++){
-					if(grid.checkedRecord[i][grid.checkId] == record.data[grid.checkId]){
-						flag = true;
-						break;
-					}
-				}
-				if(!flag){
-					grid.checkedRecord.push(record.data);
-				}
-			});
-			this.selModel.on("rowdeselect",function(o,index,record){ //删除选中行,翻页保存用
-				var grid = Ext.getCmp(o.gridId);
-				for(var i = 0;i<grid.checkedRecord.length;i++){
-					if(grid.checkedRecord[i][grid.checkId] == record.data[grid.checkId]){
-						grid.checkedRecord.splice(i,1);
-						return;
-					}
-				}
-			});
-		}
+		if (this.isCheck) initCheckBox(this);
 		if(Ext.isEmpty(this.height)){
 			this.autoHeight=true;
 		}
@@ -346,11 +359,12 @@ Ext.grid.EasyGridPanel = Ext.extend(Ext.grid.EditorGridPanel,{
 				grid.getSelectionModel().selectRows(index,true);
 			});
 		}
+		var firstColnum = this.selModel || {};
 		if(this.isLock){
-			this.colModel=new Ext.ux.grid.LockingColumnModel([{}]);
-			this.view=new Ext.ux.grid.LockingGridView();
+			this.colModel = new Ext.ux.grid.LockingColumnModel([firstColnum]);
+			this.view = new Ext.ux.grid.LockingGridView();
 		} else {
-			this.colModel=new Ext.grid.ColumnModel([{}]);
+			this.colModel = new Ext.grid.ColumnModel([firstColnum]);
 		}
 		this.colModel.defaultSortable = (this.isRemoteSort!=null||false);
 		if(this.selColumn) {
@@ -390,8 +404,8 @@ Ext.grid.EasyGridPanel = Ext.extend(Ext.grid.EditorGridPanel,{
 		this.checkedRecord=this.checkedRecord||[];
 	},
 	/**
-	* 方法
-	*/	
+	 * 方法
+	 */	
 	setKey:function(key){
 		this.ds.baseParams.key = key;
 		this.parseHeader = true; //需要重新配置header
@@ -415,12 +429,10 @@ Ext.grid.EasyGridPanel = Ext.extend(Ext.grid.EditorGridPanel,{
 	setParam:function(p,v){
 		this.ds.baseParams[p]=v;
 	},
-	setParams:function(j){
-		for(var p in j){
-			this.setParam(p,j[p]);
-		}
+	setParams : function(j){
+		for(var p in j) this.setParam(p,j[p]);
 	},
-	getHead:function(){
+	getHead : function(){
 		return this.ds.head;
 	},
 	exportData:function(flag){
@@ -451,8 +463,8 @@ Ext.grid.EasyGridPanel = Ext.extend(Ext.grid.EditorGridPanel,{
 			isExcelRank.value = this.isExcelRank;
 			
 			for(var p in this.ds.baseParams){
-				//解决 value中带引号的问题  modify by lilizhao
-				var hidden_value = document.createElement("<input type='hidden' name='"+p+"'>");
+				// 解决 value中带引号的问题
+				var hidden_value = document.createElement("<input type='hidden' name='" + p + "'>");
 				hidden_value.value = this.ds.baseParams[p];
 				exportForm.appendChild(hidden_value);
 			}
@@ -478,52 +490,50 @@ Ext.grid.EasyGridPanel = Ext.extend(Ext.grid.EditorGridPanel,{
 			exportForm.action = url;
 			exportForm.submit();
 		} else {
-			exportData(this.id,this.title);
+			if (typeof (this.excelExport) === 'function')
+				this.excelExport(this.id, this.title);
+			else Ext.Msg.alert('请在页面中配置脚本"/js/plugins/ext/excelutil.js"!');
 		}
 	},
 	getTree:function(){
 		var j1 = this.ds.head;
 		var j2 = "[{}";
-		for(var p=0;p<j1.length;p++) {
-			if(j1[p].dataIndex.indexOf(this.customercolumn)==-1)
-				j2+=",{'text':'"+j1[p].header+"',expanded: false,leaf:true}";
-		};
-		j2+="]";
-		j2=eval(j2.replace("{},",""));
+		for ( var p = 0; p < j1.length; p++) {
+			if (j1[p].dataIndex.indexOf(this.customercolumn) == -1)
+				j2 += ",{'text':'" + j1[p].header + "',expanded: false,leaf:true}";
+		}
+		;
+		j2 += "]";
+		j2 = eval(j2.replace("{},", ""));
 		return j2;
 	},
 	getSelectionsByCheckId:function(){
-		var result='';
-		for(var i=0;i<this.checkedRecord.length;i++){
-			result += "'"+this.checkedRecord[i][this.checkId]+"'";
-			if(i+1<this.checkedRecord.length)
-				result += ',';
+		var result = '';
+		for ( var i = 0; i < this.checkedRecord.length; i++) {
+			result += "'" + this.checkedRecord[i][this.checkId] + "'";
+			if (i + 1 < this.checkedRecord.length) result += ',';
 		}
 		return result;
 	},
 	getSelections:function(target){
 		var rows = this.getSelectionModel().getSelections();
-		if(rows=='')return null;
-		var result='';
-		for(var i=0;i<rows.length;i++){
+		if (rows == '') return null;
+		var result = '';
+		for ( var i = 0; i < rows.length; i++) {
 			result += rows[i].get(target);
-			if(i+1<rows.length) result += ',';
+			if (i + 1 < rows.length)
+				result += ',';
 		}
 		return result;
 	},
-	reconfig:function(o,j){
-		var s = this;
-		var data;
-		var sort=null;
-		var edit=null;
-		var lock=null;
-		var j_;
-		var flag = true; //是否回调的标志
-		var reader=[];
-		var head=[];
+	reconfig:function(o, j){
+		var _this = this, data;
+		var sort = null, edit = null, lock = null;
+		var j_, flag = true; //是否回调的标志
+		var reader=[], head=[];
 		try{
-			data = eval("("+j+")");
-			s.jsonData = data;
+			data = eval("(" + j + ")");
+			_this.jsonData = data;
 			j_ = data.data[0];
 		}catch(e){
 			this.parseHeader = true; //数据出错,下次加载数据时需要重配表头
@@ -532,43 +542,51 @@ Ext.grid.EasyGridPanel = Ext.extend(Ext.grid.EditorGridPanel,{
 		if(data && data.norecord){
 			//没数据
 			flag = false;
-		} else if(data && data.error){
+		} else if(data && data.msg){
 			//错误信息
 			flag = false;
-			show_error_message_win(data.error);
+			if (typeof (show_error_message_win == "function"))
+				show_error_message_win(data.msg);
 		}
 		//解析header
-		if(s.parseHeader || flag == false){
-			if(s.isRemoteSort!=null && flag)
+		if(_this.parseHeader || flag == false){
+			if (_this.isRemoteSort != null && flag)
 				sort = true;
-			if(s.isRank && flag)
+			if (_this.isRank && flag)
 				head.push(new Ext.grid.RowNumberer());
-			if(s.isCheck && flag)
-				head.push(new Ext.grid.CheckboxSelectionModel());
-			edit = s.isEdit==true?(new Ext.form.TextField({allowBlank: true})):null;
+			if (_this.isCheck && flag)
+				head.push(_this.selModel);
+			edit = _this.isEdit == true ? (new Ext.form.TextField({allowBlank : true})) : null;
 			for(var p in j_){
 				if(p && Ext.util.Format.trim(p) != '' && p != 'ordertype' && p != 'recordnum'){
-					if(s.lockedField && s.lockedField.indexOf(p) != -1) lock=true;
-					else lock=false;
-					if(s.isAlign){
-						head.push({header:p.replace(s.customercolumn,''),dataIndex:p,locked:lock,sortable:sort,editor:edit,align:'center'});
-					} else {
-						head.push({header:p.replace(s.customercolumn,''),dataIndex:p,locked:lock,sortable:sort,editor:edit});
+					if (_this.lockedField && _this.lockedField.indexOf(p) != -1)
+						lock = true;
+					else
+						lock = false;
+					var _obj = {
+						header : p.replace(_this.customercolumn, ''),
+						dataIndex : p,
+						locked : lock,
+						sortable : sort,
+						editor : edit
+					};
+					if (_this.isAlign) {
+						_obj.align = 'center';
 					}
-					lock=null;
+					head.push(_obj);
+					lock = null;
 				}
 			}
-			s.ds.head = head;
-			s.getColumnModel().setConfig(head);
-			var cm=s.getColumnModel();
+			_this.ds.head = head;
+			_this.getColumnModel().setConfig(head);
+			var cm = _this.getColumnModel();
 			cm.setEditor=function(i,c){
 				cm.config[i].editor.destroy();
 				cm.config[i].editor = new Ext.grid.GridEditor(c);
 			};	
-			if(flag && s.callback)s.callback(cm);
-			if(flag&&s.events.callback_)
-				(s.fireEvent("callback_",cm));
-			s.parseHeader = false;
+			if(flag && _this.callback) _this.callback(cm);
+			if(flag && _this.events.callback_) _this.fireEvent("callback_",cm);
+			_this.parseHeader = false;
 		}
 		//解析reader
 		for(var p in j_){
@@ -578,8 +596,8 @@ Ext.grid.EasyGridPanel = Ext.extend(Ext.grid.EditorGridPanel,{
 		}
 		o.reader = new Ext.data.JsonReader({root: 'data', totalProperty: 'totalCount'},reader );
 		o.recordType = o.reader.recordType;
-		s.ds.fields = o.recordType.prototype.fields;
-		if(!flag)s.parseHeader = true;
+		_this.ds.fields = o.recordType.prototype.fields;
+		if(!flag) _this.parseHeader = true;
 	}
 });
 

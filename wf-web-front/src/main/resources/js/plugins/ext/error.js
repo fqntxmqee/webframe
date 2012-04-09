@@ -15,8 +15,10 @@ Ext.override(Ext.data.Connection, {
 Ext.Ajax.on("requestcomplete", function(conn, res, options) {
 	// 判断session过期
 	if (res.responseText.indexOf('j_spring_security_check') != -1) {
-		Ext.msg.alert("session已过期，请重新登录!");
-		window.location.reload();
+		var msg = '登陆已超时，点击确认按钮返回登陆页面；点击取消按钮，按住键盘"Ctrl + N"，打开页面登录后，返回之前页面保存信息!';
+		Ext.Msg.confirm("登陆超时", msg, function (confirm) {
+			if (confirm == 'yes') window.location.reload();
+		});
 	}
 });
 function show_error_message_win(res) {
@@ -27,7 +29,7 @@ function show_error_message_win(res) {
 		} catch (e) {
 			//返回的文本有特殊字符，待解决
 		}
-		errorjson = resultjson.error;
+		errorjson = resultjson.msg || resultjson.error;
 	} else { //不需要转换
 		errorjson = res;
 	}
