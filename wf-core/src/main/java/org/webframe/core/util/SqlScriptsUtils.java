@@ -62,9 +62,10 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 			ModulePluginDriver driver = driverInfo.getDriver();
 			if (!(driver instanceof ISqlScriptSupport)) continue;
 			ISqlScriptSupport sqlScript = (ISqlScriptSupport) driver;
-			if (sqlScript.getSqlScriptLocation() == null) continue;
-			pattern = sqlScript.getSqlScriptLocation() + pattern;
-			Resource[] resources = getResources(driverInfo, pattern);
+			String location = sqlScript.getSqlScriptLocation();
+			if (location == null) continue;
+			location += pattern;
+			Resource[] resources = getResources(driverInfo, location);
 			if (resources == null) continue;
 			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载Init SqlScripts File(" + resources.length + "个)！");
 			resourcesList.addAll(Arrays.asList(resources));
@@ -82,7 +83,7 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 	public static void batchExcuteSqlScripts(List<Resource> resources, DataSource ds) {
 		for (Resource resource : resources) {
 			try {
-				SystemLogUtils.secondPrintln("批量执行 '" + resource.getFilename() + "' SQL 脚本文件！");
+				SystemLogUtils.secondPrintln("批量执行 '" + resource.getFilename() + "' SQL 脚本文件中的语句！");
 				executeBatchSql(analyzeSqlFile(resource.getInputStream()), ds);
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
