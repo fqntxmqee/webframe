@@ -4,5 +4,5 @@ wfhome=`pwd`
 
 echo "$wfhome"
 
-mvn -DskipTests=true -DskipGpg=false release:prepare
-mvn -DskipTests=true -DskipGpg=false release:perform
+mvn release:prepare
+mvn release:perform
