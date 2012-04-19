@@ -27,10 +27,6 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>wf-web-page</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>wf-test</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -60,12 +56,14 @@
 			<version>${jackson.version}</version>
 		</dependency>
 		<!-- spring mvc end-->
-
+		
+		<!-- freemarker模板支持 -->
 		<dependency>
-		  <groupId>javax.servlet</groupId>
-		  <artifactId>jstl</artifactId>
-		  <version>1.2</version>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.16</version>
 		</dependency>
+		
 		<!-- tomcat -->
 		<dependency>
 			<groupId>javax.servlet</groupId>

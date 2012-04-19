@@ -54,9 +54,8 @@ public class FileUtils {
 			if (inStream != null) { // 文件存在时
 				FileOutputStream fs = new FileOutputStream(targetFile);
 				byte[] buffer = new byte[1444];
-				int bytesum = 0, byteread = 0;
+				int byteread = 0;
 				while ((byteread = inStream.read(buffer)) != -1) {
-					bytesum += byteread; // 字节数 文件大小
 					fs.write(buffer, 0, byteread);
 				}
 				fs.close();

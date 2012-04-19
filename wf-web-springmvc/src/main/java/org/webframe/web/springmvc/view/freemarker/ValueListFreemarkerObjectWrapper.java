@@ -1,5 +1,5 @@
 
-package org.webframe.web.valuelist;
+package org.webframe.web.springmvc.view.freemarker;
 
 import org.webframe.web.page.ValueList;
 
