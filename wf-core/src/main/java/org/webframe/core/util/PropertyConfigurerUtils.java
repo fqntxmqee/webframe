@@ -41,12 +41,18 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 
 	@Override
 	public void setLocations(Resource[] locations) {
-		if (locations == null) return;
+		if (locations == null) {
+			return;
+		}
 		List<Resource> list = new ArrayList<Resource>();
 		for (Resource resource : locations) {
-			if (resource == null) continue;
+			if (resource == null) {
+				continue;
+			}
 			String name = resource.getFilename();
-			if (name == null || !name.endsWith(PS_SUFFIX)) continue;
+			if (name == null || !name.endsWith(PS_SUFFIX)) {
+				continue;
+			}
 			String noSuffixName = name.substring(0, name.lastIndexOf(PS_SUFFIX));
 			String defaultName = null, overrideName = null;
 			try {
@@ -119,12 +125,14 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 	 * @author: 黄国庆 2010-12-16 下午07:35:28
 	 */
 	public static int getInt(Object key) {
-		if (!validate(key)) return 0;
+		if (!validate(key)) {
+			return 0;
+		}
 		String result = ps.get(key).toString();
 		try {
 			return Integer.parseInt(result);
 		} catch (NumberFormatException e) {
-			log.error("指定key：" + key.toString() + " 的value值不为整数！", e);
+			log.warn("指定key：" + key.toString() + " 的value值不为整数！", e);
 			return 0;
 		}
 	}
@@ -137,12 +145,14 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 	 * @author: 黄国庆 2010-12-16 下午07:33:55
 	 */
 	public static double getDouble(Object key) {
-		if (!validate(key)) return Double.NaN;
+		if (!validate(key)) {
+			return Double.NaN;
+		}
 		String result = ps.get(key).toString();
 		try {
 			return Double.parseDouble(result);
 		} catch (NumberFormatException e) {
-			log.error("指定key：" + key.toString() + " 的value值不为浮点数！", e);
+			log.warn("指定key：" + key.toString() + " 的value值不为浮点数！", e);
 			return Double.NaN;
 		}
 	}
@@ -159,7 +169,9 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 	 * @author: 黄国庆 2010-12-16 下午07:31:21
 	 */
 	public static boolean getBoolean(Object key) {
-		if (!validate(key)) return false;
+		if (!validate(key)) {
+			return false;
+		}
 		String result = ps.get(key).toString();
 		return Boolean.parseBoolean(result);
 	}
@@ -172,7 +184,9 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 	 * @author: 黄国庆 2010-12-16 下午07:30:50
 	 */
 	public static String getString(Object key) {
-		if (!validate(key)) return "";
+		if (!validate(key)) {
+			return "";
+		}
 		return ps.get(key).toString();
 	}
 
@@ -184,17 +198,22 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 	 * @author: 黄国庆 2010-12-16 下午07:29:58
 	 */
 	public static Object getObject(Object key) {
-		if (!validate(key)) return null;
+		if (!validate(key)) {
+			return null;
+		}
 		String result = ps.get(key).toString();
 		try {
 			Class<?> clazz = PropertyConfigurerUtils.class.getClassLoader().loadClass(result);
 			return clazz.newInstance();
 		} catch (ClassNotFoundException e) {
-			log.error("指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！", e);
+			log.warn(
+				"指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！", e);
 		} catch (InstantiationException e) {
-			log.error("指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！", e);
+			log.warn(
+				"指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！", e);
 		} catch (IllegalAccessException e) {
-			log.error("指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！", e);
+			log.warn(
+				"指定key：" + key.toString() + " 的value值为：" + result + "，实例化失败！", e);
 		}
 		return null;
 	}
@@ -225,9 +244,13 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 	 */
 	public static Properties getProperties(Object key, Properties properties) {
 		Properties res = new Properties();
-		if (key == null) return res;
+		if (key == null) {
+			return res;
+		}
 		for (Object _key : properties.keySet()) {
-			if (_key == null) continue;
+			if (_key == null) {
+				continue;
+			}
 			String strKey = _key.toString();
 			String token = key.toString() + ".";
 			int index = strKey.lastIndexOf(token);
@@ -248,15 +271,15 @@ public class PropertyConfigurerUtils extends PropertyPlaceholderConfigurer {
 	 */
 	private static boolean validate(Object key) {
 		if (ps == null) {
-			log.error("未加载任何Properties文件！");
+			log.warn("未加载任何Properties文件！");
 			return false;
 		}
 		if (key == null) {
-			log.error("指定key值不能null！");
+			log.warn("指定key值不能null！");
 			return false;
 		}
 		if (ps.get(key) == null) {
-			log.error("指定key：" + key.toString() + " 不存在value值！");
+			log.warn("指定key：" + key.toString() + " 不存在value值！");
 			return false;
 		}
 		return true;
