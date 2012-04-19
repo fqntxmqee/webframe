@@ -13,6 +13,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 /**
+ * 提供class类文件与jar包的相关联系操作方法；
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-7 上午09:23:35
  */
@@ -73,7 +75,9 @@ public class ClassUtils extends org.springframework.util.ClassUtils {
 		String classesRoot = "";
 		try {
 			Resource clazzResource = getResource(clazz);
-			if (isInJar(clazzResource)) return null;
+			if (isInJar(clazzResource)) {
+				return null;
+			}
 			String file = clazzResource.getURL().getFile();
 			String clazzPath = convertClassNameToResourcePath(clazz.getName());
 			String[] arr = file.split(clazzPath);

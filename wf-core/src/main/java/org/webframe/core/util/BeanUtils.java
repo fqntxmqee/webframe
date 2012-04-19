@@ -10,7 +10,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * 继承org.springframework.beans.BeanUtils 扩展相关方法
+ * 继承org.springframework.beans.BeanUtils 扩展相关方法；
+ * 提供将Map中的数据，按照键与bean属性一一对应原则，赋值到bean对象的属性上，忽略bean中不存在的属性键赋值
  * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-6 下午09:34:58
@@ -27,13 +28,17 @@ public class BeanUtils extends org.springframework.beans.BeanUtils {
 	 * @author 黄国庆 2010-4-20 下午04:18:33
 	 */
 	public static void setBeanProperties(Object bean, Map<? extends Object, ? extends Object> map) {
-		if (map == null) return;
+		if (map == null) {
+			return;
+		}
 		PropertyDescriptor[] targetPds = getPropertyDescriptors(bean.getClass());
 		for (PropertyDescriptor targetPd : targetPds) {
 			Method writeMethod = targetPd.getWriteMethod();
 			if (writeMethod != null) {
 				Object value = map.get(targetPd.getName());
-				if (value == null) continue;
+				if (value == null) {
+					continue;
+				}
 				Class<?>[] parameterTypes = writeMethod.getParameterTypes();
 				if (!Modifier.isPublic(writeMethod.getDeclaringClass().getModifiers())) {
 					writeMethod.setAccessible(true);

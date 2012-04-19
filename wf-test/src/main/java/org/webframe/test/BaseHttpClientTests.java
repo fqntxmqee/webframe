@@ -22,6 +22,8 @@ import org.apache.http.util.EntityUtils;
 import org.webframe.test.web.BaseWebServerTests;
 
 /**
+ * 基于web容器（jetty）环境的测试用例基类
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-3-28 下午08:51:08
  */
@@ -48,7 +50,9 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 */
 	protected String getUrl(String url) {
 		String baseUrl = getBaseUrl();
-		if (url == null) return baseUrl;
+		if (url == null) {
+			return baseUrl;
+		}
 		if (url.toLowerCase().startsWith("http:") || url.toLowerCase().startsWith("https:")) {
 			baseUrl = "";
 		}
@@ -279,7 +283,9 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 		if (user == null) {
 			throw new IllegalArgumentException("user map may not be null!");
 		}
-		if (userOnceMap.get(user.toString()) != null) return;
+		if (userOnceMap.get(user.toString()) != null) {
+			return;
+		}
 		HttpResponse response = executePost(loginUrl, user);
 		EntityUtils.consume(response.getEntity());
 		userOnceMap.put(user.toString(), true);

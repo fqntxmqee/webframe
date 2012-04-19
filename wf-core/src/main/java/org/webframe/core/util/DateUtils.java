@@ -12,7 +12,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * 这个类提供各种日期格式的处理函数，标准的日期字符串写法：yyyy-MM-dd 或 yyyy-MM-dd HH:mm
+ * 提供常用的日期字符串与日期对象互相转换的操作方法；
+ * 这个类提供各种日期格式的处理函数，标准的日期字符串写法：yyyy-MM-dd 或 yyyy-MM-dd HH:mm 
  * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-6 下午09:10:46
