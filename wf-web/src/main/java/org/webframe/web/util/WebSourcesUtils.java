@@ -15,6 +15,7 @@ import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.webframe.core.util.PropertyConfigurerUtils;
 import org.webframe.support.driver.ModulePluginDriver;
 import org.webframe.support.driver.ModulePluginDriverInfo;
 import org.webframe.support.driver.ModulePluginUtils;
@@ -36,6 +37,8 @@ public class WebSourcesUtils extends ModulePluginUtils {
 
 	private static final String	RESOURCE_PATTERN_ALL	= "/**/*.*";
 
+	private static final String	PS_WEBSOURCES_UNPACK	= "web.sources.unpack";
+
 	/**
 	 * 初始化模块插件包中的web资源，如果模块插件包中的资源是最新的，则不需要更新
 	 * 
@@ -43,11 +46,21 @@ public class WebSourcesUtils extends ModulePluginUtils {
 	 * @author 黄国庆 2011-4-6 上午09:56:07
 	 */
 	public static void initWebSources(String webRealPath) {
-		if (defaultWebRealPath == null) defaultWebRealPath = webRealPath;
+		// 如果不存在"web.sources.unpack"或该属性值为true，则中jar包中取出websources
+		if (!"".equals(PropertyConfigurerUtils.getString(PS_WEBSOURCES_UNPACK))
+					&& !PropertyConfigurerUtils.getBoolean(PS_WEBSOURCES_UNPACK)) {
+			SystemLogUtils.rootPrintln("跳过从jar包取出Web资源！");
+			return;
+		}
+		if (defaultWebRealPath == null) {
+			defaultWebRealPath = webRealPath;
+		}
 		SystemLogUtils.rootPrintln("Web资源初始化开始！");
 		for (ModulePluginDriverInfo driverInfo : getNeedUpdateDriverInfos()) {
 			List<Resource> resources = getWebSourcesResources(driverInfo);
-			if (resources == null || defaultWebRealPath == null) continue;
+			if (resources == null || defaultWebRealPath == null) {
+				continue;
+			}
 			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "Web资源初始化！");
 			for (Resource resource : resources) {
 				if (resource instanceof JarResource
@@ -57,7 +70,9 @@ public class WebSourcesUtils extends ModulePluginUtils {
 					if (resource instanceof JarResource) {
 						JarResource jr = (JarResource) resource;
 						String[] arr = jr.getFilename().split("!");
-						if (arr.length != 2) continue;
+						if (arr.length != 2) {
+							continue;
+						}
 						path = arr[1];
 					} else if (resource instanceof ClassPathResource) {
 						ClassPathResource cpr = (ClassPathResource) resource;
@@ -66,7 +81,9 @@ public class WebSourcesUtils extends ModulePluginUtils {
 						FileSystemResource fsr = (FileSystemResource) resource;
 						path = fsr.getPath();
 						int index = path.lastIndexOf("classes");
-						if (index <= 0) continue;
+						if (index <= 0) {
+							continue;
+						}
 						path = path.substring(index + 7);
 					}
 					resolveResource(path, driverInfo, resource);
@@ -110,13 +127,17 @@ public class WebSourcesUtils extends ModulePluginUtils {
 		ModulePluginDriver driver = driverInfo.getDriver();
 		Class<? extends ModulePluginDriver> loaderClass = driver.getClass();
 		String webSourcesLocation = driver.getWebSourcesLocation();
-		if (webSourcesLocation == null) return webSources;
+		if (webSourcesLocation == null) {
+			return webSources;
+		}
 		String[] webSourcesLocations = StringUtils.tokenizeToStringArray(webSourcesLocation, DELIMITERS);
 		for (String location : webSourcesLocations) {
 			String path = resolvePath(loaderClass, location);
 			path = ClassUtils.convertClassNameToResourcePath(path);
 			Resource[] resources = getResources(driverInfo, path + RESOURCE_PATTERN_ALL);
-			if (resources == null) continue;
+			if (resources == null) {
+				continue;
+			}
 			webSources.addAll(Arrays.asList(resources));
 		}
 		return webSources;

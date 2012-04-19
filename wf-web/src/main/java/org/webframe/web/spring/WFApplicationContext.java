@@ -5,10 +5,12 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.webframe.support.SpringContextUtils;
 import org.webframe.support.driver.resource.filter.JarResourceFilter;
 import org.webframe.support.driver.resource.filter.ResourceFilter;
+import org.webframe.support.util.SystemLogUtils;
 
 /**
  * 扩展spring XmlWebApplicationContext；添加自定义spring cfg获取，并支持ResourceFilter过滤
@@ -37,7 +39,12 @@ public class WFApplicationContext extends XmlWebApplicationContext {
 		if (resourceFilter == null) {
 			resourceFilter = new JarResourceFilter();
 		}
-		beanDefinitionReader.loadBeanDefinitions(resourceFilter.filter(SpringContextUtils.getSpringContextResources()));
+		Resource[] resources = resourceFilter.filter(SpringContextUtils.getSpringContextResources());
+		SystemLogUtils.println("加载BeanDefinitions!");
+		for (Resource resource : resources) {
+			beanDefinitionReader.loadBeanDefinitions(resource);
+			SystemLogUtils.println("spring配置文件：" + resource.toString());
+		}
 	}
 
 	@Override

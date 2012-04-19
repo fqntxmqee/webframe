@@ -39,6 +39,8 @@ public class WFContextLoaderListener extends ContextLoaderListener {
 		webRealPath = servletContext.getRealPath("/");
 		initModulePluginDriver(servletContext);
 		initWebApplicationContext(servletContext);
+		// 初始化模块插件的web资源
+		WebSourcesUtils.initWebSources(webRealPath);
 	}
 
 	/**
@@ -75,8 +77,6 @@ public class WFContextLoaderListener extends ContextLoaderListener {
 			SystemLogUtils.errorPrintln(e.getMessage());
 		}
 		ModulePluginUtils.cacheModulePluginConfig(webRealPath);
-		// 初始化模块插件的web资源
-		WebSourcesUtils.initWebSources(webRealPath);
 	}
 
 	@Override
