@@ -9,8 +9,8 @@
     <extraInfo></extraInfo>
     <webPath></webPath>
     <webClassPathEntries>
-        <webClassPathEntry>/wf-easymodule/target/classes</webClassPathEntry>
-        <webClassPathEntry>/wf-easymodule/target/test-classes</webClassPathEntry>
-        <webClassPathEntry>org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER</webClassPathEntry>
+        <webClassPathEntry>/wf-easy/target/classes</webClassPathEntry>
+        <webClassPathEntry>/wf-easy/target/test-classes</webClassPathEntry>
+        <webClassPathEntry>org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER</webClassPathEntry>
     </webClassPathEntries>
 </tomcatProjectProperties>

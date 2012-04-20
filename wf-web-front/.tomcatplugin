@@ -10,6 +10,6 @@
     <webPath></webPath>
     <webClassPathEntries>
         <webClassPathEntry>/wf-web-front/target/classes</webClassPathEntry>
-        <webClassPathEntry>org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER</webClassPathEntry>
+        <webClassPathEntry>org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER</webClassPathEntry>
     </webClassPathEntries>
 </tomcatProjectProperties>

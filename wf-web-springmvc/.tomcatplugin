@@ -11,6 +11,6 @@
     <webClassPathEntries>
         <webClassPathEntry>/wf-web-springmvc/target/classes</webClassPathEntry>
         <webClassPathEntry>/wf-web-springmvc/target/test-classes</webClassPathEntry>
-        <webClassPathEntry>org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER</webClassPathEntry>
+        <webClassPathEntry>org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER</webClassPathEntry>
     </webClassPathEntries>
 </tomcatProjectProperties>
