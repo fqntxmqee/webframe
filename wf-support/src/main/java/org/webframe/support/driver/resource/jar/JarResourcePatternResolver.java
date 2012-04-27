@@ -3,6 +3,7 @@ package org.webframe.support.driver.resource.jar;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.JarURLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,11 +25,19 @@ import org.webframe.support.util.StringUtils;
  */
 public class JarResourcePatternResolver extends PathMatchingResourcePatternResolver {
 
-	private Class<?>	jarClass	= null;
+	private Class<?>				jarClass	= null;
+
+	private JarURLConnection	jarCon	= null;
 
 	public JarResourcePatternResolver(Class<?> jarClass) throws IOException {
 		this(new JarResourceLoader(jarClass));
 		this.jarClass = jarClass;
+	}
+
+	public JarResourcePatternResolver(JarURLConnection jarURLConnection)
+				throws IOException {
+		this(new JarResourceLoader(jarURLConnection));
+		this.jarCon = jarURLConnection;
 	}
 
 	private JarResourcePatternResolver(ResourceLoader resourceLoader) {
@@ -37,7 +46,7 @@ public class JarResourcePatternResolver extends PathMatchingResourcePatternResol
 
 	@Override
 	public Resource[] getResources(String locationPattern) throws IOException {
-		if (ClassUtils.isInJar(this.jarClass)) {
+		if (jarCon != null || ClassUtils.isInJar(this.jarClass)) {
 			return findPathMatchingJarResources(locationPattern);
 		} else {
 			Resource classRoot = ClassUtils.getClassesRootResource(this.jarClass);
@@ -48,7 +57,9 @@ public class JarResourcePatternResolver extends PathMatchingResourcePatternResol
 				List<Resource> finder = new ArrayList<Resource>();
 				Collection<?> files = FileUtils.listFiles(dirRoot.getFile(), null, true);
 				for (Object object : files) {
-					if (!(object instanceof File)) continue;
+					if (!(object instanceof File)) {
+						continue;
+					}
 					File file = (File) object;
 					String filename = file.getName();
 					if (getPathMatcher().match(pattern, filename)) {
@@ -67,12 +78,16 @@ public class JarResourcePatternResolver extends PathMatchingResourcePatternResol
 		JarResourceLoader jarResourceLoader = (JarResourceLoader) getResourceLoader();
 		String directory = StringUtils.getFileDirectory(locationPattern);
 		Set<String> entriesPath = jarResourceLoader.getEntryFilesByDir(directory, getPathMatcher());
-		if (entriesPath == null) return result.toArray(new Resource[result.size()]);
+		if (entriesPath == null) {
+			return result.toArray(new Resource[result.size()]);
+		}
 		for (String entryPath : entriesPath) {
 			String path = "/" + entryPath;
 			if (getPathMatcher().match(locationPattern, path)) {
 				Resource resource = getResource(path);
-				if (resource == null) continue;
+				if (resource == null) {
+					continue;
+				}
 				result.add(resource);
 			}
 		}

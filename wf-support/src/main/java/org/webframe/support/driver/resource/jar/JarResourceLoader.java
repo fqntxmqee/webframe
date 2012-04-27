@@ -37,12 +37,13 @@ public class JarResourceLoader extends DefaultResourceLoader {
 		Resource jarClassResource = ClassUtils.getResource(jarClass);
 		URLConnection urlConnection = jarClassResource.getURL().openConnection();
 		if (urlConnection instanceof JarURLConnection) {
-			jarCon = (JarURLConnection) urlConnection;
-			jarCon.setUseCaches(false);
-			jarResource = new JarResource(jarCon);
-			entriesPath = jarResource.getEntriesPath();
-			isJarResource = true;
+			init((JarURLConnection) urlConnection);
 		}
+	}
+
+	public JarResourceLoader(JarURLConnection jarURLConnection)
+				throws IOException {
+		init(jarURLConnection);
 	}
 
 	public Set<String> getEntriesPath() {
@@ -78,5 +79,13 @@ public class JarResourceLoader extends DefaultResourceLoader {
 		if (jarResource != null) {
 			jarResource.close();
 		}
+	}
+
+	private void init(JarURLConnection jarURLConnection) throws IOException {
+		jarCon = jarURLConnection;
+		jarCon.setUseCaches(false);
+		jarResource = new JarResource(jarCon);
+		entriesPath = jarResource.getEntriesPath();
+		isJarResource = true;
 	}
 }

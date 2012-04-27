@@ -2,14 +2,22 @@
 package org.webframe.support.driver.loader;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.webframe.support.driver.exception.DriverNotExistException;
+import org.webframe.support.driver.relation.ModulePluginDependencyUtil;
+import org.webframe.support.util.ResourceUtils;
+import org.webframe.support.util.SystemLogUtils;
 
 /**
  * Properties模块插件驱动加载器
@@ -22,7 +30,13 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 	/**
 	 * 模块插件驱动properties文件路径
 	 */
-	private String	modulePluginProperties;
+	private String							modulePluginProperties;
+
+	private List<URLConnection>		urlConnections			= new ArrayList<URLConnection>();
+
+	private List<JarURLConnection>	jarURLConnections		= new ArrayList<JarURLConnection>();
+
+	private List<String>					defaultPatternList	= new ArrayList<String>();
 
 	public PropertiesModulePluginLoader() {
 		this("modulePlugin.properties");
@@ -30,6 +44,8 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 
 	public PropertiesModulePluginLoader(String modulePluginProperties) {
 		setModulePluginProperties(modulePluginProperties);
+		defaultPatternList.add("org.webframe**");
+		defaultPatternList.add("${project.groupId}");
 	}
 
 	protected final String getModulePluginProperties() {
@@ -46,22 +62,67 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 	@Override
 	public void loadModulePlugin() throws DriverNotExistException {
 		try {
-			Properties properties = PropertiesLoaderUtils.loadAllProperties(modulePluginProperties);
-			Resource res = new ClassPathResource(modulePluginProperties);
-			if (res.exists()) {
-				Properties override = PropertiesLoaderUtils.loadProperties(res);
-				properties.putAll(override);
-			}
-			Set<Object> driverSet = new HashSet<Object>();
-			for (Object key : properties.keySet()) {
-				if ("1".equals(properties.get(key))) {
-					driverSet.add(key);
+			init();
+			SystemLogUtils.rootPrintln("对模块插件jar包进行排序开始！");
+			List<JarURLConnection> sortUrls = ModulePluginDependencyUtil.sort(
+				jarURLConnections, defaultPatternList);
+			SystemLogUtils.rootPrintln("对模块插件jar包进行排序结束！");
+			Map<Object, Integer> driverMap = new HashMap<Object, Integer>();
+			Integer increaseKey = 0;
+			for (JarURLConnection jarURLConnection : sortUrls) {
+				Properties properties = new Properties();
+				properties.load(jarURLConnection.getInputStream());
+				for (Object key : properties.keySet()) {
+					if ("1".equals(properties.get(key))) {
+						increaseKey++;
+						driverMap.put(key, increaseKey);
+					}
 				}
 			}
-			String[] drivers = driverSet.toArray(new String[driverSet.size()]);
+			// override
+			for (URLConnection urlConnection : urlConnections) {
+				Properties properties = new Properties();
+				properties.load(urlConnection.getInputStream());
+				for (Object key : properties.keySet()) {
+					if ("1".equals(properties.get(key))) {
+						increaseKey++;
+						driverMap.put(key, increaseKey);
+					} else if (driverMap.containsKey(key)) {
+						driverMap.remove(key);
+					}
+				}
+			}
+			// 排序
+			List<Entry<Object, Integer>> mappingList = new ArrayList<Entry<Object, Integer>>(driverMap.entrySet());
+			Collections.sort(mappingList,
+				new Comparator<Entry<Object, Integer>>() {
+
+					@Override
+					public int compare(Entry<Object, Integer> m1, Entry<Object, Integer> m2) {
+						return m1.getValue().compareTo(m2.getValue());
+					}
+				});
+			List<String> driverList = new ArrayList<String>();
+			for (Entry<Object, Integer> entry : mappingList) {
+				driverList.add(entry.getKey().toString());
+			}
+			String[] drivers = driverList.toArray(new String[driverList.size()]);
 			loadModulePlugin(drivers);
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
+		}
+	}
+
+	private void init() throws IOException {
+		SystemLogUtils.rootPrintln("加载模块插件类properties配置！");
+		List<URL> urls = ResourceUtils.getUrls(modulePluginProperties);
+		for (URL url : urls) {
+			URLConnection urlConnection = url.openConnection();
+			if (urlConnection instanceof JarURLConnection) {
+				jarURLConnections.add((JarURLConnection) urlConnection);
+			} else {
+				urlConnections.add(urlConnection);
+			}
 		}
 	}
 }

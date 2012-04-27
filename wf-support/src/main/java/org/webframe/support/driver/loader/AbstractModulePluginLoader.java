@@ -16,6 +16,7 @@ public abstract class AbstractModulePluginLoader implements ModulePluginLoader {
 
 	protected Log	log	= LogFactory.getLog(getClass());
 
+
 	/**
 	 * 通过给定的模块插件驱动类全路径数组，加载模块插件驱动
 	 * 
@@ -25,11 +26,15 @@ public abstract class AbstractModulePluginLoader implements ModulePluginLoader {
 	 * @author 黄国庆 2011-4-5 下午02:24:34
 	 */
 	protected void loadModulePlugin(String[] drivers) throws DriverNotExistException {
-		if (drivers == null) throw new DriverNotExistException();
+		if (drivers == null) {
+			throw new DriverNotExistException();
+		}
 		String driverNotExists = "";
 		for (String driver : drivers) {
 			try {
-				if (driver == null) throw new DriverNotExistException();
+				if (driver == null) {
+					throw new DriverNotExistException();
+				}
 				Class.forName(driver, true, this.getClass().getClassLoader());
 			} catch (ClassNotFoundException e) {
 				driverNotExists += driver + "|";
