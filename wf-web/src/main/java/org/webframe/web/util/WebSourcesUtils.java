@@ -46,9 +46,9 @@ public class WebSourcesUtils extends ModulePluginUtils {
 	 * @author 黄国庆 2011-4-6 上午09:56:07
 	 */
 	public static void initWebSources(String webRealPath) {
-		// 如果不存在"web.sources.unpack"或该属性值为true，则中jar包中取出websources
-		if (!"".equals(PropertyConfigurerUtils.getString(PS_WEBSOURCES_UNPACK))
-					&& !PropertyConfigurerUtils.getBoolean(PS_WEBSOURCES_UNPACK)) {
+		// 如果不存在"web.sources.unpack"或该属性值为false，则不从jar包中取出websources
+		if ("".equals(PropertyConfigurerUtils.getString(PS_WEBSOURCES_UNPACK))
+					|| !PropertyConfigurerUtils.getBoolean(PS_WEBSOURCES_UNPACK)) {
 			SystemLogUtils.rootPrintln("跳过从jar包取出Web资源！");
 			return;
 		}
@@ -93,6 +93,14 @@ public class WebSourcesUtils extends ModulePluginUtils {
 		SystemLogUtils.rootPrintln("Web资源初始化结束！");
 	}
 
+	/**
+	 * 只复制指定文件夹不存在的文件
+	 * 
+	 * @param path
+	 * @param driverInfo
+	 * @param resource
+	 * @author 黄国庆 2012-4-27 上午10:18:43
+	 */
 	private static void resolveResource(String path, ModulePluginDriverInfo driverInfo, Resource resource) {
 		try {
 			AbstractResource cpr = (AbstractResource) resource;
@@ -102,14 +110,15 @@ public class WebSourcesUtils extends ModulePluginUtils {
 				FileUtils.copyFile(resource.getInputStream(), targetFile);
 				targetFile.setLastModified(sourceModified);
 				SystemLogUtils.thirdPrintln(driverInfo.getDriver() + "Web资源：" + path + "复制！");
-			} else {
+			}
+			/*else {
 				long targetModified = targetFile.lastModified();
 				if (sourceModified != targetModified) {
 					FileUtils.copyFile(resource.getInputStream(), targetFile);
 					targetFile.setLastModified(sourceModified);
 					SystemLogUtils.thirdPrintln(driverInfo.getDriver() + "Web资源：" + path + "更新！");
 				}
-			}
+			}*/
 		} catch (IOException e) {
 			SystemLogUtils.println(e.getMessage());
 		}
