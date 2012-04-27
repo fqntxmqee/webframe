@@ -108,6 +108,7 @@ public class DefaultColumnTag extends BaseColumnTag {
 	/**
 	 * @see javax.servlet.jsp.tagext.Tag#doStartTag()
 	 */
+	@Override
 	public int doStartTag() throws JspException {
 		init();
 		return super.doStartTag();
@@ -116,13 +117,14 @@ public class DefaultColumnTag extends BaseColumnTag {
 	/**
 	 * @see javax.servlet.jsp.tagext.Tag#doEndTag()
 	 */
+	@Override
 	public int doEndTag() throws JspException {
 		ValueListSpaceTag rootTag = (ValueListSpaceTag) JspUtils.getParent(this, ValueListSpaceTag.class);
 		DefaultRowTag rowTag = (DefaultRowTag) JspUtils.getParent(this, DefaultRowTag.class);
 		ValueListConfigBean config = rootTag.getConfig();
 		appendClassCellAttribute(rowTag.getRowStyleClass());
 		if (locale == null) {
-			locale = config.getLocaleResolver().resolveLocale((HttpServletRequest) pageContext.getRequest());
+			locale = config.getLocale((HttpServletRequest) pageContext.getRequest());
 		}
 		if (rowTag.getCurrentRowNumber() == 0) // if this is the 1st row == the one with cell headers
 		{
@@ -367,6 +369,7 @@ public class DefaultColumnTag extends BaseColumnTag {
 	 * 
 	 * @see javax.servlet.jsp.tagext.Tag#release()
 	 */
+	@Override
 	public void release() {
 		super.release();
 		reset();

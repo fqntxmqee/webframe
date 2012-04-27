@@ -51,11 +51,11 @@ public class FocusStatusTag extends ConfigurableTag {
 	/**
 	 * @see javax.servlet.jsp.tagext.Tag#doStartTag()
 	 */
+	@Override
 	public int doStartTag() throws JspException {
 		ValueListSpaceTag rootTag = (ValueListSpaceTag) JspUtils.getParent(this, ValueListSpaceTag.class);
-		Locale local = rootTag.getConfig()
-			.getLocaleResolver()
-			.resolveLocale((HttpServletRequest) pageContext.getRequest());
+		Locale local = rootTag.getConfig().getLocale(
+			(HttpServletRequest) pageContext.getRequest());
 		MessageSource message = rootTag.getConfig().getMessageSource();
 		ValueListInfo info = rootTag.getValueList().getValueListInfo();
 		if (info.isFocusEnabled()) {
@@ -108,6 +108,7 @@ public class FocusStatusTag extends ConfigurableTag {
 	/**
 	 * @see javax.servlet.jsp.tagext.Tag#doStartTag()
 	 */
+	@Override
 	public int doEndTag() throws JspException {
 		ValueListSpaceTag rootTag = (ValueListSpaceTag) JspUtils.getParent(this, ValueListSpaceTag.class);
 		ValueListInfo info = rootTag.getValueList().getValueListInfo();

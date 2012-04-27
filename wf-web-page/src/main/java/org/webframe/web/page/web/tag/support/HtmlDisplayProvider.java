@@ -112,6 +112,7 @@ public class HtmlDisplayProvider extends AbstractHTMLDisplayProvider {
 	 * 
 	 * @return The HTML that comes before the column text.
 	 */
+	@Override
 	public String getHeaderCellPreProcess(ColumnInfo columnInfo, ValueListInfo info) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n    <th");
@@ -145,6 +146,7 @@ public class HtmlDisplayProvider extends AbstractHTMLDisplayProvider {
 	 * @param info The ValueListInfo.
 	 * @return The formated HTML.
 	 */
+	@Override
 	public String getHeaderLabel(ColumnInfo columnInfo, TableInfo tableInfo, ValueListInfo info, Map<String, Object> includeParameters) {
 		ValueListConfigBean config = tableInfo.getConfig();
 		Map<String, Object> parameters = new HashMap<String, Object>(includeParameters);
@@ -180,7 +182,7 @@ public class HtmlDisplayProvider extends AbstractHTMLDisplayProvider {
 				sb.append((ValueListInfo.ASCENDING.equals(direction) ? ValueListInfo.DESCENDING : ValueListInfo.ASCENDING));
 				sb.append(").png\" border=\"0\"/>");
 			} else if (columnInfo.getDefaultSort() != null) {
-				Locale locale = config.getLocaleResolver().resolveLocale(
+				Locale locale = config.getLocale(
 					(HttpServletRequest) (tableInfo.getPageContext().getRequest()));
 				String altSort;
 				try {
@@ -253,10 +255,12 @@ public class HtmlDisplayProvider extends AbstractHTMLDisplayProvider {
 	 * 
 	 * @return The HTML that comes after the column text.
 	 */
+	@Override
 	public String getHeaderCellPostProcess() {
 		return ((usePadding) ? "&nbsp;" : "") + "</th>";
 	}
 
+	@Override
 	public String getCellPreProcess(Attributes attributes) {
 		return (attributes == null) ? "\n<td>" : "\n<td "
 					+ attributes.getCellAttributesAsString()
@@ -264,6 +268,7 @@ public class HtmlDisplayProvider extends AbstractHTMLDisplayProvider {
 					+ ((usePadding) ? "&nbsp;" : "");
 	}
 
+	@Override
 	public String getCellPostProcess() {
 		return ((usePadding) ? "&nbsp;" : "") + "</td>";
 	}
@@ -271,6 +276,7 @@ public class HtmlDisplayProvider extends AbstractHTMLDisplayProvider {
 	/**
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return "Images home(without context path): " + getImageHome(null) + " - " + super.toString();
 	}

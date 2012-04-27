@@ -145,12 +145,13 @@ public class DefaultPagingTag extends ConfigurableTag {
 		ValueListConfigBean config = rootTag.getConfig();
 		this.displayHelper = config.getDisplayHelper();
 		this.messageSource = config.getMessageSource();
-		this.currentLocale = config.getLocaleResolver().resolveLocale(request);
+		this.currentLocale = config.getLocale(request);
 	}
 
 	/**
 	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
 	 */
+	@Override
 	public int doStartTag() throws JspException {
 		init((HttpServletRequest) pageContext.getRequest());
 		Locale locale = getLocale();
@@ -467,6 +468,7 @@ public class DefaultPagingTag extends ConfigurableTag {
 	/**
 	 * @see javax.servlet.jsp.tagext.IterationTag#doAfterBody()
 	 */
+	@Override
 	public int doAfterBody() throws JspException {
 		// method doAfterBody() is always invoked on WebLogic (even if the tag has no body)
 		if (this.currentPage <= this.maxPage) {
@@ -512,6 +514,7 @@ public class DefaultPagingTag extends ConfigurableTag {
 	/**
 	 * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
 	 */
+	@Override
 	public int doEndTag() throws JspException {
 		StringBuffer sb = new StringBuffer();
 		Locale locale = getLocale();
@@ -657,6 +660,7 @@ public class DefaultPagingTag extends ConfigurableTag {
 	 * 
 	 * @see javax.servlet.jsp.tagext.Tag#release()
 	 */
+	@Override
 	public void release() {
 		super.release();
 		reset();

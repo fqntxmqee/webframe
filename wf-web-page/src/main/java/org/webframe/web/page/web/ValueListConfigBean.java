@@ -2,12 +2,13 @@
 package org.webframe.web.page.web;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.webframe.web.page.web.tag.support.CellInterceptor;
 import org.webframe.web.page.web.tag.support.CsvDisplayProvider;
 import org.webframe.web.page.web.tag.support.DefaultLinkEncoder;
@@ -36,8 +37,6 @@ public class ValueListConfigBean {
 
 	public static final DisplayProvider						DEFAULT_DISPLAY_PROVIDER	= new HtmlDisplayProvider();
 
-	public static final LocaleResolver						DEFAULT_LOCALE_RESOLVER		= new SessionLocaleResolver();
-
 	public static final DisplayHelper						DEFAULT_DISPLAY_HELPER		= new PassThroughDisplayHelper();
 
 	public static final LinkEncoder							DEFAULT_LINK_ENCODER			= new DefaultLinkEncoder();
@@ -64,13 +63,13 @@ public class ValueListConfigBean {
 
 	private DisplayHelper										displayHelper					= DEFAULT_DISPLAY_HELPER;
 
-	private LocaleResolver										localeResolver					= DEFAULT_LOCALE_RESOLVER;
-
 	private Map<String, DisplayProvider>					displayProviders;
 
 	private LinkEncoder											linkEncoder						= DEFAULT_LINK_ENCODER;
 
 	private String													imageRoot						= "/images";
+
+	private Locale													defaultLocale;
 
 	/**
 	 * @return Returns the displayProviders.
@@ -79,9 +78,9 @@ public class ValueListConfigBean {
 		if (displayProviders == null) {
 			return DEFAULT_DISPLAY_PROVIDER;
 		}
-		DisplayProvider display = (DisplayProvider) displayProviders.get(name);
+		DisplayProvider display = displayProviders.get(name);
 		if (display == null) {
-			display = (DisplayProvider) DEFAULT_DISPLAY_PROVIDERS.get(name);
+			display = DEFAULT_DISPLAY_PROVIDERS.get(name);
 		}
 		if (display == null) {
 			display = DEFAULT_DISPLAY_PROVIDER;
@@ -171,18 +170,12 @@ public class ValueListConfigBean {
 		this.messageSource = messageSource;
 	}
 
-	/**
-	 * @return Returns the localeResolver.
-	 */
-	public LocaleResolver getLocaleResolver() {
-		return localeResolver;
-	}
-
-	/**
-	 * @param localeResolver The localeResolver to set.
-	 */
-	public void setLocaleResolver(LocaleResolver localeResolver) {
-		this.localeResolver = localeResolver;
+	public Locale getLocale(HttpServletRequest req) {
+		Locale locale = getDefaultLocale();
+		if (locale == null) {
+			return req.getLocale();
+		}
+		return locale;
 	}
 
 	/**
@@ -232,5 +225,13 @@ public class ValueListConfigBean {
 	 */
 	public void setImageRoot(String imageRoot) {
 		this.imageRoot = imageRoot;
+	}
+
+	public void setDefaultLocale(Locale defaultLocale) {
+		this.defaultLocale = defaultLocale;
+	}
+
+	protected Locale getDefaultLocale() {
+		return this.defaultLocale;
 	}
 }

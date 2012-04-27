@@ -51,12 +51,13 @@ public class DefaultColumnCheckBoxTag extends BaseColumnTag {
 	/**
 	 * @see javax.servlet.jsp.tagext.Tag#doEndTag()
 	 */
+	@Override
 	public int doEndTag() throws JspException {
 		ValueListSpaceTag rootTag = (ValueListSpaceTag) JspUtils.getParent(this, ValueListSpaceTag.class);
 		ValueListConfigBean config = rootTag.getConfig();
 		DefaultRowTag rowTag = (DefaultRowTag) JspUtils.getParent(this, DefaultRowTag.class);
 		appendClassCellAttribute(rowTag.getRowStyleClass());
-		Locale locale = config.getLocaleResolver().resolveLocale((HttpServletRequest) pageContext.getRequest());
+		Locale locale = config.getLocale((HttpServletRequest) pageContext.getRequest());
 		if (rowTag.getCurrentRowNumber() == 0) {
 			String titleKey = getTitleKey();
 			String label = (titleKey == null) ? getTitle() : config.getMessageSource().getMessage(titleKey, null,
@@ -138,6 +139,7 @@ public class DefaultColumnCheckBoxTag extends BaseColumnTag {
 	 * 
 	 * @see javax.servlet.jsp.tagext.Tag#release()
 	 */
+	@Override
 	public void release() {
 		super.release();
 		reset();
