@@ -4,10 +4,6 @@ package org.webframe.test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.webframe.support.driver.exception.DriverNotExistException;
-import org.webframe.support.driver.loader.ModulePluginLoader;
-import org.webframe.support.driver.loader.PropertiesModulePluginLoader;
-import org.webframe.support.util.SystemLogUtils;
 
 /**
  * 基于spring配置环境的测试用例基类
@@ -20,16 +16,4 @@ import org.webframe.support.util.SystemLogUtils;
 @ContextConfiguration(locations = {
 	"wf-test.xml"})
 public class BaseSpringTests extends AbstractJUnit4SpringContextTests {
-
-	public BaseSpringTests() {
-		this(new PropertiesModulePluginLoader());
-	}
-
-	public BaseSpringTests(ModulePluginLoader modulePluginLoader) {
-		try {
-			modulePluginLoader.loadModulePlugin();
-		} catch (DriverNotExistException e) {
-			SystemLogUtils.errorPrintln(e.getMessage());
-		}
-	}
 }

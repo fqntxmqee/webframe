@@ -5,6 +5,8 @@ import org.springframework.beans.factory.support.BeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.test.context.support.GenericXmlContextLoader;
 import org.webframe.support.SpringContextUtils;
+import org.webframe.support.driver.loader.ModulePluginLoader;
+import org.webframe.support.driver.loader.PropertiesModulePluginLoader;
 import org.webframe.support.driver.resource.filter.JarResourceFilter;
 import org.webframe.support.driver.resource.filter.ResourceFilter;
 
@@ -28,6 +30,7 @@ public class WFXmlContextLoader extends GenericXmlContextLoader {
 
 	@Override
 	protected void prepareContext(GenericApplicationContext context) {
+		initModulePluginLoader();
 		TestApplicationContext.init(context);
 		BeanDefinitionReader reader = createBeanDefinitionReader(context);
 		ResourceFilter resourceFilter = getResourceFilter();
@@ -35,6 +38,11 @@ public class WFXmlContextLoader extends GenericXmlContextLoader {
 			resourceFilter = new JarResourceFilter();
 		}
 		reader.loadBeanDefinitions(resourceFilter.filter(SpringContextUtils.getSpringContextResources()));
+	}
+
+	protected synchronized void initModulePluginLoader() {
+		ModulePluginLoader modulePluginLoader = new PropertiesModulePluginLoader();
+		modulePluginLoader.loadModulePlugin();
 	}
 
 	protected ResourceFilter getResourceFilter() {
