@@ -14,8 +14,8 @@
         <property name="username" type="string">
             <column name="USERNAME_" />
         </property>
-        <property name="departname" type="string">
-            <column name="DEPARTNAME_" />
+        <property name="name" type="string">
+            <column name="NAME_" />
         </property>
         <property name="logintime" type="string">
             <column name="LOGINTIME_"  />

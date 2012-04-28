@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.webframe.core.exception.entity.EntityException;
-import org.webframe.core.module.testUser.TTestUser;
+import org.webframe.core.module.loginfo.TLogInfo;
 import org.webframe.core.util.DateUtils;
 import org.webframe.test.BaseSpringTests;
 
@@ -23,9 +23,9 @@ import org.webframe.test.BaseSpringTests;
  */
 public class BaseEntityDaoTest extends BaseSpringTests {
 
-	private IBaseEntityDao<TTestUser>		baseEntityDao;
+	private IBaseEntityDao<TLogInfo>			baseEntityDao;
 
-	private static Map<String, TTestUser>	userMap			= new HashMap<String, TTestUser>(8);
+	private static Map<String, TLogInfo>	userMap			= new HashMap<String, TLogInfo>(8);
 
 	private final String							testUserName	= "testuserdao";
 
@@ -34,7 +34,7 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	@Before
 	public void clean() {
 		if (init) {
-			for (Object o : baseEntityDao.loadAll(TTestUser.class)) {
+			for (Object o : baseEntityDao.loadAll(TLogInfo.class)) {
 				baseEntityDao.delete(o);
 			}
 			init = false;
@@ -42,8 +42,8 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	}
 
 	@Autowired
-	public void setBaseEntityDao(IBaseEntityDao<TTestUser> baseEntityDao) {
-		this.baseEntityDao = baseEntityDao.getSubClassEntityDao(TTestUser.class);
+	public void setBaseEntityDao(IBaseEntityDao<TLogInfo> baseEntityDao) {
+		this.baseEntityDao = baseEntityDao.getSubClassEntityDao(TLogInfo.class);
 	}
 
 	/**
@@ -51,9 +51,8 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	 */
 	@Test
 	public void testSaveEntity() {
-		TTestUser entity = new TTestUser();
+		TLogInfo entity = new TLogInfo();
 		entity.setName(testUserName);
-		entity.setPassword("password");
 		entity.setEnabled(true);
 		entity.setCreateTime(DateUtils.getStandTime());
 		baseEntityDao.saveEntity(entity);
@@ -82,9 +81,8 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	 */
 	@Test
 	public void testSaveOrUpdateEntity() {
-		TTestUser entity = new TTestUser();
+		TLogInfo entity = new TLogInfo();
 		entity.setName(testUserName);
-		entity.setPassword("password");
 		entity.setEnabled(true);
 		entity.setCreateTime(DateUtils.getStandTime());
 		baseEntityDao.saveOrUpdateEntity(entity);
@@ -97,7 +95,7 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	 */
 	@Test
 	public void testUpdateEntity() {
-		for (TTestUser testUser : userMap.values()) {
+		for (TLogInfo testUser : userMap.values()) {
 			testUser.setModifyTime(DateUtils.getStandTime());
 			baseEntityDao.updateEntity(testUser);
 		}
@@ -110,8 +108,8 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	 */
 	@Test
 	public void testFindByExample() {
-		for (TTestUser testUser : userMap.values()) {
-			List<TTestUser> entityList = baseEntityDao.findByExample(testUser);
+		for (TLogInfo testUser : userMap.values()) {
+			List<TLogInfo> entityList = baseEntityDao.findByExample(testUser);
 			assertEquals("findByExample方法加载对象记录不全！", entityList.size(), userMap.size());
 		}
 	}
@@ -135,9 +133,10 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	 */
 	@Test
 	public void testFindByPropertyClassOfTStringObject() {
-		List<TTestUser> entityList;
+		List<TLogInfo> entityList;
 		try {
-			entityList = baseEntityDao.findByProperty(TTestUser.class, "name", testUserName);
+			entityList = baseEntityDao.findByProperty(TLogInfo.class, "name",
+				testUserName);
 			assertEquals("findByProperty方法加载对象记录不全！", entityList.size(), userMap.size());
 		} catch (EntityException e) {
 			e.printStackTrace();
@@ -154,10 +153,12 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	@Test
 	public void testFindByUniquePropertyClassOfTStringObject() throws EntityException {
 		for (String userId : userMap.keySet()) {
-			TTestUser entity = baseEntityDao.findByUniqueProperty(TTestUser.class, "id", userId);
+			TLogInfo entity = baseEntityDao.findByUniqueProperty(TLogInfo.class,
+				"id", userId);
 			assertNotNull("findByUniqueProperty方法加载对象，未找到指定主键的对象错误！", entity);
 		}
-		TTestUser entity = baseEntityDao.findByUniqueProperty(TTestUser.class, "id", "1");
+		TLogInfo entity = baseEntityDao.findByUniqueProperty(TLogInfo.class,
+			"id", "1");
 		assertNull("findByUniqueProperty方法加载对象，找到指定主键的对象错误！", entity);
 	}
 
@@ -214,7 +215,7 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	 */
 	@Test
 	public void testDeleteEntityT() {
-		for (TTestUser testUser : userMap.values()) {
+		for (TLogInfo testUser : userMap.values()) {
 			baseEntityDao.deleteEntity(testUser);
 			userMap.remove(testUser.getId());
 			break;
