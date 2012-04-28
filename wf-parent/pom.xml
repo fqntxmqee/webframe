@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>webframe</artifactId>
 		<groupId>org.webframe</groupId>
-		<version>1.1.8-SNAPSHOT</version>
+		<version>1.1.8</version>
 	</parent>
 	
 	<artifactId>wf-parent</artifactId>
