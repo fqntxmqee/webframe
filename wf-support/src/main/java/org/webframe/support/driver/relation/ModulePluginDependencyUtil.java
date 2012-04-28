@@ -35,12 +35,32 @@ public abstract class ModulePluginDependencyUtil {
 
 	public static final AntPathMatcher	pathMatcher			= new AntPathMatcher();
 
+	/**
+	 * 排序模块插件包加载的优先顺序
+	 * 
+	 * @param urls
+	 * @param patterns
+	 * @return
+	 * @throws IOException
+	 * @author 黄国庆 2012-4-28 上午8:47:42
+	 */
 	public static List<JarURLConnection> sort(List<JarURLConnection> urls, List<String> patterns)
 				throws IOException {
-		return analyzeDependendy(urls, patterns);
+		Map<JarURLConnection, ModulePluginDependency> analyzed = analyzeDependendy(
+			urls, patterns);
+		return sort(analyzed);
 	}
 
-	public static List<JarURLConnection> analyzeDependendy(List<JarURLConnection> urls, List<String> patterns)
+	/**
+	 * 分析pom中的依赖关系
+	 * 
+	 * @param urls
+	 * @param patterns
+	 * @return
+	 * @throws IOException
+	 * @author 黄国庆 2012-4-28 上午8:45:20
+	 */
+	public static Map<JarURLConnection, ModulePluginDependency> analyzeDependendy(List<JarURLConnection> urls, List<String> patterns)
 				throws IOException {
 		List<Resource> resources = ResourceUtils.loadResources(urls,
 			DEFAULT_MAVEN_POM);
@@ -69,8 +89,8 @@ public abstract class ModulePluginDependencyUtil {
 					first = dependency;
 				}
 				needSort.put(urls.get(i), dependency);
-				temp.put(dependency.toString(), dependency);
-				allModulePluginDependency.put(dependency.toString(), dependency);
+				temp.put(dependency.key(), dependency);
+				allModulePluginDependency.put(dependency.key(), dependency);
 				// 查找依赖
 				Element dependenciseElement = root.element("dependencies");
 				if (dependenciseElement != null) {
@@ -86,7 +106,7 @@ public abstract class ModulePluginDependencyUtil {
 						child.increase();
 						disposeMatchDependency(temp, child);
 						dependency.putDependOn(child);
-						allModulePluginDependency.put(child.toString(), child);
+						allModulePluginDependency.put(child.key(), child);
 					}
 				}
 			} catch (DocumentException e) {
@@ -95,7 +115,7 @@ public abstract class ModulePluginDependencyUtil {
 		}
 		disposeFirstDependency(first, temp);
 		SystemLogUtils.secondPrintln("对模块插件jar进行排序！");
-		return sort(needSort);
+		return needSort;
 	}
 
 	private static List<JarURLConnection> sort(Map<JarURLConnection, ModulePluginDependency> needSort) {
@@ -112,7 +132,7 @@ public abstract class ModulePluginDependencyUtil {
 		for (Entry<JarURLConnection, ModulePluginDependency> entry : mappingList) {
 			result.add(entry.getKey());
 			SystemLogUtils.secondPrintln("按照maven依赖关系排序："
-						+ entry.getValue().toString()
+						+ entry.getValue().key()
 						+ "深度："
 						+ entry.getValue().getIndex());
 		}
@@ -131,8 +151,8 @@ public abstract class ModulePluginDependencyUtil {
 	}
 
 	private static void disposeMatchDependency(Map<String, ModulePluginDependency> result, ModulePluginDependency match) {
-		if (result.containsKey(match.toString())) {
-			ModulePluginDependency haven = result.get(match.toString());
+		if (result.containsKey(match.key())) {
+			ModulePluginDependency haven = result.get(match.key());
 			haven.increase(match.getIndex());
 			match.setDependOnMap(haven.getDependOnMap());
 		}
@@ -167,11 +187,26 @@ public abstract class ModulePluginDependencyUtil {
 		if (artifactIdNode == null) {
 			return null;
 		}
+		// 过滤依赖中存在provided的scope
+		if (!findParent) {
+			Node scopeNode = root.element("scope");
+			if (scopeNode != null && "provided".equals(scopeNode.getText())) {
+				return null;
+			}
+		}
 		return new ModulePluginDependency(path, artifactIdNode.getText());
 	}
 
+	/**
+	 * 用patterns匹配依赖的groupId，过滤用
+	 * 
+	 * @param path
+	 * @param patterns
+	 * @return
+	 * @author 黄国庆 2012-4-28 上午8:48:21
+	 */
 	private static boolean match(String path, List<String> patterns) {
-		if (patterns == null) {
+		if (patterns == null || patterns.size() == 0) {
 			return true;
 		}
 		for (String pattern : patterns) {

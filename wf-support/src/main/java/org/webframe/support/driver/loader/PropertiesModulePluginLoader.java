@@ -44,8 +44,10 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 
 	public PropertiesModulePluginLoader(String modulePluginProperties) {
 		setModulePluginProperties(modulePluginProperties);
-		defaultPatternList.add("org.webframe**");
-		defaultPatternList.add("${project.groupId}");
+	}
+
+	public void setDefaultPatternList(List<String> defaultPatternList) {
+		this.defaultPatternList = defaultPatternList;
 	}
 
 	protected final String getModulePluginProperties() {
@@ -62,58 +64,96 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 	@Override
 	public void loadModulePlugin() throws DriverNotExistException {
 		try {
-			init();
+			loadPropertiesJar();
 			SystemLogUtils.rootPrintln("对模块插件jar包进行排序开始！");
-			List<JarURLConnection> sortUrls = ModulePluginDependencyUtil.sort(
-				jarURLConnections, defaultPatternList);
+			List<JarURLConnection> sortUrls;
+			try {
+				sortUrls = ModulePluginDependencyUtil.sort(jarURLConnections,
+					defaultPatternList);
+				if (sortUrls.size() != jarURLConnections.size()) {
+					sortUrls = jarURLConnections;
+				}
+			} catch (IOException e) {
+				sortUrls = jarURLConnections;
+			}
 			SystemLogUtils.rootPrintln("对模块插件jar包进行排序结束！");
-			Map<Object, Integer> driverMap = new HashMap<Object, Integer>();
-			Integer increaseKey = 0;
-			for (JarURLConnection jarURLConnection : sortUrls) {
-				Properties properties = new Properties();
-				properties.load(jarURLConnection.getInputStream());
-				for (Object key : properties.keySet()) {
-					if ("1".equals(properties.get(key))) {
-						increaseKey++;
-						driverMap.put(key, increaseKey);
-					}
-				}
-			}
-			// override
-			for (URLConnection urlConnection : urlConnections) {
-				Properties properties = new Properties();
-				properties.load(urlConnection.getInputStream());
-				for (Object key : properties.keySet()) {
-					if ("1".equals(properties.get(key))) {
-						increaseKey++;
-						driverMap.put(key, increaseKey);
-					} else if (driverMap.containsKey(key)) {
-						driverMap.remove(key);
-					}
-				}
-			}
-			// 排序
-			List<Entry<Object, Integer>> mappingList = new ArrayList<Entry<Object, Integer>>(driverMap.entrySet());
-			Collections.sort(mappingList,
-				new Comparator<Entry<Object, Integer>>() {
-
-					@Override
-					public int compare(Entry<Object, Integer> m1, Entry<Object, Integer> m2) {
-						return m1.getValue().compareTo(m2.getValue());
-					}
-				});
-			List<String> driverList = new ArrayList<String>();
-			for (Entry<Object, Integer> entry : mappingList) {
-				driverList.add(entry.getKey().toString());
-			}
-			String[] drivers = driverList.toArray(new String[driverList.size()]);
+			Map<Object, Integer> driverMap = loadProperties(sortUrls);
+			String[] drivers = sortProperties(driverMap);
 			loadModulePlugin(drivers);
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}
 	}
 
-	private void init() throws IOException {
+	/**
+	 * 排序properties，并返回按照排序后properties内容
+	 * 
+	 * @param driverMap
+	 * @return
+	 * @author 黄国庆 2012-4-28 上午8:28:57
+	 */
+	protected String[] sortProperties(Map<Object, Integer> driverMap) {
+		// 排序
+		List<Entry<Object, Integer>> mappingList = new ArrayList<Entry<Object, Integer>>(driverMap.entrySet());
+		Collections.sort(mappingList, new Comparator<Entry<Object, Integer>>() {
+
+			@Override
+			public int compare(Entry<Object, Integer> m1, Entry<Object, Integer> m2) {
+				return m1.getValue().compareTo(m2.getValue());
+			}
+		});
+		List<String> driverList = new ArrayList<String>();
+		for (Entry<Object, Integer> entry : mappingList) {
+			driverList.add(entry.getKey().toString());
+		}
+		return driverList.toArray(new String[driverList.size()]);
+	}
+
+	/**
+	 * 加载properties
+	 * 
+	 * @param sortUrls
+	 * @return
+	 * @throws IOException
+	 * @author 黄国庆 2012-4-28 上午8:28:45
+	 */
+	protected Map<Object, Integer> loadProperties(List<JarURLConnection> sortUrls)
+				throws IOException {
+		Map<Object, Integer> driverMap = new HashMap<Object, Integer>();
+		Integer increaseKey = 0;
+		for (JarURLConnection jarURLConnection : sortUrls) {
+			Properties properties = new Properties();
+			properties.load(jarURLConnection.getInputStream());
+			for (Object key : properties.keySet()) {
+				if ("1".equals(properties.get(key))) {
+					increaseKey++;
+					driverMap.put(key, increaseKey);
+				}
+			}
+		}
+		// override
+		for (URLConnection urlConnection : urlConnections) {
+			Properties properties = new Properties();
+			properties.load(urlConnection.getInputStream());
+			for (Object key : properties.keySet()) {
+				if ("1".equals(properties.get(key))) {
+					increaseKey++;
+					driverMap.put(key, increaseKey);
+				} else if (driverMap.containsKey(key)) {
+					driverMap.remove(key);
+				}
+			}
+		}
+		return driverMap;
+	}
+
+	/**
+	 * 初始化properties所在jar信息
+	 * 
+	 * @throws IOException
+	 * @author 黄国庆 2012-4-28 上午8:29:49
+	 */
+	protected void loadPropertiesJar() throws IOException {
 		SystemLogUtils.rootPrintln("加载模块插件类properties配置！");
 		List<URL> urls = ResourceUtils.getUrls(modulePluginProperties);
 		for (URL url : urls) {

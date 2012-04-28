@@ -57,7 +57,7 @@ public class ModulePluginDependency implements
 		}
 	}
 
-	public static String key(String groupId, String artifactId) {
+	public String key() {
 		if (groupId == null || "".equals(groupId)) {
 			throw new IllegalArgumentException("groupId 不能为空或null！");
 		}
@@ -87,7 +87,7 @@ public class ModulePluginDependency implements
 
 	@Override
 	public String toString() {
-		return key(groupId, artifactId);
+		return key() + ":deep:" + getIndex();
 	}
 
 	@Override
