@@ -52,6 +52,11 @@
 		<param-name>webframeSystemLog</param-name>
 		<param-value>false</param-value>
 	</context-param>
+	<!-- 模块插件包是否排序 -->
+	<context-param>
+		<param-name>defaultSorted</param-name>
+		<param-value>false</param-value>
+	</context-param>
 	<!-- ************************************应用范围内参数初始化 end************************************ -->
 
 

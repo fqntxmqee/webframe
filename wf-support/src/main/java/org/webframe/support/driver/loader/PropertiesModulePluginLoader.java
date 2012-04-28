@@ -38,12 +38,18 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 
 	private List<String>					defaultPatternList	= new ArrayList<String>();
 
+	private boolean						defaultSorted			= true;
+
 	public PropertiesModulePluginLoader() {
 		this("modulePlugin.properties");
 	}
 
 	public PropertiesModulePluginLoader(String modulePluginProperties) {
 		setModulePluginProperties(modulePluginProperties);
+	}
+
+	public void setDefaultSorted(boolean defaultSorted) {
+		this.defaultSorted = defaultSorted;
 	}
 
 	public void setDefaultPatternList(List<String> defaultPatternList) {
@@ -66,6 +72,18 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 		try {
 			loadPropertiesJar();
 			SystemLogUtils.rootPrintln("对模块插件jar包进行排序开始！");
+			List<JarURLConnection> sortUrls = sorted();
+			SystemLogUtils.rootPrintln("对模块插件jar包进行排序结束！");
+			Map<Object, Integer> driverMap = loadProperties(sortUrls);
+			String[] drivers = sortProperties(driverMap);
+			loadModulePlugin(drivers);
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	protected List<JarURLConnection> sorted() {
+		if (defaultSorted) {
 			List<JarURLConnection> sortUrls;
 			try {
 				sortUrls = ModulePluginDependencyUtil.sort(jarURLConnections,
@@ -76,12 +94,9 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 			} catch (IOException e) {
 				sortUrls = jarURLConnections;
 			}
-			SystemLogUtils.rootPrintln("对模块插件jar包进行排序结束！");
-			Map<Object, Integer> driverMap = loadProperties(sortUrls);
-			String[] drivers = sortProperties(driverMap);
-			loadModulePlugin(drivers);
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
+			return sortUrls;
+		} else {
+			return jarURLConnections;
 		}
 	}
 
