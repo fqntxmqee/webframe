@@ -5,7 +5,6 @@
 
 package org.webframe.web.springmvc.view.jsp;
 
-import java.io.File;
 import java.util.Locale;
 
 import javax.servlet.ServletContext;
@@ -21,16 +20,16 @@ import org.springframework.web.servlet.view.JstlView;
  */
 public class JspCheckView extends JstlView {
 
-	private String	jspRealPath	= "";
+	private ServletContext	sc	= null;
 
 	@Override
 	public boolean checkResource(Locale locale) throws Exception {
-		return new File(jspRealPath).exists();
+		return sc == null ? false : sc.getResource(getUrl()) != null;
 	}
 
 	@Override
 	protected void initServletContext(ServletContext servletContext) {
 		super.initServletContext(servletContext);
-		jspRealPath = servletContext.getRealPath(getUrl());
+		sc = servletContext;
 	}
 }
