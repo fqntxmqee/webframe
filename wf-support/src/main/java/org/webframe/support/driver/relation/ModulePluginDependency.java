@@ -53,11 +53,16 @@ public class ModulePluginDependency implements
 		}
 		String key = dependency.toString();
 		if (key != null && !"".equals(key)) {
+			dependency.increase(getIndex() + 1);
 			dependOnMap.put(dependency.toString(), dependency);
 		}
 	}
 
 	public String key() {
+		return key(groupId, artifactId);
+	}
+
+	public static String key(String groupId, String artifactId) {
 		if (groupId == null || "".equals(groupId)) {
 			throw new IllegalArgumentException("groupId 不能为空或null！");
 		}
@@ -83,6 +88,23 @@ public class ModulePluginDependency implements
 
 	public int getIndex() {
 		return this.index;
+	}
+
+	public void refresh(ModulePluginDependency fresh) {
+		if (key().equals(fresh.key())) {
+			int i = fresh.index - this.index;
+			if (i > 0) {
+				this.increase(i);
+				if (fresh.dependOnMap != null) {
+					Map<String, ModulePluginDependency> temp = this.dependOnMap;
+					if (temp == null) {
+						temp = new HashMap<String, ModulePluginDependency>();
+					}
+					temp.putAll(fresh.dependOnMap);
+					this.dependOnMap = temp;
+				}
+			}
+		}
 	}
 
 	@Override

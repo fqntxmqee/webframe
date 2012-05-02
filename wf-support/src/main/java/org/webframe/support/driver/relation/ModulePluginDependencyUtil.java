@@ -70,7 +70,6 @@ public abstract class ModulePluginDependencyUtil {
 		Map<String, ModulePluginDependency> temp = new HashMap<String, ModulePluginDependency>();
 		Map<String, ModulePluginDependency> allModulePluginDependency = new HashMap<String, ModulePluginDependency>();
 		Map<JarURLConnection, ModulePluginDependency> needSort = new HashMap<JarURLConnection, ModulePluginDependency>();
-		ModulePluginDependency first = null;
 		SystemLogUtils.secondPrintln("根据查询到的pom对模块插件jar进行排序前的预处理！");
 		for (int i = 0; i < resources.size(); i++) {
 			Resource resource = resources.get(i);
@@ -81,12 +80,10 @@ public abstract class ModulePluginDependencyUtil {
 				// 通过输入源构造一个Document
 				Document document = saxReader.read(resource.getInputStream());
 				Element root = document.getRootElement();
-				ModulePluginDependency dependency = findModulePluginDependency(root, patterns, true);
+				ModulePluginDependency dependency = findModulePluginDependency(
+					root, patterns, true, allModulePluginDependency);
 				if (dependency == null) {
 					continue;
-				}
-				if (first == null) {
-					first = dependency;
 				}
 				needSort.put(urls.get(i), dependency);
 				temp.put(dependency.key(), dependency);
@@ -96,24 +93,26 @@ public abstract class ModulePluginDependencyUtil {
 				if (dependenciseElement != null) {
 					List<?> dependencise = dependenciseElement.elements("dependency");
 					for (Object object : dependencise) {
-						ModulePluginDependency child = findModulePluginDependency((Element) object, patterns, false);
+						ModulePluginDependency child = findModulePluginDependency(
+							(Element) object, patterns, false, null);
 						if (child == null) {
 							continue;
 						}
 						if (DEFAULT_GROUPID.equals(child.getGroupId())) {
 							child.setGroupId(dependency.getGroupId());
 						}
-						child.increase();
-						disposeMatchDependency(temp, child);
 						dependency.putDependOn(child);
-						allModulePluginDependency.put(child.key(), child);
+						if (allModulePluginDependency.containsKey(child.key())) {
+							allModulePluginDependency.get(child.key()).refresh(child);
+						} else {
+							allModulePluginDependency.put(child.key(), child);
+						}
 					}
 				}
 			} catch (DocumentException e) {
 				SystemLogUtils.errorPrintln(e.getMessage());
 			}
 		}
-		disposeFirstDependency(first, temp);
 		SystemLogUtils.secondPrintln("对模块插件jar进行排序！");
 		return needSort;
 	}
@@ -139,25 +138,6 @@ public abstract class ModulePluginDependencyUtil {
 		return result;
 	}
 
-	private static void disposeFirstDependency(ModulePluginDependency first, Map<String, ModulePluginDependency> result) {
-		if (first != null) {
-			Map<String, ModulePluginDependency> childs = first.getDependOnMap();
-			if (childs != null) {
-				for (String key : childs.keySet()) {
-					disposeMatchDependency(result, childs.get(key));
-				}
-			}
-		}
-	}
-
-	private static void disposeMatchDependency(Map<String, ModulePluginDependency> result, ModulePluginDependency match) {
-		if (result.containsKey(match.key())) {
-			ModulePluginDependency haven = result.get(match.key());
-			haven.increase(match.getIndex());
-			match.setDependOnMap(haven.getDependOnMap());
-		}
-	}
-
 	/**
 	 * 从element元素中查询组件
 	 * 
@@ -167,7 +147,7 @@ public abstract class ModulePluginDependencyUtil {
 	 * @return
 	 * @author 黄国庆 2012-4-27 下午3:46:24
 	 */
-	private static ModulePluginDependency findModulePluginDependency(Element root, List<String> patterns, boolean findParent) {
+	private static ModulePluginDependency findModulePluginDependency(Element root, List<String> patterns, boolean findParent, Map<String, ModulePluginDependency> all) {
 		Node groupIdNode = root.element("groupId");
 		if (groupIdNode == null && findParent) {
 			Element parent = root.element("parent");
@@ -194,7 +174,14 @@ public abstract class ModulePluginDependencyUtil {
 				return null;
 			}
 		}
-		return new ModulePluginDependency(path, artifactIdNode.getText());
+		ModulePluginDependency dependency = null;
+		if (all != null) {
+			dependency = all.get(ModulePluginDependency.key(path,
+				artifactIdNode.getText()));
+		}
+		return dependency == null
+					? new ModulePluginDependency(path, artifactIdNode.getText())
+					: dependency;
 	}
 
 	/**
