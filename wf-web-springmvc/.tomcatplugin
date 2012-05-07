@@ -8,6 +8,11 @@
     <warLocation></warLocation>
     <extraInfo></extraInfo>
     <webPath></webPath>
+    <visitJarWebXml>false</visitJarWebXml>
+    <visitJarFile>false</visitJarFile>
+    <overridePattern></overridePattern>
+    <addPattern></addPattern>
+    <usePrefix>false</usePrefix>
     <webClassPathEntries>
         <webClassPathEntry>/wf-web-springmvc/target/classes</webClassPathEntry>
         <webClassPathEntry>/wf-web-springmvc/target/test-classes</webClassPathEntry>

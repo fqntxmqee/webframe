@@ -8,6 +8,10 @@
     <warLocation></warLocation>
     <extraInfo></extraInfo>
     <webPath></webPath>
+    <visitJarFile>false</visitJarFile>
+    <overridePattern></overridePattern>
+    <addPattern></addPattern>
+    <usePrefix>false</usePrefix>
     <webClassPathEntries>
         <webClassPathEntry>/wf-web/target/classes</webClassPathEntry>
         <webClassPathEntry>/wf-web/target/test-classes</webClassPathEntry>
