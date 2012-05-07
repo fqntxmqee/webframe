@@ -48,7 +48,21 @@ public class WFActionServlet extends ActionServlet {
 	}
 
 	@Override
-	protected ModuleConfig initModuleConfig(String prefix, String paths) throws ServletException {
+	protected void initServlet() throws ServletException {
+		try {
+			super.initServlet();
+		} catch (ServletException se) {
+			servletMapping = getInitParameter("servletMapping");
+			if (servletMapping == null) {
+				throw se;
+			}
+			getServletContext().setAttribute(Globals.SERVLET_KEY, servletMapping);
+		}
+	}
+
+	@Override
+	protected ModuleConfig initModuleConfig(String prefix, String paths)
+				throws ServletException {
 		if (paths == null || "".equals(paths)) {
 			// Parse the configuration for this module
 			ModuleConfigFactory factoryObject = ModuleConfigFactory.createFactory();
@@ -57,7 +71,8 @@ public class WFActionServlet extends ActionServlet {
 			Digester digester = initConfigDigester();
 			digester.push(config);
 			this.parseModuleConfigFile(digester, null);
-			getServletContext().setAttribute(Globals.MODULE_KEY + config.getPrefix(), config);
+			getServletContext().setAttribute(
+				Globals.MODULE_KEY + config.getPrefix(), config);
 			// Force creation and registration of DynaActionFormClass instances
 			// for all dynamic form beans we wil be using
 			FormBeanConfig fbs[] = config.findFormBeanConfigs();
@@ -73,7 +88,8 @@ public class WFActionServlet extends ActionServlet {
 	}
 
 	@Override
-	protected void parseModuleConfigFile(Digester digester, String path) throws UnavailableException {
+	protected void parseModuleConfigFile(Digester digester, String path)
+				throws UnavailableException {
 		try {
 			Resource[] resources;
 			if (path == null) {
@@ -85,7 +101,9 @@ public class WFActionServlet extends ActionServlet {
 			Object root = digester.getRoot();
 			for (int i = 0; i < resources.length; i++) {
 				// digester多次解析文件时，需要push root
-				if (i > 0) digester.push(root);
+				if (i > 0) {
+					digester.push(root);
+				}
 				InputStream input = resources[i].getInputStream();
 				try {
 					digester.parse(input);
