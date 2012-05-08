@@ -24,7 +24,8 @@ import sun.security.action.GetPropertyAction;
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-3-18 下午06:46:28
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({
+			"unchecked", "restriction"})
 public final class ModulePluginManager {
 
 	private static boolean									initialized		= false;
@@ -115,7 +116,7 @@ public final class ModulePluginManager {
 		try {
 			// 由系统变量获取drivers，如果未定义，则不加载。
 			String systemVar = ModulePluginLoader.MODULE_PLUGIN_KEY;
-			drivers = (String) AccessController.doPrivileged(new GetPropertyAction(systemVar));
+			drivers = AccessController.doPrivileged(new GetPropertyAction(systemVar));
 		} catch (Exception ex) {
 			drivers = null;
 		}
@@ -154,11 +155,13 @@ public final class ModulePluginManager {
 	}
 }
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({
+			"unchecked", "restriction"})
 class DriverService implements PrivilegedAction<ModulePluginDriver> {
 
 	Iterator<ModulePluginDriver>	ps	= null;
 
+	@Override
 	public ModulePluginDriver run() {
 		ps = Service.providers(ModulePluginDriver.class);
 		try {

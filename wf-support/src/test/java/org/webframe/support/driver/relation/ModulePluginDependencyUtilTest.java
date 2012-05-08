@@ -19,13 +19,6 @@ import org.webframe.support.util.ResourceUtils;
 public class ModulePluginDependencyUtilTest {
 
 	/**
-	 * Test method for {@link org.webframe.support.driver.relation.ModulePluginDependencyUtil#sort(java.util.List)}.
-	 */
-	@Test
-	public void testSort() {
-	}
-
-	/**
 	 * Test method for
 	 * {@link org.webframe.support.driver.relation.ModulePluginDependencyUtil#analyzeDependendy(java.util.List)}
 	 * .

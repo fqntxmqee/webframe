@@ -11,11 +11,6 @@ import org.webframe.support.driver.resource.jar.JarResourceLoader;
  */
 public class ModulePluginDriverInfo {
 
-	/**
-	 * 
-	 */
-	private static final long	serialVersionUID	= 7164720425115665612L;
-
 	ModulePluginDriver			driver;
 
 	Class<ModulePluginDriver>	driverClass;
@@ -54,6 +49,7 @@ public class ModulePluginDriverInfo {
 		return new SerializableDriverInfo(driverClass.getName(), driverClassName, inJar, lastModifyTime, jarName);
 	}
 
+	@Override
 	public String toString() {
 		return ("driver[className=" + driverClassName + "," + driver + "]");
 	}

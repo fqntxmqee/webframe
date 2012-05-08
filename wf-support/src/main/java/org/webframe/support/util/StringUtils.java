@@ -18,8 +18,21 @@ public class StringUtils extends org.springframework.util.StringUtils {
 	}
 
 	public static String getFileDirectory(String filePath) {
-		if (filePath == null) return null;
+		if (filePath == null) {
+			return null;
+		}
 		int index = filePath.lastIndexOf("/");
 		return filePath.substring(0, index + 1);
+	}
+
+	public static String getPatternRoot(String pattern) {
+		if (pattern == null) {
+			return null;
+		}
+		int doubleAsterisk = pattern.indexOf("**");
+		if (doubleAsterisk != -1) {
+			return pattern.substring(0, doubleAsterisk);
+		}
+		return getFileDirectory(pattern);
 	}
 }

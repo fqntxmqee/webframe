@@ -12,10 +12,8 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.webframe.support.util.ClassUtils;
-import org.webframe.support.util.StringUtils;
 
 /**
  * JarResource资源类，用于匹配搜索jar包中的资源文件
@@ -23,11 +21,15 @@ import org.webframe.support.util.StringUtils;
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-6 下午04:40:09
  */
-public class JarResourcePatternResolver extends PathMatchingResourcePatternResolver {
+public class JarResourcePatternResolver
+			extends
+				PathMatchingResourcePatternResolver {
 
-	private Class<?>				jarClass	= null;
+	private Class<?>				jarClass				= null;
 
-	private JarURLConnection	jarCon	= null;
+	private JarURLConnection	jarCon				= null;
+
+	private JarResourceLoader	jarResourceLoader	= null;
 
 	public JarResourcePatternResolver(Class<?> jarClass) throws IOException {
 		this(new JarResourceLoader(jarClass));
@@ -40,8 +42,9 @@ public class JarResourcePatternResolver extends PathMatchingResourcePatternResol
 		this.jarCon = jarURLConnection;
 	}
 
-	private JarResourcePatternResolver(ResourceLoader resourceLoader) {
-		super(resourceLoader);
+	private JarResourcePatternResolver(JarResourceLoader jarResourceLoader) {
+		super(jarResourceLoader);
+		this.jarResourceLoader = jarResourceLoader;
 	}
 
 	@Override
@@ -55,7 +58,8 @@ public class JarResourcePatternResolver extends PathMatchingResourcePatternResol
 			Resource dirRoot = classRoot.createRelative(directory);
 			if (dirRoot.exists()) {
 				List<Resource> finder = new ArrayList<Resource>();
-				Collection<?> files = FileUtils.listFiles(dirRoot.getFile(), null, true);
+				Collection<?> files = FileUtils.listFiles(dirRoot.getFile(), null,
+					true);
 				for (Object object : files) {
 					if (!(object instanceof File)) {
 						continue;
@@ -73,11 +77,15 @@ public class JarResourcePatternResolver extends PathMatchingResourcePatternResol
 		}
 	}
 
+	public JarResourceLoader getJarResourceLoader() {
+		return this.jarResourceLoader;
+	}
+
 	protected Resource[] findPathMatchingJarResources(String locationPattern) {
 		List<Resource> result = new ArrayList<Resource>(16);
 		JarResourceLoader jarResourceLoader = (JarResourceLoader) getResourceLoader();
-		String directory = StringUtils.getFileDirectory(locationPattern);
-		Set<String> entriesPath = jarResourceLoader.getEntryFilesByDir(directory, getPathMatcher());
+		Set<String> entriesPath = jarResourceLoader.getEntryFilesByDir(
+			locationPattern, getPathMatcher());
 		if (entriesPath == null) {
 			return result.toArray(new Resource[result.size()]);
 		}

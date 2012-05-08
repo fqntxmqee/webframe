@@ -152,13 +152,27 @@ public class JarResource extends AbstractFileResolvingResource {
 	}
 
 	public Set<String> getEntryFilesByDir(String directory, PathMatcher matcher) {
-		if (directory == null) return null;
+		if (directory == null) {
+			return null;
+		}
 		String pattern = resolveJarEntryPath(directory);
-		if (!matcher.isPattern(pattern)) return entryFilesPathMap.get(pattern);
+		if (!matcher.isPattern(pattern)) {
+			return entryFilesPathMap.get(pattern);
+		}
+		String rootPattern = resolvePattern(pattern);
 		Set<String> matches = new HashSet<String>();
 		for (String key : entryFilesPathMap.keySet()) {
-			if (matcher.match(pattern, key)) {
-				matches.addAll(entryFilesPathMap.get(key));
+			if (matcher.match(rootPattern, key)) {
+				Set<String> set = entryFilesPathMap.get(key);
+				if (directory.endsWith("**")) {
+					matches.addAll(set);
+				} else {
+					for (String string : set) {
+						if (matcher.match(pattern, string)) {
+							matches.add(string);
+						}
+					}
+				}
 			}
 		}
 		return matches;
@@ -170,6 +184,14 @@ public class JarResource extends AbstractFileResolvingResource {
 
 	public Set<String> getEntriesPath() {
 		return entriesPath;
+	}
+
+	protected String resolvePattern(String pattern) {
+		// 如果包含'.'说明路径中找的是文件，截取到最后一个'/'
+		if (pattern.indexOf(".") != -1) {
+			return pattern.substring(0, pattern.lastIndexOf("/") + 1);
+		}
+		return pattern;
 	}
 
 	private String resolveJarEntryPath(String path) {
