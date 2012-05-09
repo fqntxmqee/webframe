@@ -30,7 +30,7 @@ public class JarResourcePatternResolverTest {
 	@Test
 	public void testGetResourcesString() {
 		try {
-			JarResourcePatternResolver resolver = new JarResourcePatternResolver(getClass());
+			JarResourcePatternResolver resolver = JarResourcePatternResolver.getInstance(getClass());
 			Resource resource = resolver.getResource("/modulePlugin.properties");
 			Assert.assertTrue("modulePlugin.properties文件Resource不为FileSystemResource!",
 				resource instanceof FileSystemResource);

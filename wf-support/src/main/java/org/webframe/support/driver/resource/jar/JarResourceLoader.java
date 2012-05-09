@@ -1,6 +1,7 @@
 
 package org.webframe.support.driver.resource.jar;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,8 @@ public class JarResourceLoader extends DefaultResourceLoader {
 	private JarFile								jarFile				= null;
 
 	private String									jarName				= null;
+
+	private String									jarShorName			= null;
 
 	private Class<?>								jarClass				= null;
 
@@ -93,6 +96,10 @@ public class JarResourceLoader extends DefaultResourceLoader {
 		return matches;
 	}
 
+	public String getJarShortName() {
+		return jarShorName;
+	}
+
 	public JarFile getJarFile() {
 		return jarFile;
 	}
@@ -110,6 +117,11 @@ public class JarResourceLoader extends DefaultResourceLoader {
 
 	public JarEntry getJarEntry(String entryName) {
 		return jarFile.getJarEntry(entryName);
+	}
+
+	public boolean hasEntry(String path) {
+		String entryName = resolveJarEntryPath(path);
+		return getJarEntry(entryName) != null;
 	}
 
 	@Override
@@ -156,6 +168,8 @@ public class JarResourceLoader extends DefaultResourceLoader {
 		jarCon = jarURLConnection;
 		jarFile = jarCon.getJarFile();
 		jarName = "jar:" + jarCon.getJarFileURL().toExternalForm() + "!";
+		String jarFileName = jarFile.getName();
+		jarShorName = jarFileName.substring(jarFileName.lastIndexOf(File.separator) + 1);
 		// jarCon.setUseCaches(false);
 		for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 			JarEntry entry = entries.nextElement();

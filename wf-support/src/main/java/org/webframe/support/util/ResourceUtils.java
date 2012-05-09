@@ -34,11 +34,11 @@ import org.webframe.support.driver.resource.jar.JarResourcePatternResolver;
  */
 public class ResourceUtils extends org.springframework.util.ResourceUtils {
 
-	private static Log			log		= LogFactory.getLog(ResourceUtils.class);
+	private static Log			log			= LogFactory.getLog(ResourceUtils.class);
 
 	private static ClassLoader	classLoader	= ClassUtils.getDefaultClassLoader();
 
-	private static PathMatcher	matcher	= new AntPathMatcher();
+	private static PathMatcher	matcher		= new AntPathMatcher();
 
 	/**
 	 * 获取所有符合path文件的URL集合
@@ -57,7 +57,6 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 			path = path.substring(1);
 		}
 		Enumeration<URL> enumeration = classLoader.getResources(path);
-
 		while (enumeration.hasMoreElements()) {
 			urls.add(enumeration.nextElement());
 		}
@@ -77,7 +76,7 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 				throws IOException {
 		List<Resource> resources = new ArrayList<Resource>();
 		for (JarURLConnection jarURLConnection : urls) {
-			JarResourcePatternResolver jrpr = new JarResourcePatternResolver(jarURLConnection);
+			JarResourcePatternResolver jrpr = JarResourcePatternResolver.getInstance(jarURLConnection);
 			resources.addAll(Arrays.asList(jrpr.getResources(pattern)));
 		}
 		return resources;
@@ -166,11 +165,10 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 				URLConnection urlConnection = url.openConnection();
 				if (urlConnection instanceof JarURLConnection) {
 					JarURLConnection jarURLConnection = (JarURLConnection) urlConnection;
-					JarResourcePatternResolver patternResolver = new JarResourcePatternResolver(jarURLConnection);
+					JarResourcePatternResolver patternResolver = JarResourcePatternResolver.getInstance(jarURLConnection);
 					JarResourceLoader jarResourceLoader = patternResolver.getJarResourceLoader();
 					subs.addAll(jarResourceLoader.getEntryFilesByDir(jarPath,
 						matcher));
-					jarResourceLoader.close();
 				}
 			}
 		} catch (IOException e) {
@@ -230,9 +228,8 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 				URLConnection urlConnection = url.openConnection();
 				if (urlConnection instanceof JarURLConnection) {
 					JarURLConnection jarURLConnection = (JarURLConnection) urlConnection;
-					JarResourcePatternResolver patternResolver = new JarResourcePatternResolver(jarURLConnection);
+					JarResourcePatternResolver patternResolver = JarResourcePatternResolver.getInstance(jarURLConnection);
 					subs.addAll(Arrays.asList(patternResolver.getResources(jarPath)));
-					patternResolver.getJarResourceLoader().close();
 				}
 			}
 		} catch (IOException e) {

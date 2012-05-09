@@ -35,7 +35,7 @@ public class DefaultModulePluginLoaderTest {
 		try {
 			loader.loadModulePlugin(drivers);
 		} catch (DriverNotExistException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 		}
 	}
 }

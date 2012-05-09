@@ -1,13 +1,11 @@
 
 package org.webframe.support.driver;
 
-import java.io.File;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.jar.JarFile;
 
 import org.webframe.support.driver.loader.ModulePluginLoader;
 import org.webframe.support.driver.resource.jar.JarResourceLoader;
@@ -99,10 +97,8 @@ public final class ModulePluginManager {
 		if (ClassUtils.isInJar(mpdi.driverClass)) {
 			try {
 				mpdi.jarResourceLoader = new JarResourceLoader(mpdi.driverClass);
-				JarFile jarFile = mpdi.jarResourceLoader.getJarFile();
 				mpdi.lastModifyTime = mpdi.jarResourceLoader.getLastModified();
-				String name = jarFile.getName();
-				mpdi.jarName = name.substring(name.lastIndexOf(File.separator) + 1);
+				mpdi.jarName = mpdi.jarResourceLoader.getJarShortName();
 				mpdi.inJar = true;
 			} catch (Exception e) {
 				SystemLogUtils.errorPrintln(driver + "不存在jar！");

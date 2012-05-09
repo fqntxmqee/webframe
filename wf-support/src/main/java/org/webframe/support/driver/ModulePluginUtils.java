@@ -173,7 +173,7 @@ public abstract class ModulePluginUtils {
 	 */
 	protected static Resource[] getResources(ModulePluginDriverInfo driverInfo, String pattern) {
 		try {
-			JarResourcePatternResolver jarResolver = new JarResourcePatternResolver(driverInfo.getDriverClass());
+			JarResourcePatternResolver jarResolver = JarResourcePatternResolver.getInstance(driverInfo.getDriverClass());
 			return jarResolver.getResources(pattern);
 		} catch (IOException e) {
 			return null;

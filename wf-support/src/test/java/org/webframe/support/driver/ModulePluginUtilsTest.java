@@ -38,9 +38,9 @@ public class ModulePluginUtilsTest extends BaseTests {
 			String realPath = new ClassPathResource("/LICENSE.txt", getClass()).getFile().getAbsolutePath();
 			ModulePluginUtils.cacheModulePluginConfig(realPath);
 		} catch (ModulePluginConfigException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 		} catch (IOException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 		}
 		String realPath = getClass().getResource("/").getPath();
 		ModulePluginUtils.cacheModulePluginConfig(realPath);
