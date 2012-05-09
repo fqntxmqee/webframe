@@ -99,8 +99,8 @@ public final class ModulePluginManager {
 		if (ClassUtils.isInJar(mpdi.driverClass)) {
 			try {
 				mpdi.jarResourceLoader = new JarResourceLoader(mpdi.driverClass);
-				JarFile jarFile = mpdi.jarResourceLoader.getJarURLConnection().getJarFile();
-				mpdi.lastModifyTime = mpdi.jarResourceLoader.getJarURLConnection().getLastModified();
+				JarFile jarFile = mpdi.jarResourceLoader.getJarFile();
+				mpdi.lastModifyTime = mpdi.jarResourceLoader.getLastModified();
 				String name = jarFile.getName();
 				mpdi.jarName = name.substring(name.lastIndexOf(File.separator) + 1);
 				mpdi.inJar = true;

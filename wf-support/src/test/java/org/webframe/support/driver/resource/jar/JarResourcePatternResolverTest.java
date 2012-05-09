@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ClassUtils;
+import org.webframe.support.driver.resource.jar.JarResourceLoader.JarResource;
 import org.webframe.support.util.SystemLogUtils;
 
 /**

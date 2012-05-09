@@ -19,7 +19,7 @@ import org.webframe.core.util.PropertyConfigurerUtils;
 import org.webframe.support.driver.ModulePluginDriver;
 import org.webframe.support.driver.ModulePluginDriverInfo;
 import org.webframe.support.driver.ModulePluginUtils;
-import org.webframe.support.driver.resource.jar.JarResource;
+import org.webframe.support.driver.resource.jar.JarResourceLoader.JarResource;
 import org.webframe.support.util.ClassUtils;
 import org.webframe.support.util.StringUtils;
 import org.webframe.support.util.SystemLogUtils;
