@@ -50,7 +50,7 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 
 	public static String				SQL_SEMICOLON					= ";";
 
-	public static String				SQL_NOTE							= "(--)|(\\/\\*)";
+	public static String				SQL_NOTE							= "(^--)|(^\\/\\*)";
 
 	public static void modulesSqlScriptsInit(DataBaseType dataBaseType, DataSource ds) {
 		Enumeration<ModulePluginDriverInfo> dirverInfos = getDriverInfos(ISqlScriptSupport.class);
@@ -60,13 +60,19 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 		while (dirverInfos.hasMoreElements()) {
 			ModulePluginDriverInfo driverInfo = dirverInfos.nextElement();
 			ModulePluginDriver driver = driverInfo.getDriver();
-			if (!(driver instanceof ISqlScriptSupport)) continue;
+			if (!(driver instanceof ISqlScriptSupport)) {
+				continue;
+			}
 			ISqlScriptSupport sqlScript = (ISqlScriptSupport) driver;
 			String location = sqlScript.getSqlScriptLocation();
-			if (location == null) continue;
+			if (location == null) {
+				continue;
+			}
 			location += pattern;
 			Resource[] resources = getResources(driverInfo, location);
-			if (resources == null) continue;
+			if (resources == null) {
+				continue;
+			}
 			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载Init SqlScripts File(" + resources.length + "个)！");
 			resourcesList.addAll(Arrays.asList(resources));
 		}
@@ -144,7 +150,9 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 		while (tokenizer.hasMoreTokens()) {
 			i++;
 			String tokenSql = tokenizer.nextToken();
-			if ("".equals(tokenSql.trim())) continue;
+			if ("".equals(tokenSql.trim())) {
+				continue;
+			}
 			sqlMap.put(i + "-", tokenSql);
 		}
 		return sqlMap;
@@ -181,7 +189,9 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 					int j = 0;
 					for (String sql : sqls) {
 						j++;
-						if ("".equals(sql)) continue;
+						if ("".equals(sql)) {
+							continue;
+						}
 						sb.append(sql);
 						if (j == sqls.length && !line.endsWith(SQL_SEMICOLON)) {
 							sb.append("\n");
@@ -194,7 +204,9 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 						sb = new StringBuilder();
 					}
 				} else {
-					if (!"".equals(line)) sb.append(line).append("\n");
+					if (!"".equals(line)) {
+						sb.append(line).append("\n");
+					}
 				}
 			}
 		} catch (IOException e) {
@@ -235,7 +247,9 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 			conn.commit();
 			log.debug("Execute SQL Rows(" + rows + ")");
 		} finally {
-			if (stat != null) stat.close();
+			if (stat != null) {
+				stat.close();
+			}
 			conn.close();
 		}
 	}
@@ -264,7 +278,9 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 					error.append("\n").append("\nError line: (" + entry.getKey() + ")");
 					throw new SQLException(error.toString());
 				} finally {
-					if (stat != null) stat.close();
+					if (stat != null) {
+						stat.close();
+					}
 				}
 			}
 		} finally {
