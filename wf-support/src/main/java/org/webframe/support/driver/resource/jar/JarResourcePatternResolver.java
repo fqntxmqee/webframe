@@ -180,8 +180,10 @@ public class JarResourcePatternResolver
 			key = getKey(jarClass);
 		}
 		createdSize++;
-		sortedCachedMap.put(key, this);
-		cachedMap.put(key, this);
+		if (!cachedMap.containsKey(key)) {
+			sortedCachedMap.put(key, this);
+			cachedMap.put(key, this);
+		}
 	}
 
 	/**
@@ -197,9 +199,7 @@ public class JarResourcePatternResolver
 			return null;
 		}
 		try {
-			return ClassUtils.getClassesRootResource(clazz)
-				.getFile()
-				.getAbsolutePath();
+			return resource.getFile().getAbsolutePath();
 		} catch (IOException e) {
 			return null;
 		}
@@ -240,7 +240,9 @@ public class JarResourcePatternResolver
 	}
 
 	public boolean hasResource(Class<?> clazz) {
-		return hasResource(ClassUtils.convertClassNameToResourcePath(clazz.getName()));
+		String entry = ClassUtils.convertClassNameToResourcePath(clazz.getName())
+					+ ".class";
+		return hasResource(entry);
 	}
 
 	public boolean hasResource(String path) {
