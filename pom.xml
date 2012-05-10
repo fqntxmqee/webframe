@@ -38,14 +38,10 @@
 		<module>wf-support</module>
 		<module>wf-test</module>
 		<module>wf-core</module>
-		<module>wf-core-jta</module>
 		<module>wf-web-page</module>
 		<module>wf-web</module>
 		<module>wf-struts</module>
 		<module>wf-web-springmvc</module>
-		<module>wf-web-front</module>
-		<module>wf-easy</module>
-		<module>wf-web-security</module>
 	</modules>
 
 	<properties>
