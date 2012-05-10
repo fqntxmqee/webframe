@@ -25,6 +25,13 @@ public class StringUtils extends org.springframework.util.StringUtils {
 		return filePath.substring(0, index + 1);
 	}
 
+	/**
+	 * 获取匹配符的不包含**的根路径
+	 * 
+	 * @param pattern 可能包含**的匹配符
+	 * @return
+	 * @author 黄国庆 2012-5-10 下午2:45:36
+	 */
 	public static String getPatternRoot(String pattern) {
 		if (pattern == null) {
 			return null;
@@ -34,5 +41,20 @@ public class StringUtils extends org.springframework.util.StringUtils {
 			return pattern.substring(0, doubleAsterisk);
 		}
 		return getFileDirectory(pattern);
+	}
+
+	/**
+	 * 通过jar文件名称，获取artifactId
+	 * 
+	 * @param jarShotName jar文件名称
+	 * @return
+	 * @author 黄国庆 2012-5-10 下午2:44:39
+	 */
+	public static String getArtifactId(String jarShotName) {
+		if (null == jarShotName || "".equals(jarShotName)) {
+			return jarShotName;
+		}
+		String regex = "(-\\d+)(\\.\\d+)*(-SNAPSHOT)?(\\.\\S+)?$";
+		return jarShotName.replaceAll(regex, "");
 	}
 }

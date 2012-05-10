@@ -4,6 +4,8 @@ package org.webframe.support.driver.loader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.webframe.support.driver.exception.DriverNotExistException;
+import org.webframe.support.driver.sorter.MavenPomModulePluginSorter;
+import org.webframe.support.driver.sorter.ModulePluginSorter;
 import org.webframe.support.util.SystemLogUtils;
 
 /**
@@ -14,18 +16,34 @@ import org.webframe.support.util.SystemLogUtils;
  */
 public abstract class AbstractModulePluginLoader implements ModulePluginLoader {
 
-	protected Log	log	= LogFactory.getLog(getClass());
+	protected Log					log						= LogFactory.getLog(getClass());
 
+	private ModulePluginSorter	modulePluginSorter	= new MavenPomModulePluginSorter();
+
+	public void setModulePluginSorter(ModulePluginSorter modulePluginSorter) {
+		this.modulePluginSorter = modulePluginSorter;
+	}
+
+	public ModulePluginSorter getModulePluginSorter() {
+		return modulePluginSorter;
+	}
 
 	/**
 	 * 通过给定的模块插件驱动类全路径数组，加载模块插件驱动
 	 * 
-	 * @param drivers 模块插件驱动类全路径数组，例如： <pre> String[] drivers = {
-	 *           "org.webframe.core.CoreModulePluginDriver"}; </pre>
+	 * @param drivers 模块插件驱动类全路径数组，例如：
+	 * 
+	 *           <pre>
+	 * 
+	 * 
+	 * String[]	drivers	= {
+	 * 							&quot;org.webframe.core.CoreModulePluginDriver&quot;};
+	 * </pre>
 	 * @exception DriverNotExistException
 	 * @author 黄国庆 2011-4-5 下午02:24:34
 	 */
-	protected void loadModulePlugin(String[] drivers) throws DriverNotExistException {
+	protected void loadModulePlugin(String[] drivers)
+				throws DriverNotExistException {
 		if (drivers == null) {
 			throw new DriverNotExistException();
 		}
@@ -43,7 +61,8 @@ public abstract class AbstractModulePluginLoader implements ModulePluginLoader {
 			}
 		}
 		if (driverNotExists.length() > 0) {
-			driverNotExists = driverNotExists.substring(0, driverNotExists.lastIndexOf("|"));
+			driverNotExists = driverNotExists.substring(0,
+				driverNotExists.lastIndexOf("|"));
 			throw new DriverNotExistException(driverNotExists);
 		}
 	}

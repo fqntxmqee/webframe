@@ -6,6 +6,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -15,7 +16,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.webframe.support.driver.exception.DriverNotExistException;
-import org.webframe.support.driver.relation.ModulePluginDependencyUtil;
 import org.webframe.support.util.ResourceUtils;
 import org.webframe.support.util.SystemLogUtils;
 
@@ -32,13 +32,11 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 	 */
 	private String							modulePluginProperties;
 
-	private List<URLConnection>		urlConnections			= new ArrayList<URLConnection>();
+	private List<URLConnection>		urlConnections		= new ArrayList<URLConnection>();
 
-	private List<JarURLConnection>	jarURLConnections		= new ArrayList<JarURLConnection>();
+	private List<JarURLConnection>	jarURLConnections	= new ArrayList<JarURLConnection>();
 
-	private List<String>					defaultPatternList	= new ArrayList<String>();
-
-	private boolean						defaultSorted			= true;
+	private boolean						defaultSorted		= true;
 
 	public PropertiesModulePluginLoader() {
 		this("modulePlugin.properties");
@@ -50,10 +48,6 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 
 	public void setDefaultSorted(boolean defaultSorted) {
 		this.defaultSorted = defaultSorted;
-	}
-
-	public void setDefaultPatternList(List<String> defaultPatternList) {
-		this.defaultPatternList = defaultPatternList;
 	}
 
 	protected final String getModulePluginProperties() {
@@ -72,7 +66,7 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 		try {
 			loadPropertiesJar();
 			SystemLogUtils.rootPrintln("对模块插件jar包进行排序开始！");
-			List<JarURLConnection> sortUrls = sorted();
+			Collection<JarURLConnection> sortUrls = sorted();
 			SystemLogUtils.rootPrintln("对模块插件jar包进行排序结束！");
 			Map<Object, Integer> driverMap = loadProperties(sortUrls);
 			String[] drivers = sortProperties(driverMap);
@@ -82,12 +76,11 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 		}
 	}
 
-	protected List<JarURLConnection> sorted() {
+	protected Collection<JarURLConnection> sorted() {
 		if (defaultSorted) {
-			List<JarURLConnection> sortUrls;
+			Collection<JarURLConnection> sortUrls;
 			try {
-				sortUrls = ModulePluginDependencyUtil.sort(jarURLConnections,
-					defaultPatternList);
+				sortUrls = getModulePluginSorter().sort(jarURLConnections);
 				if (sortUrls.size() != jarURLConnections.size()) {
 					sortUrls = jarURLConnections;
 				}
@@ -132,7 +125,7 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 	 * @throws IOException
 	 * @author 黄国庆 2012-4-28 上午8:28:45
 	 */
-	protected Map<Object, Integer> loadProperties(List<JarURLConnection> sortUrls)
+	protected Map<Object, Integer> loadProperties(Collection<JarURLConnection> sortUrls)
 				throws IOException {
 		Map<Object, Integer> driverMap = new HashMap<Object, Integer>();
 		Integer increaseKey = 0;

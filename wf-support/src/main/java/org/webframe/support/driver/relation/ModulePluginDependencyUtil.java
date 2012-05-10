@@ -3,13 +3,9 @@ package org.webframe.support.driver.relation;
 
 import java.io.IOException;
 import java.net.JarURLConnection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -23,6 +19,8 @@ import org.webframe.support.util.ResourceUtils;
 import org.webframe.support.util.SystemLogUtils;
 
 /**
+ * ModulePluginDependency解析工具类
+ * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆</a>
  * @since 2012-4-27 下午12:39:50
  * @version
@@ -34,22 +32,6 @@ public abstract class ModulePluginDependencyUtil {
 	public static final String				DEFAULT_GROUPID	= "${project.groupId}";
 
 	public static final AntPathMatcher	pathMatcher			= new AntPathMatcher();
-
-	/**
-	 * 排序模块插件包加载的优先顺序
-	 * 
-	 * @param urls
-	 * @param patterns
-	 * @return
-	 * @throws IOException
-	 * @author 黄国庆 2012-4-28 上午8:47:42
-	 */
-	public static List<JarURLConnection> sort(List<JarURLConnection> urls, List<String> patterns)
-				throws IOException {
-		Map<JarURLConnection, ModulePluginDependency> analyzed = analyzeDependendy(
-			urls, patterns);
-		return sort(analyzed);
-	}
 
 	/**
 	 * 分析pom中的依赖关系
@@ -117,27 +99,6 @@ public abstract class ModulePluginDependencyUtil {
 		return needSort;
 	}
 
-	private static List<JarURLConnection> sort(Map<JarURLConnection, ModulePluginDependency> needSort) {
-		List<Entry<JarURLConnection, ModulePluginDependency>> mappingList = new ArrayList<Entry<JarURLConnection, ModulePluginDependency>>(needSort.entrySet());
-		Collections.sort(mappingList,
-			new Comparator<Entry<JarURLConnection, ModulePluginDependency>>() {
-
-				@Override
-				public int compare(Entry<JarURLConnection, ModulePluginDependency> m1, Entry<JarURLConnection, ModulePluginDependency> m2) {
-					return m1.getValue().compareTo(m2.getValue());
-				}
-			});
-		List<JarURLConnection> result = new ArrayList<JarURLConnection>();
-		for (Entry<JarURLConnection, ModulePluginDependency> entry : mappingList) {
-			result.add(entry.getKey());
-			SystemLogUtils.secondPrintln("按照maven依赖关系排序："
-						+ entry.getValue().key()
-						+ "深度："
-						+ entry.getValue().getIndex());
-		}
-		return result;
-	}
-
 	/**
 	 * 从element元素中查询组件
 	 * 
@@ -148,6 +109,13 @@ public abstract class ModulePluginDependencyUtil {
 	 * @author 黄国庆 2012-4-27 下午3:46:24
 	 */
 	private static ModulePluginDependency findModulePluginDependency(Element root, List<String> patterns, boolean findParent, Map<String, ModulePluginDependency> all) {
+		// 过滤依赖中存在provided的scope
+		if (!findParent) {
+			Node scopeNode = root.element("scope");
+			if (scopeNode != null && "provided".equals(scopeNode.getText())) {
+				return null;
+			}
+		}
 		Node groupIdNode = root.element("groupId");
 		if (groupIdNode == null && findParent) {
 			Element parent = root.element("parent");
@@ -166,13 +134,6 @@ public abstract class ModulePluginDependencyUtil {
 		Node artifactIdNode = root.element("artifactId");
 		if (artifactIdNode == null) {
 			return null;
-		}
-		// 过滤依赖中存在provided的scope
-		if (!findParent) {
-			Node scopeNode = root.element("scope");
-			if (scopeNode != null && "provided".equals(scopeNode.getText())) {
-				return null;
-			}
 		}
 		ModulePluginDependency dependency = null;
 		if (all != null) {

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +18,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.webframe.support.util.ClassUtils;
+import org.webframe.support.util.StringUtils;
 
 /**
  * JarResource资源类，用于匹配搜索jar包中的资源文件
@@ -36,7 +38,11 @@ public class JarResourcePatternResolver
 
 	private JarResourceLoader													jarResourceLoader	= null;
 
-	private static final Map<String, JarResourcePatternResolver>	cachedMap			= new HashMap<String, JarResourcePatternResolver>();
+	private static boolean														sorted				= false;
+
+	private static final Map<String, JarResourcePatternResolver>	cachedMap			= new HashMap<String, JarResourcePatternResolver>(16);
+
+	private static final Map<String, JarResourcePatternResolver>	sortedCachedMap	= new LinkedHashMap<String, JarResourcePatternResolver>(16, 0.75f, true);
 
 	public static JarResourcePatternResolver getInstance(Class<?> clazz)
 				throws IOException {
@@ -49,7 +55,7 @@ public class JarResourcePatternResolver
 
 	public static JarResourcePatternResolver getInstance(JarURLConnection jarURLConnection)
 				throws IOException {
-		Set<JarResourcePatternResolver> resolvers = getJarResourcePatternResolver(jarURLConnection.getEntryName());
+		List<JarResourcePatternResolver> resolvers = getJarResourcePatternResolver(jarURLConnection.getEntryName());
 		String path = jarURLConnection.getJarFile().getName();
 		for (JarResourcePatternResolver resolver : resolvers) {
 			String name = resolver.getJarResourceLoader().getJarShortName();
@@ -88,19 +94,53 @@ public class JarResourcePatternResolver
 	 * @return 实例或null
 	 * @author 黄国庆 2012-5-9 下午1:27:46
 	 */
-	public static Set<JarResourcePatternResolver> getJarResourcePatternResolver(String pathOrKey) {
-		Set<JarResourcePatternResolver> resolvers = new HashSet<JarResourcePatternResolver>(4);
+	public static List<JarResourcePatternResolver> getJarResourcePatternResolver(String pathOrKey) {
+		List<JarResourcePatternResolver> resolvers = new ArrayList<JarResourcePatternResolver>(4);
 		boolean exist = cachedMap.containsKey(pathOrKey);
 		if (exist) {
 			resolvers.add(cachedMap.get(pathOrKey));
 			return resolvers;
 		}
-		for (JarResourcePatternResolver resolver : cachedMap.values()) {
+		for (JarResourcePatternResolver resolver : sortedCachedMap.values()) {
 			if (resolver.hasResource(pathOrKey)) {
 				resolvers.add(resolver);
 			}
 		}
 		return resolvers;
+	}
+
+	/**
+	 * @return
+	 * @author 黄国庆 2012-5-10 下午12:39:20
+	 */
+	public static Collection<JarResourcePatternResolver> getAllSortedResolver() {
+		if (sorted) {
+			return sortedCachedMap.values();
+		}
+		throw new ArrayStoreException("JarResourcePatternResolver未排序，请先调用JarResourcePatternResolver.sortResolver(List<String> sortedKeys)进行排序!");
+	}
+
+	/**
+	 * 根据给定已排序的key集合，对sortedCachedMap进行排序
+	 * 
+	 * @param sortedKeys
+	 * @author 黄国庆 2012-5-10 上午10:20:42
+	 */
+	public static void sortResolver(List<String> sortedKeys) {
+		if (sortedKeys == null) {
+			return;
+		}
+		sorted = true;
+		Set<String> noSortedKeys = new HashSet<String>(sortedCachedMap.keySet());
+		for (String sortedKey : sortedKeys) {
+			sortedCachedMap.get(sortedKey);
+			if (noSortedKeys.contains(sortedKey)) {
+				noSortedKeys.remove(sortedKey);
+			}
+		}
+		for (String noSortedKey : noSortedKeys) {
+			sortedCachedMap.get(noSortedKey);
+		}
 	}
 
 	protected JarResourcePatternResolver(Class<?> jarClass) throws IOException {
@@ -132,7 +172,7 @@ public class JarResourcePatternResolver
 		if (jarResourceLoader.hasJarResource()) {
 			String shortName = jarResourceLoader.getJarShortName();
 			if (shortName.lastIndexOf("-") != -1) {
-				key = shortName.substring(0, shortName.lastIndexOf("-"));
+				key = StringUtils.getArtifactId(shortName);
 			} else {
 				key = shortName;
 			}
@@ -140,6 +180,7 @@ public class JarResourcePatternResolver
 			key = getKey(jarClass);
 		}
 		createdSize++;
+		sortedCachedMap.put(key, this);
 		cachedMap.put(key, this);
 	}
 
