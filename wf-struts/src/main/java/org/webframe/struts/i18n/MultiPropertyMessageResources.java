@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import org.apache.struts.util.MessageResourcesFactory;
 import org.apache.struts.util.PropertyMessageResources;
+import org.springframework.core.io.Resource;
 import org.webframe.support.driver.resource.jar.JarResourcePatternResolver;
 
 /**
@@ -83,7 +84,10 @@ public class MultiPropertyMessageResources extends PropertyMessageResources {
 		try {
 			Collection<JarResourcePatternResolver> resolvers = JarResourcePatternResolver.getAllSortedResolver();
 			for (JarResourcePatternResolver resolver : resolvers) {
-				props.load(resolver.getResource(name).getInputStream());
+				Resource resource = resolver.getResource(name);
+				if (resource.exists()) {
+					props.load(resource.getInputStream());
+				}
 			}
 		} catch (IOException e) {
 			log.error("getAllProperties()", e);

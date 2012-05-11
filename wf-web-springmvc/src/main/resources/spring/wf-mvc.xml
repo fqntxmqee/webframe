@@ -121,5 +121,5 @@
 		<property name="exposeSpringMacroHelpers" value="true" />
 	</bean>
 	
-	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" p:basename="i18n/messages" />
+	<bean id="messageSource" class="org.webframe.web.springmvc.i18n.MultiResourcesMessageSource"/>
 </beans>
