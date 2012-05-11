@@ -41,6 +41,23 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 	private static PathMatcher	matcher		= new AntPathMatcher();
 
 	/**
+	 * 获取文件资源的绝对路径文件夹，字符串不以'/'结尾
+	 * 
+	 * @param resource
+	 * @return
+	 * @throws IOException
+	 * @author 黄国庆 2012-5-11 下午2:27:16
+	 */
+	public static String getAbsolutePath(Resource resource) throws IOException {
+		String rootPath = StringUtils.cleanPath(resource.getFile()
+			.getAbsolutePath());
+		if (rootPath.endsWith("/")) {
+			rootPath = rootPath.substring(0, rootPath.length() - 1);
+		}
+		return rootPath;
+	}
+
+	/**
 	 * 获取所有符合path文件的URL集合
 	 * 
 	 * @param path 文件路径
@@ -82,6 +99,17 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 		return resources;
 	}
 
+	/**
+	 * 获取指定path路径下的资源信息。如果rootPath为null，直接从jar中相对path中获取。
+	 * 如果rootPath不为null：如果all为false，直接从rootPath对应的path中获取；
+	 * 如果all为true，合并返回从jar包中相对path资源信息加上rootPath对应的path资源信息
+	 * 
+	 * @param rootPath 指定物理文件夹路径
+	 * @param path 相当资源路径，必须以'/'开始，例如：/images/**, /images/*.jpg
+	 * @param all 是否合并获取资源
+	 * @return
+	 * @author 黄国庆 2012-5-11 下午3:31:00
+	 */
 	public static Resource[] getSubResources(String rootPath, String path, boolean all) {
 		if (path == null || "".equals(path)) {
 			return new Resource[0];
@@ -100,6 +128,9 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 			return jarSubs.toArray(new Resource[jarSubs.size()]);
 		}
 		rootPath = StringUtils.cleanPath(rootPath);
+		if (rootPath.endsWith("/")) {
+			rootPath = rootPath.substring(0, rootPath.length() - 1);
+		}
 		List<Resource> fileSubs = getSubResourcesForFile(rootPath, dir, jarPath);
 		if (!all) {
 			return fileSubs.toArray(new Resource[fileSubs.size()]);
@@ -114,7 +145,7 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 	 * 如果all为true，合并返回从jar包中相对path资源信息加上rootPath对应的path资源信息
 	 * 
 	 * @param rootPath 指定物理文件夹路径
-	 * @param path 相当资源路径，例如：/images/**, /images/*.jpg
+	 * @param path 相当资源路径，必须以'/'开始，例如：/images/**, /images/*.jpg
 	 * @param all 是否合并获取资源
 	 * @return 不为null的数组集合
 	 * @author 黄国庆 2012-5-8 下午3:29:00
@@ -136,10 +167,10 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 			Set<String> jarSubs = getSubsForJar(dir, jarPath);
 			return jarSubs.toArray(new String[jarSubs.size()]);
 		}
+		rootPath = StringUtils.cleanPath(rootPath);
 		if (!rootPath.endsWith("/")) {
 			rootPath = rootPath + "/";
 		}
-		rootPath = StringUtils.cleanPath(rootPath);
 		Set<String> fileSubs = getSubsForFile(rootPath, dir, jarPath);
 		if (!all) {
 			return fileSubs.toArray(new String[fileSubs.size()]);
@@ -216,6 +247,14 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 		return subs;
 	}
 
+	/**
+	 * 从jar包中搜索资源集合
+	 * 
+	 * @param dir 相对jar文件路径，如果以'/'开始，自动去除'/'
+	 * @param jarPath 匹配符，如果没有以'/'开始，自动补上'/'
+	 * @return
+	 * @author 黄国庆 2012-5-11 下午3:26:51
+	 */
 	private static List<Resource> getSubResourcesForJar(String dir, String jarPath) {
 		List<Resource> subs = new ArrayList<Resource>();
 		try {
@@ -239,6 +278,15 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 		return subs;
 	}
 
+	/**
+	 * 获取物理文件夹资源集合
+	 * 
+	 * @param rootPath 不能以'/'结尾，根目录
+	 * @param dir 必须以'/'开始，相对文件夹
+	 * @param jarPath 必须以'/'开始，匹配符
+	 * @return
+	 * @author 黄国庆 2012-5-11 下午3:23:25
+	 */
 	private static List<Resource> getSubResourcesForFile(String rootPath, String dir, String jarPath) {
 		File file = new File(rootPath + dir);
 		List<Resource> subs = new ArrayList<Resource>();

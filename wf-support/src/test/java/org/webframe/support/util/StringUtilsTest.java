@@ -19,9 +19,11 @@ public class StringUtilsTest {
 	public void testGetFileDirectory() {
 		String[] strs = {
 					"/org/webframe/**/*.class", "/org/webframe/**", "/org/webframe"};
-		System.out.println("testGetFileDirectory：");
 		for (String string : strs) {
-			System.out.println(StringUtils.getFileDirectory(string));
+			System.out.println("testGetFileDirectory(): "
+						+ string
+						+ " <==> "
+						+ StringUtils.getFileDirectory(string));
 		}
 	}
 
@@ -32,9 +34,11 @@ public class StringUtilsTest {
 	public void testGetPatternRoot() {
 		String[] strs = {
 					"/org/webframe/**/*.class", "/org/webframe/**", "/org/webframe"};
-		System.out.println("testGetPatternRoot：");
 		for (String string : strs) {
-			System.out.println(StringUtils.getPatternRoot(string));
+			System.out.println("testGetPatternRoot(): "
+						+ string
+						+ " <==> "
+						+ StringUtils.getPatternRoot(string));
 		}
 	}
 
@@ -48,9 +52,11 @@ public class StringUtilsTest {
 					"bi-basic-2.0.0-SNAPSHOT.jar", "spring-aop-3.1.0.RELEASE.jar",
 					"jetty-server-7.5.4.v20111024.jar",
 					"bi-jta-2.0.0-20120406.065642-2.jar"};
-		System.out.println("testGetArtifactId：");
 		for (String string : strs) {
-			System.out.println(StringUtils.getArtifactId(string));
+			System.out.println("testGetArtifactId(): "
+						+ string
+						+ " <==> "
+						+ StringUtils.getArtifactId(string));
 		}
 	}
 }

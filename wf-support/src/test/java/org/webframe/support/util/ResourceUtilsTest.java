@@ -1,3 +1,4 @@
+
 package org.webframe.support.util;
 
 import java.io.IOException;
@@ -11,18 +12,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
-
 /**
- *
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆</a>
  * @since 2012-5-8 下午9:40:07
- * @version 
+ * @version
  */
 public class ResourceUtilsTest {
 
 	/**
 	 * Test method for {@link org.webframe.support.util.ResourceUtils#getUrls(java.lang.String)}.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	public void testGetUrls() throws IOException {
@@ -55,13 +55,13 @@ public class ResourceUtilsTest {
 	}
 
 	/**
-	 * Test method for {@link org.webframe.support.util.ResourceUtils#getSubResources(java.lang.String, java.lang.String, boolean)}.
+	 * Test method for
+	 * {@link org.webframe.support.util.ResourceUtils#getSubResources(java.lang.String, java.lang.String, boolean)}
+	 * .
 	 */
 	@Test
 	public void testGetSubResources() throws IOException {
-		String rootPath = ClassUtils.getClassesRootResource(ResourceUtils.class)
-			.getFile()
-			.getAbsolutePath();
+		String rootPath = ResourceUtils.getAbsolutePath(ClassUtils.getClassesRootResource(ResourceUtils.class));
 		String path = "/org/webframe/support/driver/resource/**";
 		Resource[] resources = ResourceUtils.getSubResources(rootPath, path, true);
 		Assert.assertEquals("获取资源文件错误！", resources.length,
@@ -81,9 +81,8 @@ public class ResourceUtilsTest {
 	 */
 	@Test
 	public void testGetSubs() throws IOException {
-		String rootPath = ClassUtils.getClassesRootResource(ResourceUtils.class)
-			.getFile()
-			.getAbsolutePath();
+		String rootPath = ResourceUtils.getAbsolutePath(ClassUtils.getClassesRootResource(ResourceUtils.class))
+					+ "/";
 		String path = "/org/webframe/support/driver/resource/**/JarResource*.class";
 		String[] subs = ResourceUtils.getSubs(rootPath, path, true);
 		Assert.assertEquals("获取资源文件错误！", subs.length,

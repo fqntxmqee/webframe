@@ -18,6 +18,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.webframe.support.util.ClassUtils;
+import org.webframe.support.util.ResourceUtils;
 import org.webframe.support.util.StringUtils;
 
 /**
@@ -207,24 +208,29 @@ public class JarResourcePatternResolver
 
 	@Override
 	public Resource[] getResources(String locationPattern) throws IOException {
+		if (!locationPattern.startsWith("/")) {
+			locationPattern = "/" + locationPattern;
+		}
 		if (jarCon != null || ClassUtils.isInJar(this.jarClass)) {
 			return findPathMatchingJarResources(locationPattern);
 		} else {
 			Resource classRoot = ClassUtils.getClassesRootResource(this.jarClass);
+			String rootPath = ResourceUtils.getAbsolutePath(classRoot);
 			String directory = determineRootDir(locationPattern);
-			String pattern = locationPattern.replaceAll(directory, "");
 			Resource dirRoot = classRoot.createRelative(directory);
 			if (dirRoot.exists()) {
 				List<Resource> finder = new ArrayList<Resource>();
+				boolean recursive = getPathMatcher().isPattern(locationPattern);
 				Collection<?> files = FileUtils.listFiles(dirRoot.getFile(), null,
-					true);
+					recursive);
 				for (Object object : files) {
 					if (!(object instanceof File)) {
 						continue;
 					}
 					File file = (File) object;
-					String filename = file.getName();
-					if (getPathMatcher().match(pattern, filename)) {
+					String absolutePath = StringUtils.cleanPath(file.getAbsolutePath());
+					String relativePath = absolutePath.substring(rootPath.length());
+					if (getPathMatcher().match(locationPattern, relativePath)) {
 						finder.add(new FileSystemResource(file));
 					}
 				}
