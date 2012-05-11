@@ -34,7 +34,7 @@
 	-->
 	<!-- ================================ Message Resources Definitions -->
 
-	<message-resources parameter="i18n.messages"/>
+	<message-resources parameter="i18n.messages" factory="org.webframe.struts.i18n.MultiPropertyMessageResourcesFactory"/>
 
 	<!-- =================================================== Validator plugin 
 	<plug-in className="org.apache.struts.validator.ValidatorPlugIn">
