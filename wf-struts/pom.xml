@@ -21,11 +21,11 @@
 	<dependencies>
 		<!-- 子模块 -->
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>org.webframe</groupId>
 			<artifactId>wf-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>org.webframe</groupId>
 			<artifactId>wf-test</artifactId>
 			<scope>test</scope>
 		</dependency>

@@ -23,7 +23,7 @@
 	<dependencies>
 		<!-- 子模块依赖 -->
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>org.webframe</groupId>
 			<artifactId>wf-support</artifactId>
 			<scope>provided</scope>
 		</dependency>

@@ -22,48 +22,38 @@
 		<dependencies>
 			<!-- 子模块 -->
 			<dependency>
-				<groupId>${project.groupId}</groupId>
+				<groupId>org.webframe</groupId>
 				<artifactId>wf-support</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${project.groupId}</groupId>
+				<groupId>org.webframe</groupId>
 				<artifactId>wf-test</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${project.groupId}</groupId>
+				<groupId>org.webframe</groupId>
 				<artifactId>wf-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>wf-core-jta</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
+				<groupId>org.webframe</groupId>
 				<artifactId>wf-web-page</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${project.groupId}</groupId>
+				<groupId>org.webframe</groupId>
 				<artifactId>wf-web</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${project.groupId}</groupId>
+				<groupId>org.webframe</groupId>
 				<artifactId>wf-struts</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${project.groupId}</groupId>
+				<groupId>org.webframe</groupId>
 				<artifactId>wf-web-springmvc</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>wf-web-front</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- 子模块 -->
