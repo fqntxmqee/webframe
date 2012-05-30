@@ -110,7 +110,7 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 	public void testFindByExample() {
 		for (TLogInfo testUser : userMap.values()) {
 			List<TLogInfo> entityList = baseEntityDao.findByExample(testUser);
-			assertEquals("findByExample方法加载对象记录不全！", entityList.size(), userMap.size());
+			assertEquals("findByExample方法加载对象记录不全！", userMap.size(), entityList.size());
 		}
 	}
 
@@ -137,9 +137,9 @@ public class BaseEntityDaoTest extends BaseSpringTests {
 		try {
 			entityList = baseEntityDao.findByProperty(TLogInfo.class, "name",
 				testUserName);
-			assertEquals("findByProperty方法加载对象记录不全！", entityList.size(), userMap.size());
+			assertEquals("findByProperty方法加载对象记录不全！", userMap.size(), entityList.size());
 		} catch (EntityException e) {
-			e.printStackTrace();
+			logger.info(e.getMessage());
 		}
 	}
 
