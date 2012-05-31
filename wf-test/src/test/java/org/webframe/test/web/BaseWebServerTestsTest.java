@@ -8,6 +8,9 @@ package org.webframe.test.web;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.protocol.HttpContext;
 import org.junit.Assert;
 import org.junit.Test;
 import org.webframe.support.util.SystemLogUtils;
@@ -35,7 +38,13 @@ public class BaseWebServerTestsTest extends BaseHttpClientTests {
 		params.put(TestServlet.ROLE, role);
 		params.put(TestServlet.LABEL, label);
 		// 取得返回的字符串
-		String strResult = sendGet("/test?" + getUrlParamsString(params));
+		HttpGet httpGet = getHttpGet("/test?" + getUrlParamsString(params));
+		HttpResponse response = executeGet(httpGet);
+		HttpContext context = getContext();
+		System.out.println(context.getAttribute(TestServlet.ROLE));
+		System.out.println(context.getAttribute(TestServlet.LABEL));
+		String strResult = getResponseContent(response);
+		// String strResult = sendGet("/test?" + getUrlParamsString(params));
 		SystemLogUtils.println(strResult);
 		Assert.assertTrue("Get请求失败", strResult.startsWith(("GET:" + role + label)));
 	}

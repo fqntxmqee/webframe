@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.webframe.test.web.BaseWebServerTests;
@@ -90,7 +91,11 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-1-26 上午09:18:28
 	 */
 	protected String sendGet(String url) throws Exception {
-		return getResponseContent(executeGet(url));
+		return sendGet(getHttpGet(url));
+	}
+
+	protected String sendGet(HttpGet getReq) throws Exception {
+		return getResponseContent(executeGet(getReq));
 	}
 
 	/**
@@ -104,7 +109,13 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 */
 	protected String sendPost(String url, Map<String, Object> params) throws Exception {
 		// 取得返回的字符串
-		return sendPost(url, getPairs(params));
+		return sendPost(getHttpPost(url), params);
+	}
+
+	protected String sendPost(HttpPost postReq, Map<String, Object> params)
+				throws Exception {
+		// 取得返回的字符串
+		return sendPost(postReq, getPairs(params));
 	}
 
 	/**
@@ -117,7 +128,12 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-1-26 上午09:22:38
 	 */
 	protected String sendPost(String url, List<NameValuePair> params) throws Exception {
-		return getResponseContent(executePost(url, params));
+		return sendPost(getHttpPost(url), params);
+	}
+
+	protected String sendPost(HttpPost postReq, List<NameValuePair> params)
+				throws Exception {
+		return getResponseContent(executePost(postReq, params));
 	}
 
 	/**
@@ -129,9 +145,11 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-1-26 上午09:23:49
 	 */
 	protected HttpResponse executeGet(String url) throws Exception {
-		// HttpPost连接对象
-		HttpGet httpRequest = getHttpGet(url);
-		return client.execute(httpRequest, context);
+		return executeGet(getHttpGet(url));
+	}
+
+	protected HttpResponse executeGet(HttpGet getReq) throws Exception {
+		return client.execute(getReq, getContext());
 	}
 
 	/**
@@ -144,7 +162,12 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-1-26 上午09:25:30
 	 */
 	protected HttpResponse executePost(String url, Map<String, Object> params) throws Exception {
-		return executePost(url, getPairs(params));
+		return executePost(getHttpPost(url), params);
+	}
+
+	protected HttpResponse executePost(HttpPost postReq, Map<String, Object> params)
+				throws Exception {
+		return executePost(postReq, getPairs(params));
 	}
 
 	/**
@@ -157,13 +180,16 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-1-26 上午09:26:44
 	 */
 	protected HttpResponse executePost(String url, List<NameValuePair> params) throws Exception {
-		// HttpPost连接对象
-		HttpPost httpRequest = getHttpPost(url);
+		return executePost(getHttpPost(url), params);
+	}
+
+	protected HttpResponse executePost(HttpPost postReq, List<NameValuePair> params)
+				throws Exception {
 		// 设置字符集
 		HttpEntity httpentity = new UrlEncodedFormEntity(params, defaultEncode);
 		// 请求httpRequest
-		httpRequest.setEntity(httpentity);
-		return client.execute(httpRequest, context);
+		postReq.setEntity(httpentity);
+		return client.execute(postReq, getContext());
 	}
 
 	protected String getResponseContent(HttpResponse res) throws Exception {
@@ -223,6 +249,9 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	}
 
 	protected final HttpContext getContext() {
+		if (this.context == null) {
+			setContext(new BasicHttpContext());
+		}
 		return this.context;
 	}
 
@@ -244,7 +273,17 @@ public class BaseHttpClientTests extends BaseWebServerTests {
 	 * @author 黄国庆 2012-2-6 上午08:45:58
 	 */
 	protected void login() throws Exception {
-		login("/j_spring_security_check", "admin:1");
+		login("admin:1");
+	}
+
+	/**
+	 * 使用默认的登陆链接进行登陆：url("/j_spring_security_check")
+	 * 
+	 * @throws Exception
+	 * @author 黄国庆 2012-2-6 上午08:45:58
+	 */
+	protected void login(String usernamePassword) throws Exception {
+		login("/j_spring_security_check", usernamePassword);
 	}
 
 	/**

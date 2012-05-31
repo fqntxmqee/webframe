@@ -17,10 +17,20 @@ import org.webframe.support.util.ApplicationContextSupport;
  */
 public final class TestApplicationContext extends ApplicationContextSupport {
 
+	private static ApplicationContext	ac	= null;
+
 	private TestApplicationContext() {
 	}
 
 	static void init(ApplicationContext applicationContext) {
+		ac = applicationContext;
 		initAc(applicationContext);
+	}
+
+	static ApplicationContext getApplicationContext() {
+		if (ac == null) {
+			ac = getAc();
+		}
+		return ac;
 	}
 }
