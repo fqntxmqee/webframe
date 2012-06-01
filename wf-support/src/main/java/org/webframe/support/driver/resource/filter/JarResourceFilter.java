@@ -5,8 +5,8 @@
 
 package org.webframe.support.driver.resource.filter;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.core.io.FileSystemResource;
@@ -26,7 +26,7 @@ public class JarResourceFilter extends AbstractResourceFilter {
 	 */
 	@Override
 	public Resource[] filter(Iterator<Resource> resources) {
-		Map<String, Resource> resourceMap = new HashMap<String, Resource>();
+		Map<String, Resource> resourceMap = new LinkedHashMap<String, Resource>();
 		while (resources.hasNext()) {
 			Resource resource = resources.next();
 			String key = resource.getFilename();
