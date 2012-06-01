@@ -10,6 +10,7 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.webframe.support.SpringContextUtils;
 import org.webframe.support.driver.resource.filter.JarResourceFilter;
 import org.webframe.support.driver.resource.filter.ResourceFilter;
+import org.webframe.support.util.ResourceUtils;
 import org.webframe.support.util.SystemLogUtils;
 
 /**
@@ -43,7 +44,7 @@ public class WFApplicationContext extends XmlWebApplicationContext {
 		SystemLogUtils.println("加载BeanDefinitions!");
 		for (Resource resource : resources) {
 			beanDefinitionReader.loadBeanDefinitions(resource);
-			SystemLogUtils.println("spring配置文件：" + resource.toString());
+			SystemLogUtils.println("spring配置文件：" + ResourceUtils.getShotFileName(resource));
 		}
 	}
 
