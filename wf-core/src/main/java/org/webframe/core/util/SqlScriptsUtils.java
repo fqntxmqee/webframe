@@ -32,6 +32,7 @@ import org.webframe.core.sql.ISqlScriptSupport;
 import org.webframe.support.driver.ModulePluginDriver;
 import org.webframe.support.driver.ModulePluginDriverInfo;
 import org.webframe.support.driver.ModulePluginUtils;
+import org.webframe.support.util.ResourceUtils;
 import org.webframe.support.util.SystemLogUtils;
 
 /**
@@ -89,7 +90,7 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 	public static void batchExcuteSqlScripts(List<Resource> resources, DataSource ds) {
 		for (Resource resource : resources) {
 			try {
-				SystemLogUtils.secondPrintln("批量执行 '" + resource.getFilename() + "' SQL 脚本文件中的语句！");
+				SystemLogUtils.secondPrintln("批量执行 '" + ResourceUtils.getShotFileName(resource) + "' SQL 脚本文件中的语句！");
 				executeBatchSql(analyzeSqlFile(resource.getInputStream()), ds);
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
@@ -100,7 +101,7 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 	public static void excuteSqlScripts(List<Resource> resources, DataSource ds) {
 		for (Resource resource : resources) {
 			try {
-				SystemLogUtils.secondPrintln("执行 " + resource.getFilename() + " SQL 脚本文件！");
+				SystemLogUtils.secondPrintln("执行 " + ResourceUtils.getShotFileName(resource) + " SQL 脚本文件！");
 				executeSql(analyzeSqlFile(resource.getInputStream()), ds);
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
