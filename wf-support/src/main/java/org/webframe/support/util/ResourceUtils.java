@@ -23,6 +23,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.webframe.support.driver.resource.jar.JarResourceLoader;
+import org.webframe.support.driver.resource.jar.JarResourceLoader.JarResource;
 import org.webframe.support.driver.resource.jar.JarResourcePatternResolver;
 
 /**
@@ -39,6 +40,24 @@ public class ResourceUtils extends org.springframework.util.ResourceUtils {
 	private static ClassLoader	classLoader	= ClassUtils.getDefaultClassLoader();
 
 	private static PathMatcher	matcher		= new AntPathMatcher();
+
+	/**
+	 * 获取资源较短的文件名
+	 * 
+	 * @param resource
+	 * @return
+	 * @author 黄国庆 2012-6-1 下午2:27:22
+	 */
+	public static String getShotFileName(Resource resource) {
+		String fileName = null;
+		if (resource instanceof JarResource) {
+			JarResource jarResource = (JarResource) resource;
+			fileName = jarResource.getEntryName() + "(" + jarResource.getJarName() + ")";
+		} else {
+			fileName = resource.getFilename();
+		}
+		return fileName;
+	}
 
 	/**
 	 * 获取文件资源的绝对路径文件夹，字符串不以'/'结尾

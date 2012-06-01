@@ -18,13 +18,13 @@ public final class SystemLogUtils {
 
 	public static void println(Object msg) {
 		if (enableSystemLog) {
-			System.out.println(timeMsg("[INFO]	", msg));
+			System.out.println(timeMsg("[INFO]  ", msg));
 		}
 	}
 
 	public static void errorPrintln(Object msg) {
 		if (enableSystemLog) {
-			System.err.println("[ERROR]	" + msg);
+			System.err.println("[ERROR] " + msg);
 		}
 	}
 
@@ -33,17 +33,19 @@ public final class SystemLogUtils {
 	}
 
 	public static void secondPrintln(Object msg) {
-		println("	" + msg + "----------->");
+		println("  " + msg + "----------->");
 	}
 
 	public static void thirdPrintln(Object msg) {
-		println("		" + msg);
+		println("    " + msg);
 	}
 
 	private static String timeMsg(String level, Object msg) {
 		long time = new Date().getTime();
 		try {
-			return level + (time - currentTime) + "	ms " + msg;
+			String format = (time - currentTime) + "";
+			String timeStr = StringUtils.formatBySpace(format, 5, true);
+			return level + timeStr + " ms " + msg;
 		} finally {
 			currentTime = time;
 		}

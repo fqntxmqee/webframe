@@ -192,7 +192,7 @@ public class JarResourceLoader extends DefaultResourceLoader {
 
 	public class JarResource extends AbstractFileResolvingResource {
 
-		private JarEntry		jarEntry	= null;
+		private JarEntry	jarEntry		= null;
 
 		private String		entryName	= null;
 
@@ -267,6 +267,10 @@ public class JarResourceLoader extends DefaultResourceLoader {
 		@Override
 		public String getFilename() {
 			return fullName;
+		}
+
+		public String getJarName() {
+			return getJarShortName();
 		}
 
 		@Override
