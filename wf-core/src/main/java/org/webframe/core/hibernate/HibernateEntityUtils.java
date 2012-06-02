@@ -60,7 +60,6 @@ public class HibernateEntityUtils extends ModulePluginUtils {
 		while (dirverInfos.hasMoreElements()) {
 			ModulePluginDriverInfo driverInfo = dirverInfos.nextElement();
 			if (driverInfo.getDriver().getEntityLocation() == null) continue;
-			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载Entity！");
 			Resource[] resources = HibernateEntityUtils.getEntityResources(driverInfo, RESOURCE_PATTERN_ENTITY);
 			if (resources == null) continue;
 			try {
@@ -82,6 +81,7 @@ public class HibernateEntityUtils extends ModulePluginUtils {
 			} catch (ClassNotFoundException ex) {
 				ex.printStackTrace();
 			}
+			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载Entity！");
 		}
 		SystemLogUtils.rootPrintln("Annotation 加载Entity结束！");
 	}
@@ -91,7 +91,6 @@ public class HibernateEntityUtils extends ModulePluginUtils {
 		SystemLogUtils.rootPrintln("加载Hibernate hbm开始！");
 		while (dirverInfos.hasMoreElements()) {
 			ModulePluginDriverInfo driverInfo = dirverInfos.nextElement();
-			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载hbm！");
 			Resource[] resources = HibernateEntityUtils.getEntityResources(driverInfo, RESOURCE_PATTERN_HBM);
 			if (resources == null) continue;
 			try {
@@ -104,6 +103,7 @@ public class HibernateEntityUtils extends ModulePluginUtils {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载hbm！");
 		}
 		SystemLogUtils.rootPrintln("加载Hibernate hbm结束！");
 	}

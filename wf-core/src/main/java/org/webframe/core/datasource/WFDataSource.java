@@ -20,6 +20,7 @@ import org.webframe.core.exception.datasource.DataBaseNotExistException;
 import org.webframe.core.util.BeanUtils;
 import org.webframe.core.util.PropertyConfigurerUtils;
 import org.webframe.core.util.SqlScriptsUtils;
+import org.webframe.support.util.SystemLogUtils;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -79,7 +80,9 @@ public class WFDataSource implements DataSource, InitializingBean {
 		if (isDefaulted()) {
 			DataSourceUtil.defaultDataSource(this);
 			if (PropertyConfigurerUtils.getBoolean("sql.init")) {
+				SystemLogUtils.rootPrintln("开始sql脚本初始化！");
 				this.initSqlScript();
+				SystemLogUtils.rootPrintln("完成sql脚本初始化！");
 			}
 		}
 	}
@@ -105,8 +108,6 @@ public class WFDataSource implements DataSource, InitializingBean {
 			((ComboPooledDataSource) dataSource).close();
 		} else if (this.dataSource instanceof BasicDataSource) {
 			((BasicDataSource) dataSource).close();
-		} else {
-			// TODO 非c3p0, dbcp 链接迟时，需要修改
 		}
 	}
 

@@ -56,42 +56,46 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 	public static void modulesSqlScriptsInit(DataBaseType dataBaseType, DataSource ds) {
 		Enumeration<ModulePluginDriverInfo> dirverInfos = getDriverInfos(ISqlScriptSupport.class);
 		List<Resource> resourcesList = new ArrayList<Resource>(8);
-		SystemLogUtils.rootPrintln("加载Module init sqlscripts files 开始！");
-		String pattern = RESOURCE_PATTERN_SQL_PRE + dataBaseType.getValue() + RESOURCE_PATTERN_SQL_SUF;
-		while (dirverInfos.hasMoreElements()) {
-			ModulePluginDriverInfo driverInfo = dirverInfos.nextElement();
-			ModulePluginDriver driver = driverInfo.getDriver();
-			if (!(driver instanceof ISqlScriptSupport)) {
-				continue;
+		if (dirverInfos.hasMoreElements()) {
+			SystemLogUtils.rootPrintln("加载Module init sqlscripts files 开始！");
+			String pattern = RESOURCE_PATTERN_SQL_PRE + dataBaseType.getValue() + RESOURCE_PATTERN_SQL_SUF;
+			while (dirverInfos.hasMoreElements()) {
+				ModulePluginDriverInfo driverInfo = dirverInfos.nextElement();
+				ModulePluginDriver driver = driverInfo.getDriver();
+				if (!(driver instanceof ISqlScriptSupport)) {
+					continue;
+				}
+				ISqlScriptSupport sqlScript = (ISqlScriptSupport) driver;
+				String location = sqlScript.getSqlScriptLocation();
+				if (location == null) {
+					continue;
+				}
+				location += pattern;
+				Resource[] resources = getResources(driverInfo, location);
+				if (resources == null) {
+					continue;
+				}
+				SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载Init SqlScripts File(" + resources.length + "个)！");
+				resourcesList.addAll(Arrays.asList(resources));
 			}
-			ISqlScriptSupport sqlScript = (ISqlScriptSupport) driver;
-			String location = sqlScript.getSqlScriptLocation();
-			if (location == null) {
-				continue;
-			}
-			location += pattern;
-			Resource[] resources = getResources(driverInfo, location);
-			if (resources == null) {
-				continue;
-			}
-			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "加载Init SqlScripts File(" + resources.length + "个)！");
-			resourcesList.addAll(Arrays.asList(resources));
+			SystemLogUtils.rootPrintln("加载Module init sqlscripts files 结束！");
 		}
-		SystemLogUtils.rootPrintln("加载Module init sqlscripts files 结束！");
-		SystemLogUtils.rootPrintln("开始执行Module init sqlscripts files！");
-		if (dataBaseType != DataBaseType.HSQLDB) {
-			batchExcuteSqlScripts(resourcesList, ds);
-		} else {
-			excuteSqlScripts(resourcesList, ds);
+		if (resourcesList.size() > 0) {
+			SystemLogUtils.rootPrintln("开始执行Module init sqlscripts files！");
+			if (dataBaseType != DataBaseType.HSQLDB) {
+				batchExcuteSqlScripts(resourcesList, ds);
+			} else {
+				excuteSqlScripts(resourcesList, ds);
+			}
+			SystemLogUtils.rootPrintln("结束执行Module init sqlscripts files！");
 		}
-		SystemLogUtils.rootPrintln("结束执行Module init sqlscripts files！");
 	}
 
 	public static void batchExcuteSqlScripts(List<Resource> resources, DataSource ds) {
 		for (Resource resource : resources) {
 			try {
-				SystemLogUtils.secondPrintln("批量执行 '" + ResourceUtils.getShotFileName(resource) + "' SQL 脚本文件中的语句！");
 				executeBatchSql(analyzeSqlFile(resource.getInputStream()), ds);
+				SystemLogUtils.secondPrintln("批量执行 '" + ResourceUtils.getShotFileName(resource) + "' SQL 脚本文件中的语句！");
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 			}
@@ -101,8 +105,8 @@ public abstract class SqlScriptsUtils extends ModulePluginUtils {
 	public static void excuteSqlScripts(List<Resource> resources, DataSource ds) {
 		for (Resource resource : resources) {
 			try {
-				SystemLogUtils.secondPrintln("执行 " + ResourceUtils.getShotFileName(resource) + " SQL 脚本文件！");
 				executeSql(analyzeSqlFile(resource.getInputStream()), ds);
+				SystemLogUtils.secondPrintln("执行 " + ResourceUtils.getShotFileName(resource) + " SQL 脚本文件！");
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 			}
