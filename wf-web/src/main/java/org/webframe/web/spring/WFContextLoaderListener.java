@@ -45,9 +45,12 @@ public class WFContextLoaderListener extends ContextLoaderListener {
 		webRealPath = servletContext.getRealPath("/");
 		initParameters(servletContext);
 		initModulePluginDriver(servletContext);
+		SystemLogUtils.rootPrintln("完成模块驱动初始化！");
 		initWebApplicationContext(servletContext);
+		SystemLogUtils.rootPrintln("完成模块spring配置文件初始化！");
 		// 初始化模块插件的web资源
 		WebSourcesUtils.initWebSources(webRealPath);
+		SystemLogUtils.rootPrintln("完成模块web资源初始化！");
 	}
 	
 	protected void initParameters(ServletContext servletContext) {

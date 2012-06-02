@@ -49,7 +49,7 @@ public class WebSourcesUtils extends ModulePluginUtils {
 		// 如果不存在"web.sources.unpack"或该属性值为false，则不从jar包中取出websources
 		if ("".equals(PropertyConfigurerUtils.getString(PS_WEBSOURCES_UNPACK))
 					|| !PropertyConfigurerUtils.getBoolean(PS_WEBSOURCES_UNPACK)) {
-			SystemLogUtils.rootPrintln("跳过从jar包取出Web资源！");
+			SystemLogUtils.println("跳过从jar包取出Web资源！");
 			return;
 		}
 		if (defaultWebRealPath == null) {
@@ -61,7 +61,6 @@ public class WebSourcesUtils extends ModulePluginUtils {
 			if (resources == null || defaultWebRealPath == null) {
 				continue;
 			}
-			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "Web资源初始化！");
 			for (Resource resource : resources) {
 				if (resource instanceof JarResource
 							|| resource instanceof ClassPathResource
@@ -89,6 +88,7 @@ public class WebSourcesUtils extends ModulePluginUtils {
 					resolveResource(path, driverInfo, resource);
 				}
 			}
+			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "Web资源初始化！");
 		}
 		SystemLogUtils.rootPrintln("Web资源初始化结束！");
 	}

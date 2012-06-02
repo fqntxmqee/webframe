@@ -41,11 +41,12 @@ public class WFApplicationContext extends XmlWebApplicationContext {
 			resourceFilter = new JarResourceFilter();
 		}
 		Resource[] resources = resourceFilter.filter(SpringContextUtils.getSpringContextResources());
-		SystemLogUtils.println("加载BeanDefinitions!");
+		SystemLogUtils.rootPrintln("加载BeanDefinitions开始!");
 		for (Resource resource : resources) {
 			beanDefinitionReader.loadBeanDefinitions(resource);
-			SystemLogUtils.println("spring配置文件：" + ResourceUtils.getShotFileName(resource));
+			SystemLogUtils.secondPrintln("spring配置文件：" + ResourceUtils.getShotFileName(resource));
 		}
+		SystemLogUtils.rootPrintln("加载BeanDefinitions结束!");
 	}
 
 	@Override
