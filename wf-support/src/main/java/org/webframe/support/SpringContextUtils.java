@@ -32,8 +32,8 @@ public class SpringContextUtils extends ModulePluginUtils {
 		SystemLogUtils.rootPrintln("Spring Context 配置文件Find Begin！");
 		while (dirverInfos.hasMoreElements()) {
 			ModulePluginDriverInfo driverInfo = dirverInfos.nextElement();
-			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "Spring Context 配置文件Find！");
 			List<Resource> list = getSpringContextResources(driverInfo);
+			SystemLogUtils.secondPrintln(driverInfo.getDriver() + "Spring Context 配置文件Find！");
 			resourcesList.addAll(list);
 			SystemLogUtils.thirdPrintln(driverInfo.getDriver() + "找到(" + list.size() + ")个配置文件！");
 		}

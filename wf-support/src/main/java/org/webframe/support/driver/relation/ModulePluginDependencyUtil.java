@@ -55,7 +55,6 @@ public abstract class ModulePluginDependencyUtil {
 		SystemLogUtils.secondPrintln("根据查询到的pom对模块插件jar进行排序前的预处理！");
 		for (int i = 0; i < resources.size(); i++) {
 			Resource resource = resources.get(i);
-			SystemLogUtils.thirdPrintln("解析Maven Pom：" + ResourceUtils.getShotFileName(resource));
 			// 创建一个新的SAXReader解析器
 			SAXReader saxReader = new SAXReader();
 			try {
@@ -94,6 +93,7 @@ public abstract class ModulePluginDependencyUtil {
 			} catch (DocumentException e) {
 				SystemLogUtils.errorPrintln(e.getMessage());
 			}
+			SystemLogUtils.thirdPrintln("解析Maven Pom：" + ResourceUtils.getShotFileName(resource));
 		}
 		SystemLogUtils.secondPrintln("对模块插件jar进行排序！");
 		return needSort;

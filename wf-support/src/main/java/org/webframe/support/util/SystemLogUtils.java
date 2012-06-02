@@ -33,7 +33,7 @@ public final class SystemLogUtils {
 	}
 
 	public static void secondPrintln(Object msg) {
-		println("  " + msg + "----------->");
+		println("  " + msg);
 	}
 
 	public static void thirdPrintln(Object msg) {
