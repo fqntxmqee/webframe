@@ -50,7 +50,7 @@
 	<!-- WebFrame框架日志是否启动 -->
 	<context-param>
 		<param-name>webframeSystemLog</param-name>
-		<param-value>false</param-value>
+		<param-value>true</param-value>
 	</context-param>
 	<!-- ************************************应用范围内参数初始化 end************************************ -->
 

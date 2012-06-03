@@ -85,9 +85,10 @@
 				<directory>src/main/resources</directory>
 			</resource>
 			<resource>
-				<directory>src/main/webapp</directory>
+				<directory>src/main/webapp/WEB-INF</directory>
+				<targetPath>META-INF/simple</targetPath>
 				<includes>
-					<include>**/web.xml</include>
+					<include>web.xml</include>
 				</includes>
 			</resource>
 			<resource>
