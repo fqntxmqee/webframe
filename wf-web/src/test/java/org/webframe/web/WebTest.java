@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.webframe.support.util.SystemLogUtils;
 import org.webframe.test.BaseHttpClientTests;
+import org.webframe.web.util.WebFrameUtils;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
@@ -29,5 +30,9 @@ public class WebTest extends BaseHttpClientTests {
 		String str = sendGet("/myfilter?" + getUrlParamsString(params));
 		SystemLogUtils.println(str);
 		Assert.assertTrue("MyFilter 未加载！", name.equals(str));
+		Assert.assertNotNull("Web上下文不应该为null！", WebFrameUtils.getWebContextPath());
+		SystemLogUtils.println(WebFrameUtils.getWebContextPath());
+		Assert.assertNotNull("Web项目根目录不应该为null！", WebFrameUtils.getWebRealPath());
+		SystemLogUtils.println(WebFrameUtils.getWebRealPath());
 	}
 }

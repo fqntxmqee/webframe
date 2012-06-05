@@ -16,7 +16,7 @@ import org.springframework.core.io.ResourceLoader;
  * 提供class类文件与jar包的相关联系操作方法；
  * 
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
- * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-4-7 上午09:23:35
+ * @since 2011-4-7 上午09:23:35
  */
 public class ClassUtils extends org.springframework.util.ClassUtils {
 
@@ -86,5 +86,24 @@ public class ClassUtils extends org.springframework.util.ClassUtils {
 			log.error(e.getMessage(), e);
 		}
 		return new FileSystemResource(classesRoot);
+	}
+	
+	/**
+	 * 根据class获取classes的绝对路径；如果class在jar包中，返回null
+	 * 
+	 * @param clazz
+	 * @return
+	 * @author 黄国庆 2012-6-5 下午9:17:16
+	 */
+	public static String getClassesRootPath(Class<?> clazz) {
+		Resource resource = getClassesRootResource(clazz);
+		if (resource != null && resource.exists()) {
+			try {
+				return ResourceUtils.getAbsolutePath(resource);
+			} catch (IOException e) {
+				return null;
+			}
+		}
+		return null;
 	}
 }
