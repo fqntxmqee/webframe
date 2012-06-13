@@ -5,14 +5,13 @@
 
 package org.webframe.struts;
 
-import org.webframe.support.driver.AbstractModulePluginDriver;
 import org.webframe.support.driver.ModulePluginManager;
 
 /**
  * @author <a href="mailto:guoqing.huang@foxmail.com">黄国庆 </a>
  * @version $Id: codetemplates.xml,v 1.1 2009/09/07 08:48:12 Exp $ Create: 2011-5-30 上午10:29:27
  */
-public class StrutsModulePluginDriver extends AbstractModulePluginDriver implements IStrutsSupport {
+public class StrutsModulePluginDriver extends AbstractStrutsModulePluginDriver {
 
 	static {
 		ModulePluginManager.registerDriver(new StrutsModulePluginDriver());
@@ -24,10 +23,5 @@ public class StrutsModulePluginDriver extends AbstractModulePluginDriver impleme
 	@Override
 	public String getModuleName() {
 		return "StrutsModule";
-	}
-
-	@Override
-	public String getStrutsConfigLocation() {
-		return "/struts";
 	}
 }
