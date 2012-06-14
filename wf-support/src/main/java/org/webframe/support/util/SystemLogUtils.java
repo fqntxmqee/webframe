@@ -18,13 +18,13 @@ public final class SystemLogUtils {
 
 	public static void println(Object msg) {
 		if (enableSystemLog) {
-			System.out.println(timeMsg("[INFO]  ", msg));
+			System.out.println(msg);
 		}
 	}
 
 	public static void errorPrintln(Object msg) {
 		if (enableSystemLog) {
-			System.err.println("[ERROR] " + msg);
+			System.err.println(timeMsg("[ERROR] ", msg));
 		}
 	}
 

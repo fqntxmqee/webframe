@@ -16,6 +16,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.AntPathMatcher;
 import org.webframe.support.driver.exception.ModulePluginException;
 import org.webframe.support.util.ResourceUtils;
+import org.webframe.support.util.StopWatch;
 import org.webframe.support.util.SystemLogUtils;
 
 /**
@@ -44,17 +45,23 @@ public abstract class ModulePluginDependencyUtil {
 	 */
 	public static Map<JarURLConnection, ModulePluginDependency> analyzeDependendy(List<JarURLConnection> urls, List<String> patterns)
 				throws IOException {
+		StopWatch stopWatch = StopWatch.getStopWatch("加载模块驱动插件类", true);
+		stopWatch.start("加载模块插件类pom配置。。。");
 		List<Resource> resources = ResourceUtils.loadResources(urls,
 			DEFAULT_MAVEN_POM);
 		if (resources.size() != urls.size()) {
 			throw new ModulePluginException("模块插件包中缺少pom.xml！");
 		}
+		stopWatch.stop();
 		Map<String, ModulePluginDependency> temp = new HashMap<String, ModulePluginDependency>();
 		Map<String, ModulePluginDependency> allModulePluginDependency = new HashMap<String, ModulePluginDependency>();
 		Map<JarURLConnection, ModulePluginDependency> needSort = new HashMap<JarURLConnection, ModulePluginDependency>();
-		SystemLogUtils.secondPrintln("根据查询到的pom对模块插件jar进行排序前的预处理！");
+		// stopWatch.start("  根据查询到的pom对模块插件jar进行排序前的预处理。。。");
 		for (int i = 0; i < resources.size(); i++) {
 			Resource resource = resources.get(i);
+			stopWatch.start("  解析Maven Pom："
+						+ ResourceUtils.getShotFileName(resource)
+						+ "。。。");
 			// 创建一个新的SAXReader解析器
 			SAXReader saxReader = new SAXReader();
 			try {
@@ -93,9 +100,8 @@ public abstract class ModulePluginDependencyUtil {
 			} catch (DocumentException e) {
 				SystemLogUtils.errorPrintln(e.getMessage());
 			}
-			SystemLogUtils.thirdPrintln("解析Maven Pom：" + ResourceUtils.getShotFileName(resource));
+			stopWatch.stop();
 		}
-		SystemLogUtils.secondPrintln("对模块插件jar进行排序！");
 		return needSort;
 	}
 

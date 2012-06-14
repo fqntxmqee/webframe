@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	
+	<bean id="startupChainCatalog" class="org.webframe.support.startup.chain.StartupChainCatalog"/>
+	
+	<bean id="startupChain" class="org.webframe.support.startup.chain.StartupChain">
+		<property name="startupChainCatalog" ref="startupChainCatalog"/>
+	</bean>
+	
+	<!-- 
+		添加自定义命令
+		propertyName有如下值: 
+			beforeLoadModulePlugin, afterLoadModulePlugin, 
+			beforeConnectDataBase, afterConnectDataBase,  
+			beforeLoadHibernate, afterLoadHibernate, 
+			beforeLoadSpring, afterLoadSpring, 
+			beforeLoadValueList, afterLoadValueList
+		例如：
+		<bean class="org.webframe.core.spring.processor.BeanPropertyListAppender">
+			<property name="beanName" value="startupChainCatalog"/>
+			<property name="propertyName" value="beforeLoadModulePlugin"/>
+			<property name="appended">
+				<list>
+					<bean class="YourCommand"/>
+				</list>
+			</property>
+		</bean>
+	 -->
+</beans>

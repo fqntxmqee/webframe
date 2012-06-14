@@ -17,7 +17,7 @@ import java.util.Properties;
 
 import org.webframe.support.driver.exception.DriverNotExistException;
 import org.webframe.support.util.ResourceUtils;
-import org.webframe.support.util.SystemLogUtils;
+import org.webframe.support.util.StopWatch;
 
 /**
  * Properties模块插件驱动加载器
@@ -64,13 +64,18 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 	@Override
 	public void loadModulePlugin() throws DriverNotExistException {
 		try {
+			StopWatch stopWatch = StopWatch.getStopWatch("加载模块驱动插件类", false);
+			stopWatch.start("加载模块插件类properties配置。。。");
 			loadPropertiesJar();
-			SystemLogUtils.rootPrintln("对模块插件jar包进行排序开始！");
+			stopWatch.stop();
+			stopWatch.start("模块插件jar包进行排序。。。");
 			Collection<JarURLConnection> sortUrls = sorted();
-			SystemLogUtils.rootPrintln("对模块插件jar包进行排序结束！");
 			Map<Object, Integer> driverMap = loadProperties(sortUrls);
 			String[] drivers = sortProperties(driverMap);
+			stopWatch.stop();
+			stopWatch.start("开始加载模块驱动插件类。。。");
 			loadModulePlugin(drivers);
+			stopWatch.stop();
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}
@@ -162,7 +167,6 @@ public class PropertiesModulePluginLoader extends AbstractModulePluginLoader {
 	 * @author 黄国庆 2012-4-28 上午8:29:49
 	 */
 	protected void loadPropertiesJar() throws IOException {
-		SystemLogUtils.rootPrintln("加载模块插件类properties配置！");
 		List<URL> urls = ResourceUtils.getUrls(modulePluginProperties);
 		for (URL url : urls) {
 			URLConnection urlConnection = url.openConnection();
