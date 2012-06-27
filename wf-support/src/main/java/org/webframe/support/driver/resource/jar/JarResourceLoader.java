@@ -197,6 +197,8 @@ public class JarResourceLoader extends DefaultResourceLoader {
 		private String		entryName	= null;
 
 		private String		fullName		= null;
+		
+		private String		path			= null;
 
 		protected JarResource() {
 			this.entryName = jarCon.getEntryName();
@@ -216,10 +218,16 @@ public class JarResourceLoader extends DefaultResourceLoader {
 			return this.jarEntry;
 		}
 
+		/**
+		 * @param relativePath 路径，如果以'/'开头，则相对jar包中的资源；否则相对该资源文件
+		 */
 		@Override
 		public Resource createRelative(String relativePath) {
 			if (relativePath == null || "".equals(relativePath)) {
 				throw new IllegalArgumentException("relativePath参数不能为空或null！");
+			}
+			if (!relativePath.startsWith("/")) {
+				relativePath = this.path + relativePath;
 			}
 			return new JarResource(relativePath);
 		}
@@ -295,11 +303,10 @@ public class JarResourceLoader extends DefaultResourceLoader {
 		}
 
 		protected void init(String entryName) {
+			int index = entryName.lastIndexOf("/");
+			this.path = entryName.substring(0, index + 1);
+			this.fullName = jarName + "/" + entryName;
 			this.jarEntry = getJarEntry(entryName);
-			this.fullName = jarName;
-			if (exists()) {
-				this.fullName = jarName + "/" + StringUtils.cleanPath(entryName);
-			}
 		}
 	}
 }
