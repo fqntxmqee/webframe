@@ -7,4 +7,4 @@ notifications:
     recipients:
       - guoqing.huang@foxmail.com
 jdk:
-  - openjdk
+  - openjdk6
