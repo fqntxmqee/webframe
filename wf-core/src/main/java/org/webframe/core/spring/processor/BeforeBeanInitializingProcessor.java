@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,6 +60,7 @@ public class BeforeBeanInitializingProcessor implements BeanPostProcessor, Order
 		return bean;
 	}
 
+	@Override
 	public int getOrder() {
 		return order;
 	}
@@ -117,7 +119,16 @@ public class BeforeBeanInitializingProcessor implements BeanPostProcessor, Order
 		if (propertyValue == null) {
 			propertyValue = new HashMap<Object, Object>();
 		}
-		propertyValue.putAll((Map<Object, Object>) appended);
+		Map<Object, Object> appendedMap = (Map<Object, Object>) appended;
+		Set<Object> keys = appendedMap.keySet();
+		for (Object key : keys) {
+			if (propertyValue.containsKey(key)) {
+				throw new InvalidPropertyException(beanWrapper.getWrappedClass(), getPropertyName(), "重复key---->"
+							+ key);
+			} else {
+				propertyValue.put(key, appendedMap.get(key));
+			}
+		}
 		beanWrapper.setPropertyValue(getPropertyName(), propertyValue);
 	}
 
@@ -144,7 +155,9 @@ public class BeforeBeanInitializingProcessor implements BeanPostProcessor, Order
 		} else {
 			propertyValue = (Object[]) beanWrapper.getPropertyValue(getPropertyName());
 		}
-		if (propertyValue == null) propertyValue = new Object[]{};
+		if (propertyValue == null) {
+			propertyValue = new Object[]{};
+		}
 		List<Object> list = new ArrayList<Object>(Arrays.asList(propertyValue));
 		list.addAll((List<Object>) appended);
 		beanWrapper.setPropertyValue(getPropertyName(), list.toArray());
